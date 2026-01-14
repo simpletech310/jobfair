@@ -24,6 +24,11 @@ export default function AuthPage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError("");
+        if (formData.password.length < 6) {
+            setError("Password must be at least 6 characters.");
+            return;
+        }
+
         setIsLoading(true);
 
         try {
@@ -159,6 +164,7 @@ export default function AuthPage() {
                                 placeholder="Password"
                                 className="w-full rounded-xl border border-white/10 bg-black/20 pl-12 pr-4 py-3 text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none"
                                 value={formData.password}
+                                minLength={6}
                                 onChange={e => setFormData({ ...formData, password: e.target.value })}
                             />
                         </div>
