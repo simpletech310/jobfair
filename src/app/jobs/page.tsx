@@ -45,7 +45,7 @@ export default function JobsPage() {
                         salary: job.salary_range,
                         type: job.job_type,
                         company: employer?.company_name || 'Unknown Company',
-                        logo: employer?.company_logo_url,
+                        logo: employer?.company_logo_url || 'bg-blue-500',
                         postedAt: new Date(job.created_at).toLocaleDateString()
                     };
                 });
