@@ -32,7 +32,7 @@ import { useRouter } from "next/navigation";
 
 export default function EmployerDashboard() {
     const router = useRouter();
-    const { user, loading: authLoading, signOut } = useAuth();
+    const { user, loading: authLoading, logout } = useAuth();
     const supabase = createClient();
 
     // View State
@@ -264,7 +264,7 @@ export default function EmployerDashboard() {
                             </div>
                         </div>
                         <button
-                            onClick={() => signOut()}
+                            onClick={() => logout()}
                             className="w-full flex items-center gap-3 px-4 py-2 text-xs font-bold text-slate-500 hover:text-red-400 transition"
                         >
                             <LogOut className="h-4 w-4" /> Sign Out
