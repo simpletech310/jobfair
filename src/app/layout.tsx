@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
-import Navigation from "@/components/Navigation";
+import Navbar from "@/components/Navbar";
 import { AuthProvider } from "@/context/AuthContext";
 
 const inter = Inter({
@@ -32,14 +32,9 @@ export default function RootLayout({
         className={`${outfit.variable} ${inter.variable} antialiased selection:bg-cyan-500/30 selection:text-cyan-200`}
       >
         <AuthProvider>
-          {/* Navigation Sidebar (Desktop) / Drawer (Mobile) */}
-          <div className="flex min-h-screen">
-            <Navigation />
-
-            {/* Main Content Area - Offset by sidebar width on desktop */}
-            <div className="flex-1 md:ml-64 w-full">
-              {children}
-            </div>
+          <Navbar />
+          <div className="min-h-screen pt-20">
+            {children}
           </div>
         </AuthProvider>
       </body>

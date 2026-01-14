@@ -1,0 +1,114 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { useAuth } from "@/context/AuthContext";
+import { usePathname } from "next/navigation";
+import { Menu, X, User, LogOut, ChevronRight } from "lucide-react";
+import { clsx } from "clsx";
+
+export default function Navbar() {
+    const { user, logout } = useAuth();
+    const pathname = usePathname();
+    const [isScrolled, setIsScrolled] = useState(false);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+    // Scroll effect for glassmorphism
+    useEffect(() => {
+        const handleScroll = () => {
+            setIsScrolled(window.scrollY > 10);
+        };
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
+
+    const navLinks = [
+        { name: "Find Jobs", href: "/jobs", role: "seeker" },
+        { name: "Post a Job", href: "/employer/post-job", role: "employer" },
+    ];
+
+    return (
+        <header
+            className={clsx(
+                "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
+                isScrolled ? "bg-slate-950/80 backdrop-blur-md border-b border-white/5 py-4" : "bg-transparent py-6"
+            )}
+        >
+            <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+
+                {/* Logo */}
+                <Link href="/" className="flex items-center gap-2 group">
+                    <div className="h-8 w-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-lg shadow-lg group-hover:shadow-blue-500/25 transition">
+                        JF
+                    </div>
+                    <span className="text-xl font-bold text-white tracking-tight">
+                        Job<span className="text-blue-500">Fair</span>
+                    </span>
+                </Link>
+
+                {/* Desktop Nav */}
+                <nav className="hidden md:flex items-center gap-8">
+                    <Link href="/jobs" className="text-sm font-medium text-slate-300 hover:text-white transition">Find Jobs</Link>
+                    <Link href="/employer" className="text-sm font-medium text-slate-300 hover:text-white transition">For Employers</Link>
+
+                    {user ? (
+                        <div className="flex items-center gap-4 pl-4 border-l border-white/10">
+                            {user.role === 'employer' ? (
+                                <Link href="/employer" className="text-sm font-bold text-white hover:text-blue-400">Dashboard</Link>
+                            ) : (
+                                <Link href="/profile" className="text-sm font-bold text-white hover:text-blue-400">My Profile</Link>
+                            )}
+                            <button onClick={logout} className="text-slate-400 hover:text-white">
+                                <LogOut className="h-4 w-4" />
+                            </button>
+                        </div>
+                    ) : (
+                        <div className="flex items-center gap-4 pl-4 border-l border-white/10">
+                            <Link href="/auth" className="text-sm font-bold text-white hover:text-blue-400 transition">Sign In</Link>
+                            <Link href="/auth" className="px-4 py-2 rounded-full bg-white text-slate-950 text-sm font-bold hover:bg-blue-50 shadow-lg hover:shadow-white/10 transition">
+                                Get Started
+                            </Link>
+                        </div>
+                    )}
+                </nav>
+
+                {/* Mobile Menu Toggle */}
+                <button
+                    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                    className="md:hidden text-white"
+                >
+                    {mobileMenuOpen ? <X /> : <Menu />}
+                </button>
+            </div>
+
+            {/* Mobile Menu Overlay */}
+            {mobileMenuOpen && (
+                <div className="absolute top-full left-0 right-0 bg-slate-950 border-b border-white/10 p-6 md:hidden animate-in slide-in-from-top-4">
+                    <nav className="flex flex-col gap-4">
+                        <Link href="/jobs" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium text-slate-300">Find Jobs</Link>
+                        <Link href="/employer" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium text-slate-300">For Employers</Link>
+
+                        <div className="h-px bg-white/10 my-2" />
+
+                        {user ? (
+                            <>
+                                <Link href={user.role === 'employer' ? "/employer" : "/profile"} onClick={() => setMobileMenuOpen(false)} className="flex items-center justify-between text-lg font-bold text-white">
+                                    {user.role === 'employer' ? "Dashboard" : "My Profile"}
+                                    <ChevronRight className="h-5 w-5 text-slate-500" />
+                                </Link>
+                                <button onClick={() => { logout(); setMobileMenuOpen(false); }} className="text-left text-sm text-red-400 font-medium">
+                                    Sign Out
+                                </button>
+                            </>
+                        ) : (
+                            <div className="grid gap-3">
+                                <Link href="/auth" onClick={() => setMobileMenuOpen(false)} className="w-full py-3 rounded-xl bg-white/5 border border-white/10 text-center text-white font-bold">Sign In</Link>
+                                <Link href="/auth" onClick={() => setMobileMenuOpen(false)} className="w-full py-3 rounded-xl bg-blue-600 text-center text-white font-bold shadow-lg shadow-blue-500/20">Get Started</Link>
+                            </div>
+                        )}
+                    </nav>
+                </div>
+            )}
+        </header>
+    );
+}
