@@ -29,23 +29,24 @@ export default function VideoRecorder({
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
 
-  useEffect(() => {
-    async function startCamera() {
-      try {
-        const userStream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: "user" },
-          audio: true,
-        });
-        setStream(userStream);
-        if (videoRef.current) {
-          videoRef.current.srcObject = userStream;
-        }
-        setError(null);
-      } catch (err) {
-        console.error("Error accessing camera:", err);
-        setError("Could not access camera. Please check permissions.");
+  const startCamera = async () => {
+    try {
+      const userStream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "user" },
+        audio: true,
+      });
+      setStream(userStream);
+      if (videoRef.current) {
+        videoRef.current.srcObject = userStream;
       }
+      setError(null);
+    } catch (err) {
+      console.error("Error accessing camera:", err);
+      setError("Could not access camera. Please check permissions.");
     }
+  };
+
+  useEffect(() => {
     startCamera();
 
     return () => {
@@ -71,6 +72,13 @@ export default function VideoRecorder({
     return () => clearInterval(interval);
   }, [isRecording, timeLeft]);
 
+  const stopStream = () => {
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+      setStream(null);
+    }
+  };
+
   const startRecording = () => {
     if (!stream) return;
 
@@ -93,6 +101,7 @@ export default function VideoRecorder({
       setVideoUrl(URL.createObjectURL(blob));
       onRecordingComplete(blob);
       setIsRecording(false);
+      stopStream(); // Stop camera/mic after recording
     };
 
     mediaRecorder.start();
@@ -112,9 +121,7 @@ export default function VideoRecorder({
     setVideoUrl(null);
     setIsRecording(false);
     setTimeLeft(maxDuration);
-    if (videoRef.current && stream) {
-      videoRef.current.srcObject = stream;
-    }
+    startCamera(); // Restart camera
   };
 
   const formatTime = (seconds: number) => {

@@ -108,7 +108,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // If confirmation is on, we'd fall into a different state.
 
         if (role === 'employer') router.push('/employer');
-        else router.push('/profile/edit');
+        else router.push('/jobs');
     };
 
     const logout = async () => {

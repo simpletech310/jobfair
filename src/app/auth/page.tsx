@@ -8,6 +8,7 @@ import { Lock, Mail, User, Briefcase, ArrowRight, Loader2 } from "lucide-react";
 
 export default function AuthPage() {
     const { login, signUp } = useAuth();
+    const router = useRouter();
     const [startMode, setStartMode] = useState<'login' | 'register'>('login');
     const [role, setRole] = useState<'seeker' | 'employer'>('seeker');
 
@@ -35,10 +36,9 @@ export default function AuthPage() {
             if (startMode === 'login') {
                 await login(formData.email, formData.password);
                 if (role === 'employer') {
-                    // Ideally login redirects, but if we need manual override:
-                    // router.push('/employer');
+                    router.push('/employer');
                 } else {
-                    // router.push('/profile/edit');
+                    router.push('/jobs');
                 }
             } else {
                 await signUp(

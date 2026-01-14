@@ -179,12 +179,12 @@ function ApplicationContent() {
                     id: user.id,
                     email: user.email!, // Assumes email is present for auth user
                     full_name: seekerName,
-                    updated_at: new Date().toISOString(),
+                    // updated_at removed as it does not exist in schema
                 }, { onConflict: 'id' }); // Merge if exists
 
             if (profileError) {
                 console.error("Profile creation failed:", profileError);
-                throw new Error("Could not create user profile. Please try again.");
+                throw new Error("Could not create user profile: " + profileError.message);
             }
 
             // 2. Submit Application
