@@ -46,6 +46,7 @@ export default function JobsPage() {
                         type: job.job_type,
                         company: employer?.company_name || 'Unknown Company',
                         logo: employer?.company_logo_url || 'bg-blue-500',
+                        tags: job.requirements || [],
                         postedAt: new Date(job.created_at).toLocaleDateString()
                     };
                 });
