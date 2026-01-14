@@ -171,6 +171,23 @@ function ApplicationContent() {
 
         setIsSubmitting(true);
         try {
+            // 1. Ensure seeker profile exists (Auto-create if missing)
+            // This fixes the "violates foreign key constraint" error if the user hasn't set up a profile yet.
+            const { error: profileError } = await supabase
+                .from('seekers')
+                .upsert({
+                    id: user.id,
+                    email: user.email!, // Assumes email is present for auth user
+                    full_name: seekerName,
+                    updated_at: new Date().toISOString(),
+                }, { onConflict: 'id' }); // Merge if exists
+
+            if (profileError) {
+                console.error("Profile creation failed:", profileError);
+                throw new Error("Could not create user profile. Please try again.");
+            }
+
+            // 2. Submit Application
             const { data, error } = await supabase
                 .from('applications')
                 .insert({
