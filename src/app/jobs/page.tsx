@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import JobCard from "@/components/JobCard";
-import { Sparkles, ArrowLeft, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function JobsPage() {
@@ -66,22 +66,7 @@ export default function JobsPage() {
             <div className="fixed inset-0 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black pointer-events-none" />
             <div className="fixed -top-32 -right-32 h-96 w-96 rounded-full bg-blue-600/10 blur-[100px] animate-blob" />
 
-            <header className="sticky top-0 z-50 border-b border-white/5 bg-slate-950/80 backdrop-blur-md">
-                <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-6">
-                    <div className="flex items-center gap-2">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-cyan-400 shadow-lg shadow-blue-500/20">
-                            <Sparkles className="h-5 w-5 text-white" />
-                        </div>
-                        <span className="text-xl font-bold tracking-tight text-white">Job Fair</span>
-                    </div>
-                    <button
-                        onClick={() => router.push("/employer")}
-                        className="rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs font-medium text-slate-300 transition hover:bg-white/10 hover:text-white"
-                    >
-                        Employer Demo
-                    </button>
-                </div>
-            </header>
+
 
             <main className="relative z-10 mx-auto max-w-5xl px-6 py-12">
                 <div className="mb-12 text-center">
