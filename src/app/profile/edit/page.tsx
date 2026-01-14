@@ -114,8 +114,7 @@ export default function EditProfile() {
                 skills: skillsArray,
                 experience_years: experienceYears,
                 intro_video_url: videoUrl,
-                resume_stats: resumeUrl ? { url: resumeUrl, name: resumeName } : null,
-                updated_at: new Date().toISOString()
+                resume_stats: resumeUrl ? { url: resumeUrl, name: resumeName } : null
             };
 
             const { error } = await supabase
