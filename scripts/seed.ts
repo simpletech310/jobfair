@@ -76,6 +76,9 @@ async function seed() {
         console.log(`Processing ${employer.company_name}...`);
 
         // 1. Sign Up (Create Auth User)
+        // eslint-disable-next-line
+        let user: any = null;
+
         const { data: authData, error: authError } = await supabase.auth.signUp({
             email: employer.email,
             password: employer.password,
@@ -100,18 +103,20 @@ async function seed() {
                     console.error("Could not sign in existing user, skipping.");
                     continue;
                 }
-                authData.user = loginData.user;
+                user = loginData.user;
             } else {
                 continue;
             }
+        } else {
+            user = authData.user;
         }
 
-        if (!authData.user) {
+        if (!user) {
             console.error("No user returned.");
             continue;
         }
 
-        const userId = authData.user.id;
+        const userId = user.id;
         console.log(`User created/found: ${userId}`);
 
         // 2. Upsert Employer Profile
