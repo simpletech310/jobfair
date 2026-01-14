@@ -33,7 +33,7 @@ export default function VideoRecorder({
     async function startCamera() {
       try {
         const userStream = await navigator.mediaDevices.getUserMedia({
-          video: true,
+          video: { facingMode: "user" },
           audio: true,
         });
         setStream(userStream);
@@ -73,7 +73,13 @@ export default function VideoRecorder({
 
   const startRecording = () => {
     if (!stream) return;
-    const mediaRecorder = new MediaRecorder(stream);
+
+    // Detect supported mime type
+    const mimeType = MediaRecorder.isTypeSupported("video/mp4")
+      ? "video/mp4"
+      : "video/webm";
+
+    const mediaRecorder = new MediaRecorder(stream, { mimeType });
     mediaRecorderRef.current = mediaRecorder;
     chunksRef.current = [];
 
@@ -82,7 +88,7 @@ export default function VideoRecorder({
     };
 
     mediaRecorder.onstop = () => {
-      const blob = new Blob(chunksRef.current, { type: "video/mp4" });
+      const blob = new Blob(chunksRef.current, { type: mimeType });
       setRecordedBlob(blob);
       setVideoUrl(URL.createObjectURL(blob));
       onRecordingComplete(blob);

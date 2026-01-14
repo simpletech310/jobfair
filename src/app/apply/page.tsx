@@ -133,10 +133,12 @@ function ApplicationContent() {
         if (!user) return;
         setIsUploadingVideo(true);
         try {
-            const fileExt = "mp4"; // WebM usually, but lets save as mp4 extension for simpler URL handling if backend expects it (though content is webm)
+            // Determine extension from blob type or default to mp4 (though content might be webm)
+            // Ideally we check blob.type
+            const fileExt = blob.type.split('/')[1] || "mp4";
             const fileName = `${user.id}/recording-${Date.now()}.${fileExt}`;
 
-            const file = new File([blob], fileName, { type: "video/mp4" });
+            const file = new File([blob], fileName, { type: blob.type });
 
             const { error: uploadError } = await supabase.storage
                 .from('videos')
@@ -191,9 +193,9 @@ function ApplicationContent() {
             }
 
             setSubmittedId(data.id);
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
-            alert("Failed to submit application");
+            alert("Failed to submit application: " + (error.message || "Unknown error"));
         } finally {
             setIsSubmitting(false);
         }
