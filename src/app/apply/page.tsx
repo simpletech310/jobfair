@@ -6,8 +6,15 @@ import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import VideoUploader from "@/components/VideoUploader";
 import ResumeUploader from "@/components/ResumeUploader";
-import { CheckCircle, Briefcase, Sparkles, Video, User, ArrowLeft, Eye, EyeOff, FileText, ChevronDown, Loader2, MapPin } from "lucide-react";
+import VideoRecorder from "@/components/VideoRecorder";
+import { CheckCircle, Briefcase, Sparkles, Video, User, ArrowLeft, Eye, EyeOff, FileText, ChevronDown, Loader2, MapPin, Mic, Upload } from "lucide-react";
 import { clsx } from "clsx";
+
+interface StorageFile {
+    name: string;
+    id: string;
+    url: string;
+}
 
 function ApplicationContent() {
     const router = useRouter();
@@ -16,21 +23,22 @@ function ApplicationContent() {
     const { user, loading: authLoading } = useAuth();
     const supabase = createClient();
 
-    const [activeVideoTab, setActiveVideoTab] = useState<"record" | "upload">("upload"); // Default to upload for MVP stability
+    const [activeVideoTab, setActiveVideoTab] = useState<"record" | "upload">("upload");
 
     // Form Data
     const [seekerName, setSeekerName] = useState("");
     const [visibility, setVisibility] = useState<"public" | "anonymous">("public");
 
     // Resume State
-    const [useProfileResume, setUseProfileResume] = useState(false);
-    const [profileResumeUrl, setProfileResumeUrl] = useState<string | null>(null);
-    const [profileResumeName, setProfileResumeName] = useState<string | null>(null);
+    const [activeResumeTab, setActiveResumeTab] = useState<"select" | "upload">("select");
+    const [userResumes, setUserResumes] = useState<StorageFile[]>([]);
+    const [selectedResumeUrl, setSelectedResumeUrl] = useState<string | null>(null);
     const [uploadedResumeUrl, setUploadedResumeUrl] = useState<string | null>(null);
-    const [uploadedResumeName, setUploadedResumeName] = useState<string | null>(null);
+    const [isFetchingResumes, setIsFetchingResumes] = useState(false);
 
     // Video State
-    const [uploadedVideoUrl, setUploadedVideoUrl] = useState<string | null>(null);
+    const [videoUrl, setVideoUrl] = useState<string | null>(null);
+    const [isUploadingVideo, setIsUploadingVideo] = useState(false);
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submittedId, setSubmittedId] = useState<string | null>(null);
@@ -50,6 +58,7 @@ function ApplicationContent() {
 
         if (user) {
             fetchProfile();
+            fetchUserResumes();
         }
     }, [jobId, user, authLoading]);
 
@@ -79,20 +88,81 @@ function ApplicationContent() {
 
         if (data) {
             setSeekerName(data.full_name || "");
-            if (data.resume_stats?.url) {
-                setProfileResumeUrl(data.resume_stats.url);
-                setProfileResumeName(data.resume_stats.name || "Profile Resume");
-                setUseProfileResume(true);
+        }
+    };
+
+    const fetchUserResumes = async () => {
+        if (!user) return;
+        setIsFetchingResumes(true);
+        try {
+            const { data, error } = await supabase
+                .storage
+                .from('resumes')
+                .list(`${user.id}`, {
+                    limit: 10,
+                    offset: 0,
+                    sortBy: { column: 'created_at', order: 'desc' },
+                });
+
+            if (data) {
+                const files = data.map(file => {
+                    const { data: { publicUrl } } = supabase.storage
+                        .from('resumes')
+                        .getPublicUrl(`${user.id}/${file.name}`);
+                    return {
+                        name: file.name,
+                        id: file.id,
+                        url: publicUrl
+                    };
+                });
+                setUserResumes(files);
+                if (files.length > 0) {
+                    setSelectedResumeUrl(files[0].url);
+                } else {
+                    setActiveResumeTab("upload");
+                }
             }
+        } catch (err) {
+            console.error("Error fetching resumes:", err);
+        } finally {
+            setIsFetchingResumes(false);
+        }
+    };
+
+    const handleRecordingComplete = async (blob: Blob) => {
+        if (!user) return;
+        setIsUploadingVideo(true);
+        try {
+            const fileExt = "mp4"; // WebM usually, but lets save as mp4 extension for simpler URL handling if backend expects it (though content is webm)
+            const fileName = `${user.id}/recording-${Date.now()}.${fileExt}`;
+
+            const file = new File([blob], fileName, { type: "video/mp4" });
+
+            const { error: uploadError } = await supabase.storage
+                .from('videos')
+                .upload(fileName, file);
+
+            if (uploadError) throw uploadError;
+
+            const { data: { publicUrl } } = supabase.storage
+                .from('videos')
+                .getPublicUrl(fileName);
+
+            setVideoUrl(publicUrl);
+        } catch (error) {
+            console.error("Recording upload failed:", error);
+            alert("Failed to upload recording.");
+        } finally {
+            setIsUploadingVideo(false);
         }
     };
 
     const handleSubmit = async () => {
         if (!user || !jobId || !seekerName) return;
 
-        const finalResumeUrl = useProfileResume ? profileResumeUrl : uploadedResumeUrl;
+        const finalResumeUrl = activeResumeTab === 'select' ? selectedResumeUrl : uploadedResumeUrl;
 
-        if (!finalResumeUrl && !uploadedVideoUrl) {
+        if (!finalResumeUrl && !videoUrl) {
             alert("Please provide either a resume or video.");
             return;
         }
@@ -104,12 +174,8 @@ function ApplicationContent() {
                 .insert({
                     job_id: jobId,
                     seeker_id: user.id,
-                    seeker_name_snapshot: seekerName, // Note: Schema might not have this, might rely on seeker_id. check schema. 
-                    // Schema check: applications has: job_id, seeker_id, status, resume_url, video_url, cover_note.
-                    // It does NOT have seeker_name_snapshot. We rely on seeker profile. 
-                    // Wait, if seeker changes name later? It's fine for MVP.
                     resume_url: finalResumeUrl,
-                    video_url: uploadedVideoUrl,
+                    video_url: videoUrl,
                     status: 'pending'
                 })
                 .select()
@@ -229,41 +295,77 @@ function ApplicationContent() {
                 <div className="space-y-4">
                     <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider">Resume / CV</h3>
 
-                    {profileResumeUrl && (
-                        <div className="glass flex p-1.5 rounded-2xl mb-2">
-                            <button
-                                onClick={() => { setUseProfileResume(true); setUploadedResumeUrl(null); }}
-                                className={clsx("flex-1 py-2 text-xs font-bold rounded-xl transition", useProfileResume ? "bg-blue-600 text-white" : "text-slate-400 hover:text-white")}
-                            >
-                                From Profile
-                            </button>
-                            <button
-                                onClick={() => { setUseProfileResume(false); }}
-                                className={clsx("flex-1 py-2 text-xs font-bold rounded-xl transition", !useProfileResume ? "bg-blue-600 text-white" : "text-slate-400 hover:text-white")}
-                            >
-                                Upload New
-                            </button>
-                        </div>
-                    )}
+                    {/* Resume Tabs */}
+                    <div className="glass flex p-1.5 rounded-2xl mb-2">
+                        <button
+                            onClick={() => setActiveResumeTab("select")}
+                            className={clsx("flex-1 py-2 text-xs font-bold rounded-xl transition", activeResumeTab === "select" ? "bg-blue-600 text-white" : "text-slate-400 hover:text-white")}
+                        >
+                            From Profile
+                        </button>
+                        <button
+                            onClick={() => setActiveResumeTab("upload")}
+                            className={clsx("flex-1 py-2 text-xs font-bold rounded-xl transition", activeResumeTab === "upload" ? "bg-blue-600 text-white" : "text-slate-400 hover:text-white")}
+                        >
+                            Upload New
+                        </button>
+                    </div>
 
-                    <div className="glass relative overflow-hidden rounded-3xl p-6 min-h-[250px] flex flex-col justify-center">
-                        {useProfileResume && profileResumeUrl ? (
-                            <div className="space-y-4 w-full">
-                                <div className="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-300 text-sm flex items-center gap-3">
-                                    <CheckCircle className="h-5 w-5 text-blue-400" />
-                                    <span>Using Profile Resume: <strong>{profileResumeName}</strong></span>
+                    <div className="glass relative overflow-hidden rounded-3xl p-6 min-h-[300px] flex flex-col">
+                        {activeResumeTab === 'select' ? (
+                            isFetchingResumes ? (
+                                <div className="flex flex-1 items-center justify-center">
+                                    <Loader2 className="h-6 w-6 text-blue-400 animate-spin" />
                                 </div>
-                            </div>
+                            ) : userResumes.length > 0 ? (
+                                <div className="space-y-4">
+                                    <label className="text-xs font-bold text-slate-500 uppercase">Select a Resume</label>
+                                    <div className="space-y-2 max-h-[220px] overflow-y-auto pr-2 custom-scrollbar">
+                                        {userResumes.map((file) => (
+                                            <button
+                                                key={file.id}
+                                                onClick={() => setSelectedResumeUrl(file.url)}
+                                                className={clsx(
+                                                    "w-full flex items-center gap-3 p-3 rounded-xl border text-left transition",
+                                                    selectedResumeUrl === file.url
+                                                        ? "bg-blue-500/20 border-blue-500 text-white"
+                                                        : "bg-white/5 border-white/5 text-slate-400 hover:bg-white/10 hover:text-slate-200"
+                                                )}
+                                            >
+                                                <div className={clsx("p-2 rounded-lg", selectedResumeUrl === file.url ? "bg-blue-500 text-white" : "bg-white/10 text-slate-500")}>
+                                                    <FileText className="h-5 w-5" />
+                                                </div>
+                                                <div className="flex-1 truncate">
+                                                    <p className="text-sm font-bold truncate">{file.name}</p>
+                                                    <p className="text-xs opacity-70">Saved in Profile</p>
+                                                </div>
+                                                {selectedResumeUrl === file.url && <CheckCircle className="h-5 w-5 text-blue-400" />}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="flex flex-1 flex-col items-center justify-center text-center p-4">
+                                    <FileText className="h-10 w-10 text-slate-600 mb-2" />
+                                    <p className="text-slate-400 font-medium">No resumes found.</p>
+                                    <button
+                                        onClick={() => setActiveResumeTab("upload")}
+                                        className="mt-4 text-sm text-blue-400 hover:underline"
+                                    >
+                                        Upload one now
+                                    </button>
+                                </div>
+                            )
                         ) : (
-                            <ResumeUploader
-                                onUploadComplete={(url, name) => {
-                                    setUploadedResumeUrl(url);
-                                    setUploadedResumeName(name);
-                                }}
-                                existingFileUrl={uploadedResumeUrl}
-                                existingFileName={uploadedResumeName}
-                                userId={user?.id || 'guest'}
-                            />
+                            <div className="flex-1 flex flex-col justify-center">
+                                <ResumeUploader
+                                    onUploadComplete={(url, name) => {
+                                        setUploadedResumeUrl(url);
+                                    }}
+                                    existingFileUrl={uploadedResumeUrl}
+                                    userId={user?.id || 'guest'}
+                                />
+                            </div>
                         )}
                     </div>
                 </div>
@@ -272,14 +374,51 @@ function ApplicationContent() {
                 <div className="space-y-4">
                     <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider">Video Introduction <span className="text-slate-600 text-xs normal-case ml-2">(Optional)</span></h3>
 
-                    <div className="glass relative overflow-hidden rounded-3xl p-4 min-h-[250px] flex flex-col items-center justify-center">
-                        <div className="w-full">
-                            <VideoUploader
-                                onUploadComplete={setUploadedVideoUrl}
-                                currentVideoUrl={uploadedVideoUrl}
-                                userId={user?.id || 'guest'}
-                            />
-                        </div>
+                    {/* Video Tabs */}
+                    <div className="glass flex p-1.5 rounded-2xl mb-2">
+                        <button
+                            onClick={() => setActiveVideoTab("upload")}
+                            className={clsx("flex-1 py-2 text-xs font-bold rounded-xl transition flex items-center justify-center gap-2", activeVideoTab === "upload" ? "bg-blue-600 text-white" : "text-slate-400 hover:text-white")}
+                        >
+                            <Upload className="h-3 w-3" /> Upload
+                        </button>
+                        <button
+                            onClick={() => setActiveVideoTab("record")}
+                            className={clsx("flex-1 py-2 text-xs font-bold rounded-xl transition flex items-center justify-center gap-2", activeVideoTab === "record" ? "bg-red-500 text-white" : "text-slate-400 hover:text-white")}
+                        >
+                            <Mic className="h-3 w-3" /> Record
+                        </button>
+                    </div>
+
+                    <div className="glass relative overflow-hidden rounded-3xl p-4 min-h-[300px] flex flex-col items-center justify-center">
+                        {isUploadingVideo ? (
+                            <div className="flex flex-col items-center gap-2">
+                                <Loader2 className="h-8 w-8 text-blue-400 animate-spin" />
+                                <p className="text-sm text-slate-400">Processing video...</p>
+                            </div>
+                        ) : (
+                            <div className="w-full">
+                                {activeVideoTab === 'upload' ? (
+                                    <VideoUploader
+                                        onUploadComplete={setVideoUrl}
+                                        currentVideoUrl={videoUrl}
+                                        userId={user?.id || 'guest'}
+                                    />
+                                ) : (
+                                    <VideoRecorder
+                                        onRecordingComplete={handleRecordingComplete}
+                                    />
+                                )}
+                            </div>
+                        )}
+
+                        {/* Show success indicator if video is set but we are in recording tab and it's not showing preview there explicitly yet, or just generic confirmation */}
+                        {videoUrl && activeVideoTab === 'record' && (
+                            <div className="mt-4 flex items-center gap-2 text-green-400 bg-green-400/10 px-3 py-1.5 rounded-lg border border-green-400/20">
+                                <CheckCircle className="h-4 w-4" />
+                                <span className="text-xs font-bold">Video Attached</span>
+                            </div>
+                        )}
                     </div>
                 </div>
 
@@ -322,10 +461,10 @@ function ApplicationContent() {
             <div className="fixed bottom-0 left-0 w-full bg-gradient-to-t from-slate-900 to-slate-900/0 p-6 backdrop-blur-[2px] z-50">
                 <button
                     onClick={handleSubmit}
-                    disabled={!seekerName || (!uploadedVideoUrl && !uploadedResumeUrl && !useProfileResume) || isSubmitting}
+                    disabled={!seekerName || (!videoUrl && !selectedResumeUrl && !uploadedResumeUrl) || isSubmitting || isUploadingVideo}
                     className={clsx(
                         "mx-auto w-full max-w-md block rounded-2xl py-4 text-lg font-bold text-white shadow-2xl transition-all active:scale-95",
-                        !seekerName || (!uploadedVideoUrl && !uploadedResumeUrl && !useProfileResume && !profileResumeUrl) || isSubmitting
+                        !seekerName || (!videoUrl && !selectedResumeUrl && !uploadedResumeUrl) || isSubmitting || isUploadingVideo
                             ? "bg-slate-800 text-slate-500 cursor-not-allowed border border-white/5"
                             : "bg-gradient-to-r from-blue-600 to-cyan-500 shadow-blue-500/25 hover:shadow-cyan-500/40"
                     )}
