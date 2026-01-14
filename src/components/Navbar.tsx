@@ -13,6 +13,31 @@ export default function Navbar() {
     const [isScrolled, setIsScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+    // Dynamic Navigation Links
+    const getNavLinks = () => {
+        if (!user) {
+            return [
+                { name: "For Seekers", href: "/benefits/seeker" },
+                { name: "For Employers", href: "/benefits/employer" },
+            ];
+        }
+        if (user.role === 'employer') {
+            return [
+                { name: "Home", href: "/employer" },
+                { name: "Interested", href: "/benefits/employer" },
+                // { name: "Dashboard", href: "/employer" } // Dashboard is handled by sidebar/profile menu
+            ];
+        }
+        // Seeker
+        return [
+            { name: "Home", href: "/" },
+            { name: "Interested", href: "/benefits/seeker" },
+            { name: "Jobs", href: "/jobs" },
+        ];
+    };
+
+    const links = getNavLinks();
+
     // Scroll effect for glassmorphism
     useEffect(() => {
         const handleScroll = () => {
@@ -48,16 +73,21 @@ export default function Navbar() {
 
                 {/* Desktop Nav */}
                 <nav className="hidden md:flex items-center gap-8">
-                    <Link href="/jobs" className="text-sm font-medium text-slate-300 hover:text-white transition">Find Jobs</Link>
-                    <Link href="/employer" className="text-sm font-medium text-slate-300 hover:text-white transition">For Employers</Link>
+                    {links.map(link => (
+                        <Link
+                            key={link.href}
+                            href={link.href}
+                            className="text-sm font-medium text-slate-300 hover:text-white transition"
+                        >
+                            {link.name}
+                        </Link>
+                    ))}
 
                     {user ? (
                         <div className="flex items-center gap-4 pl-4 border-l border-white/10">
-                            {user.role === 'employer' ? (
-                                <Link href="/employer" className="text-sm font-bold text-white hover:text-blue-400">Dashboard</Link>
-                            ) : (
-                                <Link href="/profile" className="text-sm font-bold text-white hover:text-blue-400">My Profile</Link>
-                            )}
+                            <Link href={user.role === 'employer' ? "/employer" : "/profile"} className="text-sm font-bold text-white hover:text-blue-400">
+                                {user.role === 'employer' ? "Dashboard" : "My Profile"}
+                            </Link>
                             <button onClick={logout} className="text-slate-400 hover:text-white">
                                 <LogOut className="h-4 w-4" />
                             </button>
@@ -83,10 +113,18 @@ export default function Navbar() {
 
             {/* Mobile Menu Overlay */}
             {mobileMenuOpen && (
-                <div className="absolute top-full left-0 right-0 bg-slate-950 border-b border-white/10 p-6 md:hidden animate-in slide-in-from-top-4">
+                <div className="absolute top-full left-0 right-0 bg-slate-950 border-b border-white/10 p-6 md:hidden animate-in slide-in-from-top-4 shadow-2xl">
                     <nav className="flex flex-col gap-4">
-                        <Link href="/jobs" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium text-slate-300">Find Jobs</Link>
-                        <Link href="/employer" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium text-slate-300">For Employers</Link>
+                        {links.map(link => (
+                            <Link
+                                key={link.href}
+                                href={link.href}
+                                onClick={() => setMobileMenuOpen(false)}
+                                className="text-lg font-medium text-slate-300"
+                            >
+                                {link.name}
+                            </Link>
+                        ))}
 
                         <div className="h-px bg-white/10 my-2" />
 
