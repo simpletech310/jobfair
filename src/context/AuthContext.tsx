@@ -91,6 +91,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             email,
             password: pass,
             options: {
+                emailRedirectTo: `${window.location.origin}/auth/callback`,
                 data: {
                     role,
                     ...metadata
