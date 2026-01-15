@@ -63,9 +63,7 @@ export default function AuthPage() {
             <div className="w-full max-w-md">
 
                 <div className="text-center mb-8">
-                    <h1 className="text-3xl font-bold text-white tracking-tight mb-2">
-                        Job<span className="text-blue-500">Fair</span>
-                    </h1>
+                    <img src="/jobfairlogo.png" alt="JobFair" className="h-16 w-auto mx-auto mb-6 object-contain" />
                     <p className="text-slate-400">The video-first marketplace for modern careers.</p>
                 </div>
 
