@@ -12,6 +12,7 @@ import { useAuth } from "@/context/AuthContext";
 // Let's use VideoUploader for MVP as it handles the "Intro Video" logic.
 import VideoUploader from "@/components/VideoUploader";
 import ResumeUploader from "@/components/ResumeUploader";
+import PhotoUploader from "@/components/PhotoUploader";
 
 export default function EditProfile() {
     const router = useRouter();
@@ -49,6 +50,7 @@ export default function EditProfile() {
     const [resumeUrl, setResumeUrl] = useState<string | null>(null);
     const [resumeName, setResumeName] = useState<string | null>(null);
     const [videoUrl, setVideoUrl] = useState<string | null>(null);
+    const [photoUrl, setPhotoUrl] = useState<string | null>(null);
 
     const [activeTab, setActiveTab] = useState<'info' | 'media'>('info');
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -82,6 +84,7 @@ export default function EditProfile() {
                 });
                 setExperienceYears(data.experience_years || 0);
                 setVideoUrl(data.intro_video_url);
+                setPhotoUrl(data.avatar_url);
 
                 // Parse resume stats if exists
                 if (data.resume_stats) {
@@ -114,6 +117,7 @@ export default function EditProfile() {
                 skills: skillsArray,
                 experience_years: experienceYears,
                 intro_video_url: videoUrl,
+                avatar_url: photoUrl,
                 resume_stats: resumeUrl ? { url: resumeUrl, name: resumeName } : null
             };
 
@@ -191,6 +195,14 @@ export default function EditProfile() {
 
                         {/* Basic Fields */}
                         <div className="glass rounded-2xl p-6 space-y-4">
+                            <div className="flex justify-center mb-6">
+                                <PhotoUploader
+                                    userId={user?.id || ""}
+                                    existingPhotoUrl={photoUrl}
+                                    onUploadComplete={setPhotoUrl}
+                                />
+                            </div>
+
                             <h2 className="text-sm font-bold uppercase text-slate-500 mb-4 flex items-center gap-2">
                                 <User className="h-4 w-4" /> Personal Details
                             </h2>

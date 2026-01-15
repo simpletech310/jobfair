@@ -27,9 +27,9 @@ export default function ResumeUploader({ onUploadComplete, existingFileUrl, exis
             return;
         }
 
-        // Validate size (e.g. 5MB)
-        if (uploadedFile.size > 5 * 1024 * 1024) {
-            alert("File is too large (max 5MB).");
+        // Validate size (100MB)
+        if (uploadedFile.size > 100 * 1024 * 1024) {
+            alert("File is too large (max 100MB).");
             return;
         }
 
@@ -132,7 +132,7 @@ export default function ResumeUploader({ onUploadComplete, existingFileUrl, exis
             </p>
             <p className="mb-6 text-center text-sm text-slate-400">
                 Drag & drop PDF or Docx <br />
-                <span className="opacity-50">(Max 5MB)</span>
+                <span className="opacity-50">(Max 100MB)</span>
             </p>
 
             <button

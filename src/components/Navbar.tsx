@@ -88,8 +88,9 @@ export default function Navbar() {
                             <Link href={user.role === 'employer' ? "/employer" : "/profile"} className="text-sm font-bold text-white hover:text-blue-400">
                                 {user.role === 'employer' ? "Dashboard" : "My Profile"}
                             </Link>
-                            <button onClick={logout} className="text-slate-400 hover:text-white">
+                            <button onClick={logout} className="text-slate-400 hover:text-white flex items-center gap-2 text-sm font-medium transition">
                                 <LogOut className="h-4 w-4" />
+                                <span className="hidden lg:inline">Sign Out</span>
                             </button>
                         </div>
                     ) : (

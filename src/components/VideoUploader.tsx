@@ -31,9 +31,9 @@ export default function VideoUploader({
             return;
         }
 
-        // 2. Validate Size (e.g. 50MB hard limit for upload, even if 30s)
-        if (selectedFile.size > 50 * 1024 * 1024) {
-            setError("File too large. Please keep under 50MB.");
+        // 2. Validate Size (e.g. 100MB limit)
+        if (selectedFile.size > 100 * 1024 * 1024) {
+            setError("File too large. Please keep under 100MB.");
             return;
         }
 
