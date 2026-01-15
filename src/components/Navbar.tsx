@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { usePathname } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 import { Menu, X, User, LogOut, ChevronRight } from "lucide-react";
 import { clsx } from "clsx";
 
@@ -12,6 +13,27 @@ export default function Navbar() {
     const pathname = usePathname();
     const [isScrolled, setIsScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+    // Fetch profile for avatar
+    const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+    const [profileLoaded, setProfileLoaded] = useState(false);
+    const supabase = createClient(); // Need client here
+
+    useEffect(() => {
+        const fetchAvatar = async () => {
+            if (user && user.role === 'seeker') {
+                const { data } = await supabase
+                    .from('seekers')
+                    .select('avatar_url')
+                    .eq('id', user.id)
+                    .single();
+                if (data) setAvatarUrl(data.avatar_url);
+            }
+            setProfileLoaded(true);
+        };
+
+        if (user) fetchAvatar();
+    }, [user]);
 
     // Dynamic Navigation Links
     const getNavLinks = () => {
@@ -85,8 +107,16 @@ export default function Navbar() {
 
                     {user ? (
                         <div className="flex items-center gap-4 pl-4 border-l border-white/10">
-                            <Link href={user.role === 'employer' ? "/employer" : "/profile"} className="text-sm font-bold text-white hover:text-blue-400">
-                                {user.role === 'employer' ? "Dashboard" : "My Profile"}
+                            <Link href={user.role === 'employer' ? "/employer" : "/profile"} className="flex items-center gap-2 text-sm font-bold text-white hover:text-blue-400 group">
+                                {user.role === 'seeker' && avatarUrl ? (
+                                    <img src={avatarUrl} alt="Me" className="h-8 w-8 rounded-full object-cover border border-white/10 group-hover:border-blue-500/50 transition" />
+                                ) : (
+                                    <span className={clsx(user.role === 'seeker' && "bg-slate-800 p-2 rounded-full")}>
+                                        {user.role === 'employer' ? "Dashboard" : <User className="h-4 w-4" />}
+                                    </span>
+                                )}
+                                {user.role === 'employer' && "Dashboard"}
+                                {user.role === 'seeker' && !avatarUrl && "My Profile"}
                             </Link>
                             <button onClick={logout} className="text-slate-400 hover:text-white flex items-center gap-2 text-sm font-medium transition">
                                 <LogOut className="h-4 w-4" />
@@ -132,7 +162,14 @@ export default function Navbar() {
                         {user ? (
                             <>
                                 <Link href={user.role === 'employer' ? "/employer" : "/profile"} onClick={() => setMobileMenuOpen(false)} className="flex items-center justify-between text-lg font-bold text-white">
-                                    {user.role === 'employer' ? "Dashboard" : "My Profile"}
+                                    <div className="flex items-center gap-3">
+                                        {user.role === 'seeker' && avatarUrl ? (
+                                            <img src={avatarUrl} alt="Me" className="h-8 w-8 rounded-full object-cover" />
+                                        ) : (
+                                            <User className="h-5 w-5" />
+                                        )}
+                                        {user.role === 'employer' ? "Dashboard" : "My Profile"}
+                                    </div>
                                     <ChevronRight className="h-5 w-5 text-slate-500" />
                                 </Link>
                                 <button onClick={() => { logout(); setMobileMenuOpen(false); }} className="text-left text-sm text-red-400 font-medium">

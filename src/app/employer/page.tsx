@@ -25,7 +25,8 @@ import {
     LogOut,
     Menu,
     ChevronRight,
-    Search as SearchIcon
+    Search as SearchIcon,
+    Building
 } from "lucide-react";
 import { clsx } from "clsx";
 import { useRouter } from "next/navigation";
@@ -106,7 +107,7 @@ export default function EmployerDashboard() {
                 .select(`
                     *,
                     jobs (title),
-                    seekers (full_name, intro_video_url, title, skills, bio, experience_years, resume_stats)
+                    seekers (full_name, intro_video_url, avatar_url, title, skills, bio, experience_years, resume_stats)
                 `)
                 .order('created_at', { ascending: false });
 
@@ -250,6 +251,13 @@ export default function EmployerDashboard() {
                                 {item.label}
                             </button>
                         ))}
+                        <button
+                            onClick={() => router.push('/employer/profile')}
+                            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 transition-all duration-200"
+                        >
+                            <Building className="h-5 w-5" />
+                            Company Profile
+                        </button>
                     </nav>
 
                     {/* User */}
@@ -271,12 +279,14 @@ export default function EmployerDashboard() {
                         </button>
                     </div>
                 </div>
-            </aside>
+            </aside >
 
             {/* Mobile Overlay */}
-            {isSidebarOpen && (
-                <div onClick={() => setIsSidebarOpen(false)} className="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-sm" />
-            )}
+            {
+                isSidebarOpen && (
+                    <div onClick={() => setIsSidebarOpen(false)} className="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-sm" />
+                )
+            }
 
             {/* --- MAIN CONTENT --- */}
             <main className="flex-1 md:ml-64 relative z-10 flex flex-col min-h-screen">
@@ -526,35 +536,39 @@ export default function EmployerDashboard() {
             </main>
 
             {/* --- APP DETAIL MODAL --- */}
-            {selectedApp && (
-                <ApplicationDetailModal
-                    app={selectedApp}
-                    onClose={() => setSelectedApp(null)}
-                    onStatusUpdate={handleStatusUpdate}
-                    messages={messages}
-                    newMessage={newMessage}
-                    onSendMessage={handleSendMessage}
-                    setNewMessage={setNewMessage}
-                    activeTab={activeTab}
-                    setActiveTab={setActiveTab}
-                    messagesEndRef={messagesEndRef}
-                />
-            )}
+            {
+                selectedApp && (
+                    <ApplicationDetailModal
+                        app={selectedApp}
+                        onClose={() => setSelectedApp(null)}
+                        onStatusUpdate={handleStatusUpdate}
+                        messages={messages}
+                        newMessage={newMessage}
+                        onSendMessage={handleSendMessage}
+                        setNewMessage={setNewMessage}
+                        activeTab={activeTab}
+                        setActiveTab={setActiveTab}
+                        messagesEndRef={messagesEndRef}
+                    />
+                )
+            }
 
             {/* --- SEEKER PROFILE MODAL (FROM SEARCH) --- */}
-            {selectedSeeker && (
-                <SeekerDetailModal
-                    seeker={selectedSeeker}
-                    onClose={() => setSelectedSeeker(null)}
-                    onMessage={() => {
-                        setSelectedSeeker(null);
-                        setCurrentView('messages');
-                        setSelectedConversation('new'); // Simplified
-                    }}
-                />
-            )}
+            {
+                selectedSeeker && (
+                    <SeekerDetailModal
+                        seeker={selectedSeeker}
+                        onClose={() => setSelectedSeeker(null)}
+                        onMessage={() => {
+                            setSelectedSeeker(null);
+                            setCurrentView('messages');
+                            setSelectedConversation('new'); // Simplified
+                        }}
+                    />
+                )
+            }
 
-        </div>
+        </div >
     );
 }
 
@@ -603,7 +617,11 @@ function ApplicationCard({ app, onClick }: { app: any, onClick: () => void }) {
             <div className="relative aspect-[4/3] w-full bg-slate-900 overflow-hidden">
                 {!app.seekers?.intro_video_url && !app.video_url ? (
                     <div className="absolute inset-0 flex items-center justify-center bg-slate-800">
-                        <User className="h-12 w-12 text-slate-600" />
+                        {app.seekers?.avatar_url ? (
+                            <img src={app.seekers.avatar_url} alt={app.seekers.full_name} className="h-full w-full object-cover" />
+                        ) : (
+                            <User className="h-12 w-12 text-slate-600" />
+                        )}
                     </div>
                 ) : (
                     <video
@@ -639,7 +657,11 @@ function SeekerCard({ seeker, onClick }: { seeker: any, onClick: () => void }) {
                     <video src={seeker.intro_video_url} className="h-full w-full object-cover" muted playsInline />
                 ) : (
                     <div className="absolute inset-0 flex items-center justify-center bg-slate-800">
-                        <User className="h-16 w-16 text-slate-600" />
+                        {seeker.avatar_url ? (
+                            <img src={seeker.avatar_url} alt={seeker.full_name} className="h-full w-full object-cover" />
+                        ) : (
+                            <User className="h-16 w-16 text-slate-600" />
+                        )}
                     </div>
                 )}
                 {seeker.intro_video_url && <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/40 transition"><Play className="h-8 w-8 text-white opacity-0 group-hover:opacity-100 transition" /></div>}
@@ -782,8 +804,8 @@ function SeekerDetailModal({ seeker, onClose, onMessage }: any) {
 
                 <div className="flex items-center gap-6 mb-8">
                     <div className="h-24 w-24 rounded-full bg-slate-800 flex items-center justify-center overflow-hidden border-2 border-white/10">
-                        {seeker.intro_video_url ? (
-                            <video src={seeker.intro_video_url} className="h-full w-full object-cover" />
+                        {seeker.avatar_url ? (
+                            <img src={seeker.avatar_url} className="h-full w-full object-cover" />
                         ) : <User className="h-10 w-10 text-slate-600" />}
                     </div>
                     <div>

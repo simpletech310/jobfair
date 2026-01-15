@@ -66,6 +66,7 @@ export default function SeekerProfile() {
                 const formattedApps = appsData.map(app => ({
                     ...app,
                     jobTitle: app.jobs?.title,
+                    employerId: app.jobs?.employer_id,
                     companyName: Array.isArray(app.jobs?.employers)
                         ? app.jobs?.employers[0]?.company_name
                         : app.jobs?.employers?.company_name
@@ -252,7 +253,12 @@ export default function SeekerProfile() {
                                     {selectedChatApp.companyName?.[0] || "C"}
                                 </div>
                                 <div>
-                                    <h3 className="font-bold text-white">{selectedChatApp.companyName || "Employer"}</h3>
+                                    <h3
+                                        className="font-bold text-white cursor-pointer hover:text-blue-400 transition"
+                                        onClick={() => selectedChatApp.employerId && router.push(`/companies/${selectedChatApp.employerId}`)}
+                                    >
+                                        {selectedChatApp.companyName || "Employer"}
+                                    </h3>
                                     <p className="text-xs text-blue-400">{selectedChatApp.jobTitle}</p>
                                 </div>
                             </div>

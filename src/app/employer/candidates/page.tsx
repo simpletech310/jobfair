@@ -90,8 +90,12 @@ export default function CandidateSearch() {
                             >
                                 <div className="flex items-start justify-between mb-4">
                                     <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-500 p-0.5">
-                                        <div className="h-full w-full rounded-2xl bg-slate-900 flex items-center justify-center">
-                                            <User className="h-6 w-6 text-white" />
+                                        <div className="h-full w-full rounded-2xl bg-slate-900 flex items-center justify-center overflow-hidden">
+                                            {p.avatar_url ? (
+                                                <img src={p.avatar_url} alt={p.full_name} className="h-full w-full object-cover" />
+                                            ) : (
+                                                <User className="h-6 w-6 text-white" />
+                                            )}
                                         </div>
                                     </div>
                                     {p.intro_video_url && (

@@ -20,16 +20,17 @@ export default function JobsPage() {
                     .from('jobs')
                     .select(`
                         id,
+                        employer_id,
                         title,
                         location,
                         salary_range,
                         job_type,
                         created_at,
-                        employers (
+                        employers(
                             company_name,
                             company_logo_url
                         )
-                    `)
+                            `)
                     .eq('is_active', true)
                     .order('created_at', { ascending: false });
 
@@ -46,6 +47,7 @@ export default function JobsPage() {
                         type: job.job_type,
                         company: employer?.company_name || 'Unknown Company',
                         logo: employer?.company_logo_url || 'bg-blue-500',
+                        employerId: job.employer_id,
                         tags: job.requirements || [],
                         postedAt: new Date(job.created_at).toLocaleDateString()
                     };

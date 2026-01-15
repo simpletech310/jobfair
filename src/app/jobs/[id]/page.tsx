@@ -19,6 +19,7 @@ export default function JobDetailsPage() {
                     .from('jobs')
                     .select(`
                         *,
+                        employer_id,
                         employers (
                             company_name,
                             company_logo_url
@@ -31,6 +32,7 @@ export default function JobDetailsPage() {
                     const employer = Array.isArray(data.employers) ? data.employers[0] : data.employers;
                     setJob({
                         ...data,
+                        employer_id: data.employer_id,
                         company: employer?.company_name || 'Unknown Company',
                         logo: employer?.company_logo_url,
                         salary: data.salary_range,
@@ -69,11 +71,19 @@ export default function JobDetailsPage() {
 
                 {/* Hero Section */}
                 <div className="mb-10 text-center">
-                    <div className={`mx-auto mb-6 h-20 w-20 rounded-2xl ${job.logo ? 'bg-transparent' : 'bg-blue-500'} flex items-center justify-center text-3xl font-bold text-white shadow-2xl overflow-hidden`}>
+                    <div
+                        onClick={() => job.employer_id && router.push(`/companies/${job.employer_id}`)}
+                        className={`mx-auto mb-6 h-20 w-20 rounded-2xl ${job.logo ? 'bg-transparent' : 'bg-blue-500'} flex items-center justify-center text-3xl font-bold text-white shadow-2xl overflow-hidden cursor-pointer hover:opacity-80 transition`}
+                    >
                         {job.logo ? <img src={job.logo} alt={job.company} className="h-full w-full object-cover" /> : job.company[0]}
                     </div>
                     <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight mb-2">{job.title}</h1>
-                    <p className="text-xl text-slate-400 font-medium">{job.company}</p>
+                    <p
+                        onClick={() => job.employer_id && router.push(`/companies/${job.employer_id}`)}
+                        className="text-xl text-slate-400 font-medium hover:text-blue-400 cursor-pointer transition"
+                    >
+                        {job.company}
+                    </p>
 
                     <div className="mt-6 flex flex-wrap justify-center gap-4 text-sm text-slate-300">
                         <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">

@@ -8,12 +8,16 @@ interface VideoUploaderProps {
     onUploadComplete: (url: string) => void;
     currentVideoUrl?: string | null;
     userId: string;
+    maxDuration?: number; // seconds
+    label?: string;
 }
 
 export default function VideoUploader({
     onUploadComplete,
     currentVideoUrl,
-    userId
+    userId,
+    maxDuration = 30,
+    label = "Intro Video"
 }: VideoUploaderProps) {
     const [uploading, setUploading] = useState(false);
     const [previewUrl, setPreviewUrl] = useState<string | null>(currentVideoUrl || null);
@@ -37,13 +41,13 @@ export default function VideoUploader({
             return;
         }
 
-        // 3. Validate Duration (30s limit)
+        // 3. Validate Duration
         const video = document.createElement('video');
         video.preload = 'metadata';
         video.onloadedmetadata = async () => {
             window.URL.revokeObjectURL(video.src);
-            if (video.duration > 31) { // buffer of 1s
-                setError("Video must be 30 seconds or less.");
+            if (video.duration > maxDuration + 1) { // buffer of 1s
+                setError(`Video must be ${maxDuration} seconds or less.`);
                 return;
             }
 
@@ -143,7 +147,7 @@ export default function VideoUploader({
                         {uploading ? "Uploading..." : "Click to upload"}
                     </p>
                     <p className="text-xs text-slate-500">
-                        30s Max (MP4/MOV)
+                        {maxDuration}s Max (MP4/MOV)
                     </p>
 
                     {error && (
@@ -174,7 +178,7 @@ export default function VideoUploader({
                                 <FileVideo className="h-5 w-5 text-blue-400" />
                             </div>
                             <div className="flex-1 overflow-hidden">
-                                <p className="truncate text-sm font-medium text-white">Intro Video</p>
+                                <p className="truncate text-sm font-medium text-white">{label}</p>
                                 <p className="text-xs text-green-400">Ready to submit</p>
                             </div>
                             <CheckCircle className="h-5 w-5 text-green-500" />
