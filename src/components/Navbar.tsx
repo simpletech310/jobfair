@@ -55,7 +55,6 @@ export default function Navbar() {
             { name: "Home", href: "/" },
             { name: "Interested", href: "/benefits/seeker" },
             { name: "Jobs", href: "/jobs" },
-            { name: "Messages", href: "/profile" },
         ];
     };
 

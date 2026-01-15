@@ -26,6 +26,8 @@ export default function SeekerProfile() {
     const [newMessage, setNewMessage] = useState("");
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
+    const [conversations, setConversations] = useState<any[]>([]);
+
     useEffect(() => {
         if (!authLoading) {
             if (!user) {
@@ -73,18 +75,16 @@ export default function SeekerProfile() {
         if (!user) return;
         try {
             // 1. Fetch Profile
-            const { data: profileData, error: profileError } = await supabase
+            const { data: profileData } = await supabase
                 .from('seekers')
                 .select('*')
                 .eq('id', user.id)
                 .single();
 
-            if (profileData) {
-                setProfile(profileData);
-            }
+            if (profileData) setProfile(profileData);
 
-            // 2. Fetch Applications with Job details
-            const { data: appsData, error: appsError } = await supabase
+            // 2. Fetch Applications
+            const { data: appsData } = await supabase
                 .from('applications')
                 .select(`
                     *,
@@ -99,7 +99,6 @@ export default function SeekerProfile() {
                 .order('created_at', { ascending: false });
 
             if (appsData) {
-                // Formatting for UI
                 const formattedApps = appsData.map(app => ({
                     ...app,
                     jobTitle: app.jobs?.title,
@@ -109,6 +108,16 @@ export default function SeekerProfile() {
                         : app.jobs?.employers?.company_name
                 }));
                 setApplications(formattedApps);
+            }
+
+            // 3. Fetch Active Conversations (for badges)
+            const { data: convData } = await supabase
+                .from('conversations')
+                .select('employer_id, id')
+                .eq('seeker_id', user.id);
+
+            if (convData) {
+                setConversations(convData);
             }
 
         } catch (err) {
@@ -152,7 +161,7 @@ export default function SeekerProfile() {
                         <button onClick={() => router.push("/")} className="rounded-full p-2 text-slate-400 hover:bg-white/5 hover:text-white transition">
                             <ArrowLeft className="h-5 w-5" />
                         </button>
-                        <h1 className="text-lg font-bold text-white tracking-tight">My Profile</h1>
+                        <h1 className="text-lg font-bold text-white text-lg tracking-tight">My Profile</h1>
                     </div>
                     <button
                         onClick={() => router.push("/profile/edit")}
@@ -241,28 +250,34 @@ export default function SeekerProfile() {
                             </div>
                         ) : (
                             <div className="space-y-3">
-                                {applications.map((app) => (
-                                    <div key={app.id} className="glass rounded-xl p-4 flex items-center justify-between hover:bg-white/5 transition">
-                                        <div className="flex items-center gap-4">
-                                            <div className="h-10 w-10 rounded-lg bg-slate-800 flex items-center justify-center">
-                                                <Briefcase className="h-5 w-5 text-white/80" />
+                                {applications.map((app) => {
+                                    const hasConversation = conversations.some(c => c.employer_id === app.employerId);
+                                    return (
+                                        <div key={app.id} className="glass rounded-xl p-4 flex items-center justify-between hover:bg-white/5 transition">
+                                            <div className="flex items-center gap-4">
+                                                <div className="h-10 w-10 rounded-lg bg-slate-800 flex items-center justify-center">
+                                                    <Briefcase className="h-5 w-5 text-white/80" />
+                                                </div>
+                                                <div>
+                                                    <h4 className="font-bold text-white text-sm">{app.jobTitle || "Job Application"}</h4>
+                                                    <p className="text-xs text-slate-400">{app.companyName || "Company"}</p>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <h4 className="font-bold text-white text-sm">{app.jobTitle || "Job Application"}</h4>
-                                                <p className="text-xs text-slate-400">{app.companyName || "Company"}</p>
+                                            <div className="flex items-center gap-3">
+                                                <button
+                                                    onClick={(e) => { e.stopPropagation(); setSelectedChatApp(app); }}
+                                                    className="relative p-2 rounded-full hover:bg-white/10 text-slate-400 hover:text-white transition group"
+                                                >
+                                                    <MessageSquare className="h-5 w-5" />
+                                                    {hasConversation && (
+                                                        <span className="absolute top-1.5 right-1.5 h-2.5 w-2.5 rounded-full bg-orange-500 border-2 border-slate-900 shadow-sm animate-pulse" />
+                                                    )}
+                                                </button>
+                                                {getStatusBadge(app.status)}
                                             </div>
                                         </div>
-                                        <div className="flex items-center gap-3">
-                                            <button
-                                                onClick={(e) => { e.stopPropagation(); setSelectedChatApp(app); }}
-                                                className="p-2 rounded-full hover:bg-white/10 text-slate-400 hover:text-white transition"
-                                            >
-                                                <MessageSquare className="h-5 w-5" />
-                                            </button>
-                                            {getStatusBadge(app.status)}
-                                        </div>
-                                    </div>
-                                ))}
+                                    );
+                                })}
                             </div>
                         )}
                     </div>
