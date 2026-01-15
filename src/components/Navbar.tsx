@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { Menu, X, User, LogOut, ChevronRight } from "lucide-react";
+import { Menu, X, User, LogOut, ChevronRight, LayoutDashboard } from "lucide-react";
 import { clsx } from "clsx";
 
 export default function Navbar() {
@@ -110,9 +110,10 @@ export default function Navbar() {
                             <Link href={user.role === 'employer' ? "/employer" : "/profile"} className="flex items-center gap-2 text-sm font-bold text-white hover:text-blue-400 group">
                                 {user.role === 'seeker' && avatarUrl ? (
                                     <img src={avatarUrl} alt="Me" className="h-8 w-8 rounded-full object-cover border border-white/10 group-hover:border-blue-500/50 transition" />
+
                                 ) : (
-                                    <span className={clsx(user.role === 'seeker' && "bg-slate-800 p-2 rounded-full")}>
-                                        {user.role === 'employer' ? "Dashboard" : <User className="h-4 w-4" />}
+                                    <span className="bg-slate-800 p-2 rounded-full">
+                                        {user.role === 'employer' ? <LayoutDashboard className="h-4 w-4" /> : <User className="h-4 w-4" />}
                                     </span>
                                 )}
                                 {user.role === 'employer' && "Dashboard"}
