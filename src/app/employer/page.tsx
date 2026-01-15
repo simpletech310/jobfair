@@ -288,12 +288,11 @@ export default function EmployerDashboard() {
                 <div className="flex flex-col h-full">
                     {/* Logo */}
                     <div className="h-16 flex items-center px-6 border-b border-white/5">
-                        <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center font-bold text-white shadow-lg shadow-blue-500/30 mr-3">J</div>
-                        <span className="text-lg font-bold text-white tracking-tight">JobFair</span>
+                        <img src="/jobfairlogo.png" alt="JobFair" className="h-10 w-auto object-contain" />
                     </div>
 
                     {/* Nav */}
-                    <nav className="flex-1 p-4 space-y-1">
+                    <nav className="flex-1 p-4 mt-8 space-y-1">
                         {navItems.map(item => (
                             <button
                                 key={item.id}

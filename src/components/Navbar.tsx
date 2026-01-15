@@ -85,12 +85,7 @@ export default function Navbar() {
 
                 {/* Logo */}
                 <Link href="/" className="flex items-center gap-2 group">
-                    <div className="h-8 w-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-lg shadow-lg group-hover:shadow-blue-500/25 transition">
-                        JF
-                    </div>
-                    <span className="text-xl font-bold text-white tracking-tight">
-                        Job<span className="text-blue-500">Fair</span>
-                    </span>
+                    <img src="/jobfairlogo.png" alt="JobFair" className="h-10 w-auto object-contain" />
                 </Link>
 
                 {/* Desktop Nav */}
