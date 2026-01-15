@@ -72,7 +72,11 @@ export function useMessages(conversationId: string | null) {
     }, [conversationId, user]);
 
     const sendMessage = async (content: string) => {
-        if (!conversationId || !user || !content.trim()) return;
+        console.log("Attempting to send message:", { conversationId, userId: user?.id, content });
+        if (!conversationId || !user || !content.trim()) {
+            console.error("Missing required fields for sending message");
+            return;
+        }
 
         // Optimistic update could go here, but let's rely on Realtime for simplicity and truth
         const { error } = await supabase
@@ -85,8 +89,10 @@ export function useMessages(conversationId: string | null) {
 
         if (error) {
             console.error("Error sending message:", error);
-            alert("Failed to send message");
+            alert("Failed to send message: " + error.message);
             throw error;
+        } else {
+            console.log("Message sent successfully");
         }
     };
 
