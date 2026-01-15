@@ -7,6 +7,8 @@ import { ArrowLeft, Clock, CheckCircle, XCircle, Briefcase, User, Edit2, Play, F
 import { useRouter } from "next/navigation";
 import { clsx } from "clsx";
 
+import { useMessages } from "@/hooks/useMessages";
+
 export default function SeekerProfile() {
     const router = useRouter();
     const { user, loading: authLoading } = useAuth();
@@ -16,9 +18,11 @@ export default function SeekerProfile() {
     const [applications, setApplications] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
-    // Chat State (Mock heavily for MVP as we don't have a messages table yet)
+    // Chat State
     const [selectedChatApp, setSelectedChatApp] = useState<any | null>(null);
-    const [messages, setMessages] = useState<any[]>([]);
+    const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
+    const { messages, sendMessage, loading: msgLoading } = useMessages(activeConversationId);
+
     const [newMessage, setNewMessage] = useState("");
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -31,6 +35,39 @@ export default function SeekerProfile() {
             }
         }
     }, [user, authLoading]);
+
+    // Check for conversation when app is selected
+    useEffect(() => {
+        if (selectedChatApp && user) {
+            checkConversation();
+        } else {
+            setActiveConversationId(null);
+        }
+    }, [selectedChatApp, user]);
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [messages]);
+
+    const checkConversation = async () => {
+        if (!selectedChatApp || !user) return;
+
+        // Find if conversation exists for this job/employer
+        // Note: Assuming one conv per job/application context
+        const { data, error } = await supabase
+            .from('conversations')
+            .select('id')
+            .eq('seeker_id', user.id)
+            .eq('employer_id', selectedChatApp.employerId)
+            // .eq('job_id', selectedChatApp.job_id) // Optional: restrict to specific job context if needed
+            .single();
+
+        if (data) {
+            setActiveConversationId(data.id);
+        } else {
+            setActiveConversationId(null);
+        }
+    };
 
     const fetchData = async () => {
         if (!user) return;
@@ -85,21 +122,12 @@ export default function SeekerProfile() {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
 
-    // Placeholder for Chat - Local state only for now as requested by "Demo" feel if backend missing
-    const handleSendMessage = (e: React.FormEvent) => {
+    const handleSendMessage = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!newMessage.trim()) return;
+        if (!newMessage.trim() || !activeConversationId) return;
 
-        const msg = {
-            id: Date.now().toString(),
-            senderId: 'seeker',
-            content: newMessage,
-            timestamp: new Date().toISOString()
-        };
-
-        setMessages(prev => [...prev, msg]);
+        await sendMessage(newMessage);
         setNewMessage("");
-        setTimeout(scrollToBottom, 100);
     };
 
     const getStatusBadge = (status: string) => {
@@ -270,14 +298,15 @@ export default function SeekerProfile() {
                                 <p className="text-center text-slate-600 text-sm mt-10">Start a conversation...</p>
                             )}
                             {messages.map((msg) => (
-                                <div key={msg.id} className={clsx("flex flex-col max-w-[80%]", msg.senderId === 'seeker' ? "ml-auto items-end" : "items-start")}>
-                                    <div className={clsx("rounded-2xl px-4 py-2 text-sm", msg.senderId === 'seeker' ? "bg-blue-600 text-white" : "bg-white/10 text-slate-200")}>
+                                <div key={msg.id} className={clsx("flex flex-col max-w-[80%]", msg.sender_id === user?.id ? "ml-auto items-end" : "items-start")}>
+                                    <div className={clsx("rounded-2xl px-4 py-2 text-sm", msg.sender_id === user?.id ? "bg-blue-600 text-white" : "bg-white/10 text-slate-200")}>
                                         {msg.content}
                                     </div>
-                                    <span className="text-[10px] text-slate-600 mt-1">{new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                    <span className="text-[10px] text-slate-600 mt-1">{new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                                 </div>
                             ))}
                             <div ref={messagesEndRef} />
+
                         </div>
 
                         <form onSubmit={handleSendMessage} className="p-4 bg-slate-900 border-t border-white/10">

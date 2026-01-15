@@ -31,6 +31,8 @@ import {
 import { clsx } from "clsx";
 import { useRouter } from "next/navigation";
 
+import { useMessages } from "@/hooks/useMessages";
+
 export default function EmployerDashboard() {
     const router = useRouter();
     const { user, loading: authLoading, logout } = useAuth();
@@ -44,6 +46,7 @@ export default function EmployerDashboard() {
     const [applications, setApplications] = useState<any[]>([]);
     const [jobs, setJobs] = useState<any[]>([]);
     const [allSeekers, setAllSeekers] = useState<any[]>([]);
+    const [conversations, setConversations] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
     // Filter State
@@ -57,10 +60,10 @@ export default function EmployerDashboard() {
     const [activeTab, setActiveTab] = useState<'profile' | 'resume' | 'messages'>('profile');
 
     // Message State
-    const [messages, setMessages] = useState<any[]>([]);
+    const [selectedConversation, setSelectedConversation] = useState<any | null>(null);
+    const { messages, sendMessage: sendHookMessage } = useMessages(selectedConversation?.id || null);
     const [newMessage, setNewMessage] = useState("");
     const messagesEndRef = useRef<HTMLDivElement>(null);
-    const [selectedConversation, setSelectedConversation] = useState<string | null>(null);
 
 
     useEffect(() => {
@@ -73,14 +76,7 @@ export default function EmployerDashboard() {
         }
     }, [user, authLoading]);
 
-    useEffect(() => {
-        if (selectedApp) {
-            // Mock messages for application view
-            setMessages([
-                { id: '1', senderId: 'system', content: 'You can start messaging this candidate.', timestamp: new Date().toISOString() }
-            ]);
-        }
-    }, [selectedApp]);
+    // Removed Mock Effect
 
     useEffect(() => {
         scrollToBottom();
@@ -115,22 +111,83 @@ export default function EmployerDashboard() {
             setApplications(apps || []);
 
             // 3. Get All Seekers (for Discovery)
-            // Note: RLS must allow this
             const { data: seekers, error: seekerError } = await supabase
                 .from('seekers')
                 .select('*')
-                .limit(50); // Limit for MVP
+                .limit(50);
 
-            if (seekerError) {
-                console.error("Error fetching seekers", seekerError);
-            } else {
+            if (!seekerError) {
                 setAllSeekers(seekers || []);
             }
+
+            // 4. Get Conversations
+            await fetchConversations();
 
         } catch (error) {
             console.error("Error loading dashboard:", error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const fetchConversations = async () => {
+        if (!user) return;
+        const { data, error } = await supabase
+            .from('conversations')
+            .select(`
+                *,
+                seekers (id, full_name, avatar_url, title)
+            `)
+            .eq('employer_id', user.id)
+            .order('updated_at', { ascending: false });
+
+        if (!error) {
+            setConversations(data || []);
+        }
+    };
+
+    const handleMessageCandidate = async (seekerId: string, jobId: string | null = null) => {
+        if (!user) return;
+
+        // Check if conversation exists (simplified check, Ideally check logic should match unique constraint)
+        // For MVP, simplistic check on frontend list or just try create
+        let conv = conversations.find(c => c.seeker_id === seekerId);
+
+        if (!conv) {
+            // Create New
+            const { data, error } = await supabase
+                .from('conversations')
+                .insert({
+                    employer_id: user.id,
+                    seeker_id: seekerId,
+                    job_id: jobId // Context
+                })
+                .select()
+                .single();
+
+            if (error) {
+                // If unique violation, likely already exists, simplistic fallback fetch (race condition edge case)
+                console.error("Error creating conversation", error);
+                await fetchConversations(); // refresh
+                conv = conversations.find(c => c.seeker_id === seekerId); // Try find again
+            } else {
+                conv = data;
+                await fetchConversations(); // Refresh list
+            }
+        }
+
+        if (conv) {
+            // Setup local conv object with seeker details if creating new (optimization: ensure full fetch)
+            // If we just created it, we might need to fetch the seeker details again or optimistically attach them
+            if (!conv.seekers) {
+                const s = allSeekers.find(x => x.id === seekerId) || applications.find(a => a.seeker_id === seekerId)?.seekers;
+                conv.seekers = s;
+            }
+
+            setCurrentView('messages');
+            setSelectedConversation(conv);
+            setSelectedApp(null);
+            setSelectedSeeker(null);
         }
     };
 
@@ -171,19 +228,20 @@ export default function EmployerDashboard() {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
 
-    const handleSendMessage = (e: React.FormEvent) => {
+    const handleSendMessage = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!newMessage.trim()) return;
+        if (!newMessage.trim() || !selectedConversation) return;
 
-        const msg = {
-            id: crypto.randomUUID(),
-            senderId: 'employer',
-            content: newMessage,
-            timestamp: new Date().toISOString()
-        };
-
-        setMessages([...messages, msg]);
+        await sendHookMessage(newMessage);
         setNewMessage("");
+
+        // Update conversation list timestamp (optimistic)
+        setConversations(prev => {
+            const others = prev.filter(c => c.id !== selectedConversation.id);
+            const updated = prev.find(c => c.id === selectedConversation.id);
+            if (updated) updated.updated_at = new Date().toISOString(); // simplistic
+            return updated ? [updated, ...others] : prev;
+        })
     };
 
     // --- Derived Data ---
@@ -340,7 +398,12 @@ export default function EmployerDashboard() {
                                 ) : (
                                     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                                         {applications.slice(0, 4).map(app => (
-                                            <ApplicationCard key={app.id} app={app} onClick={() => setSelectedApp(app)} />
+                                            <ApplicationCard
+                                                key={app.id}
+                                                app={app}
+                                                onClick={() => setSelectedApp(app)}
+                                                onMessage={() => handleMessageCandidate(app.seeker_id, app.job_id)}
+                                            />
                                         ))}
                                     </div>
                                 )}
@@ -421,7 +484,12 @@ export default function EmployerDashboard() {
                             ) : (
                                 <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                                     {filteredApplications.map(app => (
-                                        <ApplicationCard key={app.id} app={app} onClick={() => setSelectedApp(app)} />
+                                        <ApplicationCard
+                                            key={app.id}
+                                            app={app}
+                                            onClick={() => setSelectedApp(app)}
+                                            onMessage={() => handleMessageCandidate(app.seeker_id, app.job_id)}
+                                        />
                                     ))}
                                 </div>
                             )}
@@ -450,7 +518,12 @@ export default function EmployerDashboard() {
                             ) : (
                                 <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                                     {filteredSeekers.map(seeker => (
-                                        <SeekerCard key={seeker.id} seeker={seeker} onClick={() => setSelectedSeeker(seeker)} />
+                                        <SeekerCard
+                                            key={seeker.id}
+                                            seeker={seeker}
+                                            onClick={() => setSelectedSeeker(seeker)}
+                                            onMessage={() => handleMessageCandidate(seeker.id)}
+                                        />
                                     ))}
                                 </div>
                             )}
@@ -466,25 +539,29 @@ export default function EmployerDashboard() {
                                     <h2 className="text-sm font-bold text-slate-400 uppercase tracking-wider">Inbox</h2>
                                 </div>
                                 <div className="flex-1 overflow-y-auto">
-                                    {/* Mock Conversation Item */}
-                                    <div
-                                        onClick={() => setSelectedConversation('mock-1')}
-                                        className={clsx(
-                                            "p-4 border-b border-white/5 cursor-pointer hover:bg-white/5 transition",
-                                            selectedConversation === 'mock-1' ? "bg-blue-900/10 border-l-2 border-l-blue-500" : "border-l-2 border-l-transparent"
-                                        )}
-                                    >
-                                        <div className="flex items-center gap-3">
-                                            <div className="h-10 w-10 rounded-full bg-slate-700 flex items-center justify-center">
-                                                <User className="h-5 w-5 text-slate-300" />
+                                    {conversations.length === 0 && <div className="p-4 text-center text-slate-500 text-xs">No active conversations. Start one from Applications.</div>}
+                                    {conversations.map(conv => (
+                                        <div
+                                            key={conv.id}
+                                            onClick={() => setSelectedConversation(conv)}
+                                            className={clsx(
+                                                "p-4 border-b border-white/5 cursor-pointer hover:bg-white/5 transition",
+                                                selectedConversation?.id === conv.id ? "bg-blue-900/10 border-l-2 border-l-blue-500" : "border-l-2 border-l-transparent"
+                                            )}
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <div className="h-10 w-10 rounded-full bg-slate-700 flex items-center justify-center overflow-hidden">
+                                                    {conv.seekers?.avatar_url ? (
+                                                        <img src={conv.seekers.avatar_url} className="h-full w-full object-cover" />
+                                                    ) : <User className="h-5 w-5 text-slate-300" />}
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <h4 className="font-bold text-white truncate">{conv.seekers?.full_name || "Unknown Candidate"}</h4>
+                                                    <p className="text-xs text-slate-400 truncate">Click to view messages</p>
+                                                </div>
                                             </div>
-                                            <div className="flex-1 min-w-0">
-                                                <h4 className="font-bold text-white truncate">John Doe</h4>
-                                                <p className="text-xs text-slate-400 truncate">RE: Senior Developer Role</p>
-                                            </div>
-                                            <span className="text-[10px] text-slate-500">2m</span>
                                         </div>
-                                    </div>
+                                    ))}
                                 </div>
                             </div>
 
@@ -494,30 +571,32 @@ export default function EmployerDashboard() {
                                     <>
                                         <div className="p-4 border-b border-white/5 flex items-center gap-3">
                                             <div className="h-8 w-8 rounded-full bg-slate-700 flex items-center justify-center">
-                                                <User className="h-4 w-4 text-slate-300" />
+                                                {selectedConversation.seekers?.avatar_url ? (
+                                                    <img src={selectedConversation.seekers.avatar_url} className="h-8 w-8 rounded-full object-cover" />
+                                                ) : <User className="h-4 w-4 text-slate-300" />}
                                             </div>
-                                            <h3 className="font-bold text-white">John Doe</h3>
+                                            <h3 className="font-bold text-white">{selectedConversation.seekers?.full_name || "Candidate"}</h3>
                                         </div>
                                         <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                                            <div className="flex items-start">
-                                                <div className="bg-white/10 rounded-2xl rounded-tl-none px-4 py-2 text-sm text-slate-200 max-w-[80%]">
-                                                    Hi, I'm interested in the role!
+                                            {messages.length === 0 && <div className="text-center text-slate-500 mt-10">Start the conversation...</div>}
+                                            {messages.map((msg: any) => (
+                                                <div key={msg.id} className={clsx("flex flex-col max-w-[80%]", msg.sender_id === user?.id ? "ml-auto items-end" : "items-start")}>
+                                                    <div className={clsx("rounded-2xl px-4 py-2 text-sm", msg.sender_id === user?.id ? "bg-blue-600 text-white" : "bg-white/10 text-slate-200")}>
+                                                        {msg.content}
+                                                    </div>
+                                                    <span className="text-[10px] text-slate-600 mt-1">{new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                                                 </div>
-                                            </div>
-                                            <div className="flex items-end justify-end">
-                                                <div className="bg-blue-600 rounded-2xl rounded-tr-none px-4 py-2 text-sm text-white max-w-[80%]">
-                                                    Great! Let's schedule a call.
-                                                </div>
-                                            </div>
+                                            ))}
+                                            <div ref={messagesEndRef} />
                                         </div>
-                                        <form onSubmit={(e) => { e.preventDefault(); setNewMessage(""); }} className="p-4 border-t border-white/5 flex gap-2">
+                                        <form onSubmit={handleSendMessage} className="p-4 border-t border-white/5 flex gap-2">
                                             <input
                                                 value={newMessage}
                                                 onChange={(e) => setNewMessage(e.target.value)}
                                                 placeholder="Type a message..."
                                                 className="flex-1 bg-white/5 border border-white/10 rounded-full px-4 py-2 text-sm text-white focus:border-blue-500 focus:outline-none"
                                             />
-                                            <button className="p-2 rounded-full bg-blue-600 text-white hover:bg-blue-500">
+                                            <button type="submit" disabled={!newMessage.trim()} className="p-2 rounded-full bg-blue-600 text-white hover:bg-blue-500 disabled:opacity-50 transition">
                                                 <Send className="h-4 w-4" />
                                             </button>
                                         </form>
@@ -560,9 +639,8 @@ export default function EmployerDashboard() {
                         seeker={selectedSeeker}
                         onClose={() => setSelectedSeeker(null)}
                         onMessage={() => {
-                            setSelectedSeeker(null);
-                            setCurrentView('messages');
-                            setSelectedConversation('new'); // Simplified
+                            handleMessageCandidate(selectedSeeker.id);
+                            // setSelectedSeeker(null); // handled inside handleMessage
                         }}
                     />
                 )
@@ -610,7 +688,9 @@ function EmptyState({ icon: Icon, title, message, action }: any) {
     );
 }
 
-function ApplicationCard({ app, onClick }: { app: any, onClick: () => void }) {
+
+// Updated Subcomponent Props
+function ApplicationCard({ app, onClick, onMessage }: { app: any, onClick: () => void, onMessage: () => void }) {
     return (
         <div onClick={onClick} className="group glass-card relative cursor-pointer overflow-hidden rounded-2xl border border-white/5 bg-white/5 transition hover:-translate-y-1 hover:border-white/10">
             {/* Thumbnail */}
@@ -641,15 +721,24 @@ function ApplicationCard({ app, onClick }: { app: any, onClick: () => void }) {
             <div className="p-4">
                 <h3 className="font-bold text-white truncate">{app.seekers?.full_name || "Applicant"}</h3>
                 <p className="text-xs text-blue-400 truncate mb-2">{app.jobs?.title || "Role"}</p>
-                <div className="flex items-center gap-2 text-[10px] text-slate-500">
-                    <Clock className="w-3 h-3" /> {new Date(app.created_at).toLocaleDateString()}
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-[10px] text-slate-500">
+                        <Clock className="w-3 h-3" /> {new Date(app.created_at).toLocaleDateString()}
+                    </div>
+                    <button
+                        onClick={(e) => { e.stopPropagation(); onMessage(); }}
+                        className="p-1.5 rounded-full bg-white/10 text-slate-300 hover:bg-blue-600 hover:text-white transition"
+                        title="Send Message"
+                    >
+                        <MessageSquare className="h-3 w-3" />
+                    </button>
                 </div>
             </div>
         </div>
     );
 }
 
-function SeekerCard({ seeker, onClick }: { seeker: any, onClick: () => void }) {
+function SeekerCard({ seeker, onClick, onMessage }: { seeker: any, onClick: () => void, onMessage?: () => void }) {
     return (
         <div onClick={onClick} className="group glass-card relative cursor-pointer overflow-hidden rounded-2xl border border-white/5 bg-white/5 transition hover:-translate-y-1 hover:border-white/10">
             <div className="relative aspect-square w-full bg-slate-800 overflow-hidden">
@@ -668,7 +757,17 @@ function SeekerCard({ seeker, onClick }: { seeker: any, onClick: () => void }) {
             </div>
             <div className="p-4">
                 <h3 className="font-bold text-white truncate">{seeker.full_name || "Job Seeker"}</h3>
-                <p className="text-xs text-slate-400 truncate">{seeker.title || "No Title"}</p>
+                <div className="flex items-center justify-between">
+                    <p className="text-xs text-slate-400 truncate">{seeker.title || "No Title"}</p>
+                    {onMessage && (
+                        <button
+                            onClick={(e) => { e.stopPropagation(); onMessage(); }}
+                            className="p-1 rounded-full bg-white/10 text-slate-400 hover:text-white hover:bg-blue-600 transition"
+                        >
+                            <MessageSquare className="h-3 w-3" />
+                        </button>
+                    )}
+                </div>
                 <div className="mt-2 flex flex-wrap gap-1">
                     {seeker.skills?.slice(0, 2).map((s: string) => (
                         <span key={s} className="px-1.5 py-0.5 rounded bg-white/5 text-[10px] text-slate-400 border border-white/5">{s}</span>
@@ -799,40 +898,58 @@ function ApplicationDetailModal({ app, onClose, onStatusUpdate, messages, newMes
 function SeekerDetailModal({ seeker, onClose, onMessage }: any) {
     return (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm animate-fade-in">
-            <div className="relative w-full max-w-2xl bg-slate-900 rounded-3xl overflow-hidden border border-white/10 shadow-2xl flex flex-col p-6">
-                <button onClick={onClose} className="absolute top-4 right-4 z-50 rounded-full bg-black/50 p-2 text-white hover:bg-white/20 transition"><X className="h-5 w-5" /></button>
-
-                <div className="flex items-center gap-6 mb-8">
-                    <div className="h-24 w-24 rounded-full bg-slate-800 flex items-center justify-center overflow-hidden border-2 border-white/10">
-                        {seeker.avatar_url ? (
-                            <img src={seeker.avatar_url} className="h-full w-full object-cover" />
-                        ) : <User className="h-10 w-10 text-slate-600" />}
+            <div className="relative w-full max-w-2xl bg-slate-900 rounded-3xl overflow-hidden border border-white/10 shadow-2xl flex flex-col">
+                {/* Header */}
+                <div className="p-4 border-b border-white/5 flex items-center justify-between">
+                    <h3 className="font-bold text-white">Candidate Details</h3>
+                    <button onClick={onClose} className="p-2 text-slate-400 hover:text-white"><X className="h-5 w-5" /></button>
+                </div>
+                {/* Content */}
+                <div className="p-6 overflow-y-auto max-h-[70vh] space-y-6">
+                    <div className="flex items-center gap-4">
+                        <div className="h-16 w-16 rounded-full bg-slate-800 flex items-center justify-center overflow-hidden">
+                            {seeker.avatar_url ? (
+                                <img src={seeker.avatar_url} className="h-full w-full object-cover" />
+                            ) : <User className="h-8 w-8 text-slate-500" />}
+                        </div>
+                        <div>
+                            <h2 className="text-xl font-bold text-white">{seeker.full_name}</h2>
+                            <p className="text-slate-400">{seeker.title}</p>
+                        </div>
                     </div>
+
+                    {seeker.intro_video_url && (
+                        <div className="rounded-xl overflow-hidden bg-black aspect-video">
+                            <video src={seeker.intro_video_url} controls className="w-full h-full" />
+                        </div>
+                    )}
+
                     <div>
-                        <h2 className="text-2xl font-bold text-white">{seeker.full_name}</h2>
-                        <p className="text-blue-400 font-medium mb-1">{seeker.title}</p>
-                        <p className="text-slate-400 text-sm">Experience: {seeker.experience_years} Years</p>
+                        <h4 className="font-bold text-slate-500 text-xs uppercase mb-2">About</h4>
+                        <p className="text-slate-300 text-sm leading-relaxed">{seeker.bio || "No bio."}</p>
+                    </div>
+
+                    <div>
+                        <h4 className="font-bold text-slate-500 text-xs uppercase mb-2">Skills</h4>
+                        <div className="flex flex-wrap gap-2">
+                            {seeker.skills?.map((s: string) => (
+                                <span key={s} className="px-2 py-1 bg-white/5 border border-white/5 rounded text-xs text-slate-300">{s}</span>
+                            ))}
+                        </div>
                     </div>
                 </div>
-
-                <div className="space-y-6 mb-8">
-                    <div>
-                        <h4 className="text-xs font-bold uppercase text-slate-500 mb-2">Bio</h4>
-                        <p className="text-slate-300 text-sm leading-relaxed">{seeker.bio || "No bio available."}</p>
-                    </div>
-                    <div>
-                        <h4 className="text-xs font-bold uppercase text-slate-500 mb-2">Skills</h4>
-                        <div className="flex flex-wrap gap-2">{seeker.skills?.map((s: string) => <span key={s} className="px-2 py-1 bg-white/5 rounded text-xs text-slate-300 border border-white/5">{s}</span>)}</div>
-                    </div>
-                </div>
-
-                <div className="mt-auto pt-6 border-t border-white/5 flex justify-end gap-3">
-                    <button onClick={onClose} className="px-6 py-2 rounded-full border border-white/10 text-slate-300 hover:text-white hover:bg-white/5 transition font-bold text-sm">Close</button>
-                    <button onClick={onMessage} className="px-6 py-2 rounded-full bg-blue-600 text-white hover:bg-blue-500 transition font-bold text-sm flex items-center gap-2">
-                        <MessageSquare className="h-4 w-4" /> Message Candidate
+                {/* Footer */}
+                <div className="p-4 border-t border-white/5 flex justify-end gap-3">
+                    <button onClick={onClose} className="px-4 py-2 rounded-xl text-slate-400 hover:bg-white/5 pointer-events-auto">Close</button>
+                    <button
+                        onClick={onMessage}
+                        className="px-6 py-2 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-500 transition shadow-lg shadow-blue-600/20"
+                    >
+                        Message Candidate
                     </button>
                 </div>
             </div>
         </div>
-    )
+    );
 }
+
