@@ -59,30 +59,30 @@ export default function AuthPage() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
+        <div className="min-h-screen bg-white flex items-center justify-center p-4">
             <div className="w-full max-w-md">
 
                 <div className="text-center mb-8">
-                    <img src="/jobfairlogo.png" alt="JobFair" className="h-16 w-auto mx-auto mb-6 object-contain" />
-                    <p className="text-slate-400">The video-first marketplace for modern careers.</p>
+                    <img src="/logo.png" alt="JobFair" className="h-16 w-auto mx-auto mb-6 object-contain" />
+                    <p className="text-zinc-500">The video-first marketplace for modern careers.</p>
                 </div>
 
-                <div className="glass rounded-3xl p-8 border border-white/10 shadow-2xl relative overflow-hidden">
-                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500" />
+                <div className="glass rounded-3xl p-8 border border-zinc-200 shadow-2xl relative overflow-hidden">
+                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-black to-zinc-500" />
 
                     {/* Toggle */}
-                    <div className="flex gap-2 p-1 bg-white/5 rounded-full mb-8">
+                    <div className="flex gap-2 p-1 bg-zinc-100 rounded-full mb-8">
                         <button
                             type="button"
                             onClick={() => { setStartMode('login'); setError(""); }}
-                            className={clsx("flex-1 py-2 text-sm font-bold rounded-full transition", startMode === 'login' ? "bg-blue-600 text-white shadow-lg" : "text-slate-400 hover:text-white")}
+                            className={clsx("flex-1 py-2 text-sm font-bold rounded-full transition", startMode === 'login' ? "bg-black text-white shadow-lg" : "text-zinc-500 hover:text-black")}
                         >
                             Sign In
                         </button>
                         <button
                             type="button"
                             onClick={() => { setStartMode('register'); setError(""); }}
-                            className={clsx("flex-1 py-2 text-sm font-bold rounded-full transition", startMode === 'register' ? "bg-blue-600 text-white shadow-lg" : "text-slate-400 hover:text-white")}
+                            className={clsx("flex-1 py-2 text-sm font-bold rounded-full transition", startMode === 'register' ? "bg-black text-white shadow-lg" : "text-zinc-500 hover:text-black")}
                         >
                             Create Account
                         </button>
@@ -102,26 +102,26 @@ export default function AuthPage() {
                                 <div className="grid grid-cols-2 gap-4 mb-4">
                                     <div
                                         onClick={() => setRole('seeker')}
-                                        className={clsx("cursor-pointer rounded-xl border p-4 text-center transition", role === 'seeker' ? "border-blue-500 bg-blue-500/10" : "border-white/10 bg-white/5 opacity-50 hover:opacity-100")}
+                                        className={clsx("cursor-pointer rounded-xl border p-4 text-center transition", role === 'seeker' ? "border-black bg-zinc-50" : "border-zinc-200 bg-white opacity-50 hover:opacity-100")}
                                     >
-                                        <User className={clsx("mx-auto h-6 w-6 mb-2", role === 'seeker' ? "text-blue-400" : "text-slate-400")} />
-                                        <p className={clsx("text-xs font-bold uppercase", role === 'seeker' ? "text-white" : "text-slate-500")}>Seeker</p>
+                                        <User className={clsx("mx-auto h-6 w-6 mb-2", role === 'seeker' ? "text-black" : "text-zinc-400")} />
+                                        <p className={clsx("text-xs font-bold uppercase", role === 'seeker' ? "text-black" : "text-zinc-500")}>Seeker</p>
                                     </div>
                                     <div
                                         onClick={() => setRole('employer')}
-                                        className={clsx("cursor-pointer rounded-xl border p-4 text-center transition", role === 'employer' ? "border-blue-500 bg-blue-500/10" : "border-white/10 bg-white/5 opacity-50 hover:opacity-100")}
+                                        className={clsx("cursor-pointer rounded-xl border p-4 text-center transition", role === 'employer' ? "border-black bg-zinc-50" : "border-zinc-200 bg-white opacity-50 hover:opacity-100")}
                                     >
-                                        <Briefcase className={clsx("mx-auto h-6 w-6 mb-2", role === 'employer' ? "text-blue-400" : "text-slate-400")} />
-                                        <p className={clsx("text-xs font-bold uppercase", role === 'employer' ? "text-white" : "text-slate-500")}>Employer</p>
+                                        <Briefcase className={clsx("mx-auto h-6 w-6 mb-2", role === 'employer' ? "text-black" : "text-zinc-400")} />
+                                        <p className={clsx("text-xs font-bold uppercase", role === 'employer' ? "text-black" : "text-zinc-500")}>Employer</p>
                                     </div>
                                 </div>
 
                                 <div className="relative">
-                                    <User className="absolute top-3.5 left-4 h-5 w-5 text-slate-500" />
+                                    <User className="absolute top-3.5 left-4 h-5 w-5 text-zinc-400" />
                                     <input
                                         required
                                         placeholder="Full Name"
-                                        className="w-full rounded-xl border border-white/10 bg-black/20 pl-12 pr-4 py-3 text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none"
+                                        className="w-full rounded-xl border border-zinc-200 bg-zinc-50 pl-12 pr-4 py-3 text-black placeholder-zinc-400 focus:border-black focus:outline-none"
                                         value={formData.name}
                                         onChange={e => setFormData({ ...formData, name: e.target.value })}
                                     />
@@ -129,11 +129,11 @@ export default function AuthPage() {
 
                                 {role === 'employer' && (
                                     <div className="relative">
-                                        <Briefcase className="absolute top-3.5 left-4 h-5 w-5 text-slate-500" />
+                                        <Briefcase className="absolute top-3.5 left-4 h-5 w-5 text-zinc-400" />
                                         <input
                                             required
                                             placeholder="Company Name"
-                                            className="w-full rounded-xl border border-white/10 bg-black/20 pl-12 pr-4 py-3 text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none"
+                                            className="w-full rounded-xl border border-zinc-200 bg-zinc-50 pl-12 pr-4 py-3 text-black placeholder-zinc-400 focus:border-black focus:outline-none"
                                             value={formData.companyName}
                                             onChange={e => setFormData({ ...formData, companyName: e.target.value })}
                                         />
@@ -143,24 +143,24 @@ export default function AuthPage() {
                         )}
 
                         <div className="relative">
-                            <Mail className="absolute top-3.5 left-4 h-5 w-5 text-slate-500" />
+                            <Mail className="absolute top-3.5 left-4 h-5 w-5 text-zinc-400" />
                             <input
                                 required
                                 type="email"
                                 placeholder="Email Address"
-                                className="w-full rounded-xl border border-white/10 bg-black/20 pl-12 pr-4 py-3 text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none"
+                                className="w-full rounded-xl border border-zinc-200 bg-zinc-50 pl-12 pr-4 py-3 text-black placeholder-zinc-400 focus:border-black focus:outline-none"
                                 value={formData.email}
                                 onChange={e => setFormData({ ...formData, email: e.target.value })}
                             />
                         </div>
 
                         <div className="relative">
-                            <Lock className="absolute top-3.5 left-4 h-5 w-5 text-slate-500" />
+                            <Lock className="absolute top-3.5 left-4 h-5 w-5 text-zinc-400" />
                             <input
                                 required
                                 type="password"
                                 placeholder="Password"
-                                className="w-full rounded-xl border border-white/10 bg-black/20 pl-12 pr-4 py-3 text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none"
+                                className="w-full rounded-xl border border-zinc-200 bg-zinc-50 pl-12 pr-4 py-3 text-black placeholder-zinc-400 focus:border-black focus:outline-none"
                                 value={formData.password}
                                 minLength={6}
                                 onChange={e => setFormData({ ...formData, password: e.target.value })}
@@ -170,7 +170,7 @@ export default function AuthPage() {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 py-3.5 font-bold text-white shadow-lg transition hover:shadow-blue-500/25 active:scale-95 disabled:opacity-50"
+                            className="w-full flex items-center justify-center gap-2 rounded-xl bg-black py-3.5 font-bold text-white shadow-lg transition hover:shadow-black/25 active:scale-95 disabled:opacity-50"
                         >
                             {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : (
                                 <>

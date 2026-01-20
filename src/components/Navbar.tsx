@@ -78,14 +78,14 @@ export default function Navbar() {
         <header
             className={clsx(
                 "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-                isScrolled ? "bg-slate-950/80 backdrop-blur-md border-b border-white/5 py-4" : "bg-transparent py-6"
+                isScrolled ? "bg-white/80 backdrop-blur-md border-b border-black/5 py-4" : "bg-transparent py-6"
             )}
         >
             <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
 
                 {/* Logo */}
                 <Link href="/" className="flex items-center gap-2 group">
-                    <img src="/jobfairlogo.png" alt="JobFair" className="h-10 w-auto object-contain" />
+                    <img src="/logo.png" alt="JobFair" className="h-10 w-auto object-contain" />
                 </Link>
 
                 {/* Desktop Nav */}
@@ -94,7 +94,7 @@ export default function Navbar() {
                         <Link
                             key={link.href}
                             href={link.href}
-                            className="text-sm font-medium text-slate-300 hover:text-white transition"
+                            className="text-sm font-medium text-zinc-600 hover:text-black transition"
                         >
                             {link.name}
                         </Link>
@@ -102,27 +102,27 @@ export default function Navbar() {
 
                     {user ? (
                         <div className="flex items-center gap-4 pl-4 border-l border-white/10">
-                            <Link href={user.role === 'employer' ? "/employer" : "/profile"} className="flex items-center gap-2 text-sm font-bold text-white hover:text-blue-400 group">
+                            <Link href={user.role === 'employer' ? "/employer" : "/profile"} className="flex items-center gap-2 text-sm font-bold text-black hover:text-zinc-600 group">
                                 {user.role === 'seeker' && avatarUrl ? (
-                                    <img src={avatarUrl} alt="Me" className="h-8 w-8 rounded-full object-cover border border-white/10 group-hover:border-blue-500/50 transition" />
+                                    <img src={avatarUrl} alt="Me" className="h-8 w-8 rounded-full object-cover border border-black/10 group-hover:border-black/30 transition" />
 
                                 ) : (
-                                    <span className="bg-slate-800 p-2 rounded-full">
+                                    <span className="bg-zinc-100 p-2 rounded-full text-black">
                                         {user.role === 'employer' ? <LayoutDashboard className="h-4 w-4" /> : <User className="h-4 w-4" />}
                                     </span>
                                 )}
                                 {user.role === 'employer' && "Dashboard"}
                                 {user.role === 'seeker' && !avatarUrl && "My Profile"}
                             </Link>
-                            <button onClick={logout} className="text-slate-400 hover:text-white flex items-center gap-2 text-sm font-medium transition">
+                            <button onClick={logout} className="text-zinc-500 hover:text-black flex items-center gap-2 text-sm font-medium transition">
                                 <LogOut className="h-4 w-4" />
                                 <span className="hidden lg:inline">Sign Out</span>
                             </button>
                         </div>
                     ) : (
-                        <div className="flex items-center gap-4 pl-4 border-l border-white/10">
-                            <Link href="/auth" className="text-sm font-bold text-white hover:text-blue-400 transition">Sign In</Link>
-                            <Link href="/auth" className="px-4 py-2 rounded-full bg-white text-slate-950 text-sm font-bold hover:bg-blue-50 shadow-lg hover:shadow-white/10 transition">
+                        <div className="flex items-center gap-4 pl-4 border-l border-black/10">
+                            <Link href="/auth" className="text-sm font-bold text-zinc-900 hover:text-black transition">Sign In</Link>
+                            <Link href="/auth" className="px-4 py-2 rounded-full bg-black text-white text-sm font-bold hover:bg-zinc-800 shadow-lg hover:shadow-black/20 transition">
                                 Get Started
                             </Link>
                         </div>
@@ -132,7 +132,7 @@ export default function Navbar() {
                 {/* Mobile Menu Toggle */}
                 <button
                     onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                    className="md:hidden text-white"
+                    className="md:hidden text-black"
                 >
                     {mobileMenuOpen ? <X /> : <Menu />}
                 </button>
@@ -140,7 +140,7 @@ export default function Navbar() {
 
             {/* Mobile Menu Overlay */}
             {mobileMenuOpen && (
-                <div className="absolute top-full left-0 right-0 bg-slate-950 border-b border-white/10 p-6 md:hidden animate-in slide-in-from-top-4 shadow-2xl">
+                <div className="absolute top-full left-0 right-0 bg-white border-b border-black/10 p-6 md:hidden animate-in slide-in-from-top-4 shadow-xl">
                     <nav className="flex flex-col gap-4">
                         {links.map(link => (
                             <Link
@@ -157,7 +157,7 @@ export default function Navbar() {
 
                         {user ? (
                             <>
-                                <Link href={user.role === 'employer' ? "/employer" : "/profile"} onClick={() => setMobileMenuOpen(false)} className="flex items-center justify-between text-lg font-bold text-white">
+                                <Link href={user.role === 'employer' ? "/employer" : "/profile"} onClick={() => setMobileMenuOpen(false)} className="flex items-center justify-between text-lg font-bold text-black">
                                     <div className="flex items-center gap-3">
                                         {user.role === 'seeker' && avatarUrl ? (
                                             <img src={avatarUrl} alt="Me" className="h-8 w-8 rounded-full object-cover" />
@@ -166,16 +166,16 @@ export default function Navbar() {
                                         )}
                                         {user.role === 'employer' ? "Dashboard" : "My Profile"}
                                     </div>
-                                    <ChevronRight className="h-5 w-5 text-slate-500" />
+                                    <ChevronRight className="h-5 w-5 text-zinc-400" />
                                 </Link>
-                                <button onClick={() => { logout(); setMobileMenuOpen(false); }} className="text-left text-sm text-red-400 font-medium">
+                                <button onClick={() => { logout(); setMobileMenuOpen(false); }} className="text-left text-sm text-red-500 font-medium">
                                     Sign Out
                                 </button>
                             </>
                         ) : (
                             <div className="grid gap-3">
-                                <Link href="/auth" onClick={() => setMobileMenuOpen(false)} className="w-full py-3 rounded-xl bg-white/5 border border-white/10 text-center text-white font-bold">Sign In</Link>
-                                <Link href="/auth" onClick={() => setMobileMenuOpen(false)} className="w-full py-3 rounded-xl bg-blue-600 text-center text-white font-bold shadow-lg shadow-blue-500/20">Get Started</Link>
+                                <Link href="/auth" onClick={() => setMobileMenuOpen(false)} className="w-full py-3 rounded-xl bg-zinc-100 border border-zinc-200 text-center text-black font-bold">Sign In</Link>
+                                <Link href="/auth" onClick={() => setMobileMenuOpen(false)} className="w-full py-3 rounded-xl bg-black text-center text-white font-bold shadow-lg">Get Started</Link>
                             </div>
                         )}
                     </nav>
