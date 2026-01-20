@@ -277,17 +277,17 @@ export default function EmployerDashboard() {
     ];
 
     return (
-        <div className="min-h-screen bg-slate-950 font-sans selection:bg-blue-500/30 flex text-slate-200">
-            <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black pointer-events-none z-0" />
+        <div className="min-h-screen bg-zinc-50 font-sans selection:bg-zinc-200 flex text-black">
+            <div className="fixed inset-0 bg-white pointer-events-none z-0" />
 
             {/* --- SIDEBAR --- */}
             <aside className={clsx(
-                "fixed inset-y-0 left-0 z-50 w-64 bg-slate-950/90 backdrop-blur-xl border-r border-white/5 transform transition-transform duration-300 md:translate-x-0",
+                "fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-zinc-200 transform transition-transform duration-300 md:translate-x-0",
                 isSidebarOpen ? "translate-x-0" : "-translate-x-full"
             )}>
                 <div className="flex flex-col h-full">
                     {/* Logo */}
-                    <div className="h-16 flex items-center px-6 border-b border-white/5">
+                    <div className="h-16 flex items-center px-6 border-b border-zinc-100">
                         <img src="/jobfairlogo.png" alt="JobFair" className="h-10 w-auto object-contain" />
                     </div>
 
@@ -300,8 +300,8 @@ export default function EmployerDashboard() {
                                 className={clsx(
                                     "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200",
                                     currentView === item.id
-                                        ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20"
-                                        : "text-slate-400 hover:text-white hover:bg-white/5"
+                                        ? "bg-black text-white shadow-lg shadow-black/10"
+                                        : "text-zinc-500 hover:text-black hover:bg-zinc-100"
                                 )}
                             >
                                 <item.icon className="h-5 w-5" />
@@ -310,7 +310,7 @@ export default function EmployerDashboard() {
                         ))}
                         <button
                             onClick={() => router.push('/employer/profile')}
-                            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 transition-all duration-200"
+                            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-zinc-500 hover:text-black hover:bg-zinc-100 transition-all duration-200"
                         >
                             <Building className="h-5 w-5" />
                             Company Profile
@@ -318,19 +318,19 @@ export default function EmployerDashboard() {
                     </nav>
 
                     {/* User */}
-                    <div className="p-4 border-t border-white/5">
-                        <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 mb-2">
-                            <div className="h-8 w-8 rounded-full bg-slate-700 flex items-center justify-center">
-                                <User className="h-4 w-4 text-slate-300" />
+                    <div className="p-4 border-t border-zinc-100">
+                        <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-zinc-50 mb-2">
+                            <div className="h-8 w-8 rounded-full bg-zinc-200 flex items-center justify-center">
+                                <User className="h-4 w-4 text-zinc-500" />
                             </div>
                             <div className="flex-1 min-w-0">
-                                <p className="text-sm font-medium text-white truncate">{user?.email}</p>
-                                <p className="text-xs text-slate-500">Employer</p>
+                                <p className="text-sm font-medium text-black truncate">{user?.email}</p>
+                                <p className="text-xs text-zinc-500">Employer</p>
                             </div>
                         </div>
                         <button
                             onClick={() => logout()}
-                            className="w-full flex items-center gap-3 px-4 py-2 text-xs font-bold text-slate-500 hover:text-red-400 transition"
+                            className="w-full flex items-center gap-3 px-4 py-2 text-xs font-bold text-zinc-500 hover:text-red-500 transition"
                         >
                             <LogOut className="h-4 w-4" /> Sign Out
                         </button>
@@ -349,11 +349,11 @@ export default function EmployerDashboard() {
             <main className="flex-1 md:ml-64 relative z-10 flex flex-col min-h-screen">
 
                 {/* Mobile Header */}
-                <header className="md:hidden h-16 flex items-center justify-between px-4 border-b border-white/5 bg-slate-950/80 backdrop-blur-md sticky top-0 z-30">
-                    <button onClick={() => setIsSidebarOpen(true)} className="p-2 text-slate-400">
+                <header className="md:hidden h-16 flex items-center justify-between px-4 border-b border-zinc-200 bg-white/80 backdrop-blur-md sticky top-0 z-30">
+                    <button onClick={() => setIsSidebarOpen(true)} className="p-2 text-zinc-500">
                         <Menu className="h-6 w-6" />
                     </button>
-                    <span className="text-lg font-bold text-white">
+                    <span className="text-lg font-bold text-black">
                         {navItems.find(i => i.id === currentView)?.label}
                     </span>
                     <div className="w-10" /> {/* Spacer */}
@@ -366,12 +366,12 @@ export default function EmployerDashboard() {
                         <div className="animate-fade-in space-y-8">
                             <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                                 <div>
-                                    <h1 className="text-3xl font-bold text-white mb-2">Welcome back</h1>
-                                    <p className="text-slate-400">Here's what's happening with your jobs today.</p>
+                                    <h1 className="text-3xl font-bold text-black mb-2">Welcome back</h1>
+                                    <p className="text-zinc-500">Here's what's happening with your jobs today.</p>
                                 </div>
                                 <button
                                     onClick={() => router.push("/employer/post-job")}
-                                    className="flex items-center gap-2 rounded-full bg-blue-600 px-6 py-3 text-sm font-bold text-white hover:bg-blue-500 transition shadow-lg shadow-blue-600/20"
+                                    className="flex items-center gap-2 rounded-full bg-black px-6 py-3 text-sm font-bold text-white hover:bg-zinc-800 transition shadow-lg shadow-black/10"
                                 >
                                     <Plus className="h-4 w-4" /> Post New Job
                                 </button>
@@ -379,17 +379,17 @@ export default function EmployerDashboard() {
 
                             {/* Stats */}
                             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                                <StatsCard icon={Users} label="Total Applicants" value={totalApplicants} color="blue" />
-                                <StatsCard icon={CheckCircle} label="Shortlisted" value={shortlistedCount} color="green" />
-                                <StatsCard icon={Briefcase} label="Active Jobs" value={activeJobsCount} color="purple" />
-                                <StatsCard icon={Clock} label="Pending Review" value={applications.filter(a => a.status === 'pending').length} color="orange" />
+                                <StatsCard icon={Users} label="Total Applicants" value={totalApplicants} color="black" />
+                                <StatsCard icon={CheckCircle} label="Shortlisted" value={shortlistedCount} color="black" />
+                                <StatsCard icon={Briefcase} label="Active Jobs" value={activeJobsCount} color="black" />
+                                <StatsCard icon={Clock} label="Pending Review" value={applications.filter(a => a.status === 'pending').length} color="black" />
                             </div>
 
                             {/* Recent Activity */}
                             <div>
                                 <div className="flex items-center justify-between mb-6">
-                                    <h2 className="text-xl font-bold text-white">Recent Applications</h2>
-                                    <button onClick={() => setCurrentView('candidates')} className="text-sm text-blue-400 hover:text-blue-300">View All</button>
+                                    <h2 className="text-xl font-bold text-black">Recent Applications</h2>
+                                    <button onClick={() => setCurrentView('candidates')} className="text-sm text-zinc-500 font-bold hover:text-black">View All</button>
                                 </div>
 
                                 {applications.length === 0 ? (
@@ -627,6 +627,7 @@ export default function EmployerDashboard() {
                         activeTab={activeTab}
                         setActiveTab={setActiveTab}
                         messagesEndRef={messagesEndRef}
+                        user={user}
                     />
                 )
             }
@@ -801,16 +802,16 @@ function JobRow({ job, stats, onToggleStatus, onViewApplicants }: any) {
                     <p className="text-xl font-bold text-black">{stats.applicants}</p>
                     <p className="text-[10px] uppercase font-bold text-zinc-400">Applicants</p>
                 </div>
-                <div className="text-center px-4 border-l border-white/10">
-                    <p className="text-xl font-bold text-blue-400">{stats.new}</p>
-                    <p className="text-[10px] uppercase font-bold text-slate-500">New</p>
+                <div className="text-center px-4 border-l border-zinc-200">
+                    <p className="text-xl font-bold text-blue-600">{stats.new}</p>
+                    <p className="text-[10px] uppercase font-bold text-blue-600">New</p>
                 </div>
             </div>
-            <div className="flex items-center gap-2 pl-4 md:border-l border-white/10">
-                <button onClick={onViewApplicants} className="p-2 rounded-lg bg-white/5 text-slate-300 hover:text-white hover:bg-white/10 transition" title="View Applicants">
+            <div className="flex items-center gap-2 pl-4 md:border-l border-zinc-200">
+                <button onClick={onViewApplicants} className="p-2 rounded-lg bg-zinc-50 text-zinc-500 hover:text-black hover:bg-zinc-100 transition" title="View Applicants">
                     <Users className="h-5 w-5" />
                 </button>
-                <button onClick={onToggleStatus} className={clsx("p-2 rounded-lg transition", job.is_active ? "text-slate-400 hover:text-red-400 hover:bg-red-500/10" : "text-green-400 hover:bg-green-500/10")} title={job.is_active ? "Close Job" : "Activate Job"}>
+                <button onClick={onToggleStatus} className={clsx("p-2 rounded-lg transition", job.is_active ? "text-zinc-400 hover:text-red-500 hover:bg-red-50" : "text-green-600 hover:bg-green-50")} title={job.is_active ? "Close Job" : "Activate Job"}>
                     {job.is_active ? <XCircle className="h-5 w-5" /> : <CheckCircle className="h-5 w-5" />}
                 </button>
             </div>
@@ -818,74 +819,74 @@ function JobRow({ job, stats, onToggleStatus, onViewApplicants }: any) {
     );
 }
 
-function ApplicationDetailModal({ app, onClose, onStatusUpdate, messages, newMessage, onSendMessage, setNewMessage, activeTab, setActiveTab, messagesEndRef }: any) {
+function ApplicationDetailModal({ app, onClose, onStatusUpdate, messages, newMessage, onSendMessage, setNewMessage, activeTab, setActiveTab, messagesEndRef, user }: any) {
     const seekerProfile = app.seekers;
 
     return (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm animate-fade-in">
-            <div className="relative w-full max-w-5xl h-[85vh] bg-slate-900 rounded-3xl overflow-hidden border border-white/10 shadow-2xl flex flex-col md:flex-row">
-                <button onClick={onClose} className="absolute top-4 right-4 z-50 rounded-full bg-black/50 p-2 text-white hover:bg-white/20 transition"><X className="h-5 w-5" /></button>
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm animate-fade-in">
+            <div className="relative w-full max-w-5xl h-[85vh] bg-white rounded-3xl overflow-hidden border border-zinc-200 shadow-2xl flex flex-col md:flex-row">
+                <button onClick={onClose} className="absolute top-4 right-4 z-50 rounded-full bg-white p-2 text-black hover:bg-zinc-100 shadow-md transition"><X className="h-5 w-5" /></button>
 
                 {/* Left: Media */}
-                <div className="w-full md:w-5/12 bg-black flex items-center justify-center relative">
+                <div className="w-full md:w-5/12 bg-zinc-100 flex items-center justify-center relative">
                     {app.video_url || seekerProfile?.intro_video_url ? (
                         <video src={app.video_url || seekerProfile?.intro_video_url} controls autoPlay className="max-h-full max-w-full" />
                     ) : (
-                        <div className="text-center p-10"><User className="h-16 w-16 text-slate-700 mx-auto mb-4" /><p className="text-slate-500">No Video Provided</p></div>
+                        <div className="text-center p-10"><User className="h-16 w-16 text-zinc-300 mx-auto mb-4" /><p className="text-zinc-400">No Video Provided</p></div>
                     )}
                 </div>
 
                 {/* Right: Info */}
-                <div className="w-full md:w-7/12 flex flex-col bg-slate-900 border-l border-white/5">
-                    <div className="p-6 border-b border-white/5">
+                <div className="w-full md:w-7/12 flex flex-col bg-white border-l border-zinc-200">
+                    <div className="p-6 border-b border-zinc-100">
                         <div className="flex justify-between items-start mb-2">
                             <div>
-                                <h2 className="text-2xl font-bold text-white">{seekerProfile?.full_name || "Applicant"}</h2>
-                                <p className="text-blue-400 font-medium">{app.jobs?.title || "Role"}</p>
+                                <h2 className="text-2xl font-bold text-black">{seekerProfile?.full_name || "Applicant"}</h2>
+                                <p className="text-zinc-500 font-medium">{app.jobs?.title || "Role"}</p>
                             </div>
                             <div className="flex gap-2">
-                                <button onClick={() => onStatusUpdate('rejected')} className={clsx("p-2 rounded-full border transition", app.status === 'rejected' ? "bg-red-500 text-white border-red-500" : "border-white/10 text-slate-400 hover:text-red-400")} title="Reject"><XCircle className="h-5 w-5" /></button>
-                                <button onClick={() => onStatusUpdate('interviewing')} className={clsx("p-2 rounded-full border transition", (app.status === 'interviewing' || app.status === 'accepted') ? "bg-green-500 text-black border-green-500" : "border-white/10 text-slate-400 hover:text-green-400")} title="Shortlist"><CheckCircle className="h-5 w-5" /></button>
+                                <button onClick={() => onStatusUpdate('rejected')} className={clsx("p-2 rounded-full border transition", app.status === 'rejected' ? "bg-red-500 text-white border-red-500" : "border-zinc-200 text-zinc-400 hover:text-red-500 hover:bg-red-50")} title="Reject"><XCircle className="h-5 w-5" /></button>
+                                <button onClick={() => onStatusUpdate('interviewing')} className={clsx("p-2 rounded-full border transition", (app.status === 'interviewing' || app.status === 'accepted') ? "bg-green-500 text-white border-green-500" : "border-zinc-200 text-zinc-400 hover:text-green-600 hover:bg-green-50")} title="Shortlist"><CheckCircle className="h-5 w-5" /></button>
                             </div>
                         </div>
                     </div>
 
-                    <div className="flex gap-6 px-6 border-b border-white/5">
+                    <div className="flex gap-6 px-6 border-b border-zinc-100">
                         {['profile', 'resume', 'messages'].map(tab => (
-                            <button key={tab} onClick={() => setActiveTab(tab)} className={clsx("py-4 text-sm font-bold border-b-2 transition capitalize", activeTab === tab ? "border-blue-500 text-white" : "border-transparent text-slate-500 hover:text-slate-300")}>{tab}</button>
+                            <button key={tab} onClick={() => setActiveTab(tab)} className={clsx("py-4 text-sm font-bold border-b-2 transition capitalize", activeTab === tab ? "border-black text-black" : "border-transparent text-zinc-400 hover:text-zinc-600")}>{tab}</button>
                         ))}
                     </div>
 
-                    <div className="flex-1 overflow-y-auto p-6 bg-slate-900/50">
+                    <div className="flex-1 overflow-y-auto p-6 bg-zinc-50/50">
                         {activeTab === 'profile' && (
                             <div className="space-y-6 animate-fade-in">
-                                <div><h4 className="text-xs font-bold uppercase text-slate-500 mb-2">Bio</h4><p className="text-slate-300 text-sm leading-relaxed">{seekerProfile?.bio || "No bio available."}</p></div>
-                                <div><h4 className="text-xs font-bold uppercase text-slate-500 mb-2">Skills</h4><div className="flex flex-wrap gap-2">{seekerProfile?.skills?.map((s: string) => <span key={s} className="px-2 py-1 bg-white/5 rounded text-xs text-slate-300 border border-white/5">{s}</span>)}</div></div>
-                                <div><h4 className="text-xs font-bold uppercase text-slate-500 mb-2">Experience</h4><p className="text-slate-300 font-bold">{seekerProfile?.experience_years || 0} Years</p></div>
+                                <div><h4 className="text-xs font-bold uppercase text-zinc-400 mb-2">Bio</h4><p className="text-zinc-600 text-sm leading-relaxed">{seekerProfile?.bio || "No bio available."}</p></div>
+                                <div><h4 className="text-xs font-bold uppercase text-zinc-400 mb-2">Skills</h4><div className="flex flex-wrap gap-2">{seekerProfile?.skills?.map((s: string) => <span key={s} className="px-2 py-1 bg-white rounded text-xs text-zinc-600 border border-zinc-200">{s}</span>)}</div></div>
+                                <div><h4 className="text-xs font-bold uppercase text-zinc-400 mb-2">Experience</h4><p className="text-black font-bold">{seekerProfile?.experience_years || 0} Years</p></div>
                             </div>
                         )}
                         {activeTab === 'resume' && (
                             <div className="h-full animate-fade-in flex flex-col items-center justify-center">
                                 {app.resume_url || seekerProfile?.resume_stats?.url ? (
                                     <div className="text-center">
-                                        <FileText className="h-16 w-16 text-blue-400 mx-auto mb-4" />
-                                        <a href={app.resume_url || seekerProfile?.resume_stats?.url} target="_blank" rel="noopener" className="px-6 py-2 bg-blue-600 rounded-full text-white text-sm font-bold hover:bg-blue-500 transition">View / Download PDF</a>
+                                        <FileText className="h-16 w-16 text-black mx-auto mb-4" />
+                                        <a href={app.resume_url || seekerProfile?.resume_stats?.url} target="_blank" rel="noopener" className="px-6 py-2 bg-black rounded-full text-white text-sm font-bold hover:bg-zinc-800 transition shadow-lg">View / Download PDF</a>
                                     </div>
-                                ) : <p className="text-slate-500">No Resume Uploaded</p>}
+                                ) : <p className="text-zinc-400">No Resume Uploaded</p>}
                             </div>
                         )}
                         {activeTab === 'messages' && (
                             <div className="h-full flex flex-col animate-fade-in">
                                 <div className="flex-1 space-y-4 mb-4 pr-2">
                                     {messages.map((msg: any) => (
-                                        <div key={msg.id} className={clsx("flex flex-col max-w-[80%]", msg.senderId === 'employer' ? "ml-auto items-end" : "items-start")}>
-                                            <div className={clsx("rounded-2xl px-4 py-2 text-sm", msg.senderId === 'employer' ? "bg-blue-600 text-white" : "bg-white/10 text-slate-200")}>{msg.content}</div>
+                                        <div key={msg.id} className={clsx("flex flex-col max-w-[80%]", msg.sender_id === user?.id ? "ml-auto items-end" : "items-start")}>
+                                            <div className={clsx("rounded-2xl px-4 py-2 text-sm", msg.sender_id === user?.id ? "bg-black text-white" : "bg-white border border-zinc-200 text-black shadow-sm")}>{msg.content}</div>
                                         </div>
                                     ))}
                                     <div ref={messagesEndRef} />
                                 </div>
                                 <form onSubmit={onSendMessage} className="relative mt-auto">
-                                    <div className="relative"><input value={newMessage} onChange={(e) => setNewMessage(e.target.value)} placeholder="Type a message..." className="w-full bg-slate-950 border border-white/10 rounded-full py-3 pl-4 pr-12 text-sm text-white focus:border-blue-500 focus:outline-none" /><button type="submit" disabled={!newMessage.trim()} className="absolute right-1 top-1 p-2 rounded-full bg-blue-600 text-white hover:bg-blue-500 disabled:opacity-0 transition"><Send className="h-4 w-4" /></button></div>
+                                    <div className="relative"><input value={newMessage} onChange={(e) => setNewMessage(e.target.value)} placeholder="Type a message..." className="w-full bg-white border border-zinc-200 rounded-full py-3 pl-4 pr-12 text-sm text-black focus:border-black focus:outline-none" /><button type="submit" disabled={!newMessage.trim()} className="absolute right-1 top-1 p-2 rounded-full bg-black text-white hover:bg-zinc-800 disabled:opacity-0 transition"><Send className="h-4 w-4" /></button></div>
                                 </form>
                             </div>
                         )}
@@ -898,24 +899,24 @@ function ApplicationDetailModal({ app, onClose, onStatusUpdate, messages, newMes
 
 function SeekerDetailModal({ seeker, onClose, onMessage }: any) {
     return (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm animate-fade-in">
-            <div className="relative w-full max-w-2xl bg-slate-900 rounded-3xl overflow-hidden border border-white/10 shadow-2xl flex flex-col">
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm animate-fade-in">
+            <div className="relative w-full max-w-2xl bg-white rounded-3xl overflow-hidden border border-zinc-200 shadow-2xl flex flex-col">
                 {/* Header */}
-                <div className="p-4 border-b border-white/5 flex items-center justify-between">
-                    <h3 className="font-bold text-white">Candidate Details</h3>
-                    <button onClick={onClose} className="p-2 text-slate-400 hover:text-white"><X className="h-5 w-5" /></button>
+                <div className="p-4 border-b border-zinc-100 flex items-center justify-between">
+                    <h3 className="font-bold text-black">Candidate Details</h3>
+                    <button onClick={onClose} className="p-2 text-zinc-400 hover:text-black"><X className="h-5 w-5" /></button>
                 </div>
                 {/* Content */}
                 <div className="p-6 overflow-y-auto max-h-[70vh] space-y-6">
                     <div className="flex items-center gap-4">
-                        <div className="h-16 w-16 rounded-full bg-slate-800 flex items-center justify-center overflow-hidden">
+                        <div className="h-16 w-16 rounded-full bg-zinc-100 flex items-center justify-center overflow-hidden">
                             {seeker.avatar_url ? (
                                 <img src={seeker.avatar_url} className="h-full w-full object-cover" />
-                            ) : <User className="h-8 w-8 text-slate-500" />}
+                            ) : <User className="h-8 w-8 text-zinc-400" />}
                         </div>
                         <div>
-                            <h2 className="text-xl font-bold text-white">{seeker.full_name}</h2>
-                            <p className="text-slate-400">{seeker.title}</p>
+                            <h2 className="text-xl font-bold text-black">{seeker.full_name}</h2>
+                            <p className="text-zinc-500">{seeker.title}</p>
                         </div>
                     </div>
 
@@ -926,25 +927,25 @@ function SeekerDetailModal({ seeker, onClose, onMessage }: any) {
                     )}
 
                     <div>
-                        <h4 className="font-bold text-slate-500 text-xs uppercase mb-2">About</h4>
-                        <p className="text-slate-300 text-sm leading-relaxed">{seeker.bio || "No bio."}</p>
+                        <h4 className="font-bold text-zinc-400 text-xs uppercase mb-2">About</h4>
+                        <p className="text-zinc-600 text-sm leading-relaxed">{seeker.bio || "No bio."}</p>
                     </div>
 
                     <div>
-                        <h4 className="font-bold text-slate-500 text-xs uppercase mb-2">Skills</h4>
+                        <h4 className="font-bold text-zinc-400 text-xs uppercase mb-2">Skills</h4>
                         <div className="flex flex-wrap gap-2">
                             {seeker.skills?.map((s: string) => (
-                                <span key={s} className="px-2 py-1 bg-white/5 border border-white/5 rounded text-xs text-slate-300">{s}</span>
+                                <span key={s} className="px-2 py-1 bg-white border border-zinc-200 rounded text-xs text-zinc-600">{s}</span>
                             ))}
                         </div>
                     </div>
                 </div>
                 {/* Footer */}
-                <div className="p-4 border-t border-white/5 flex justify-end gap-3">
-                    <button onClick={onClose} className="px-4 py-2 rounded-xl text-slate-400 hover:bg-white/5 pointer-events-auto">Close</button>
+                <div className="p-4 border-t border-zinc-100 flex justify-end gap-3">
+                    <button onClick={onClose} className="px-4 py-2 rounded-xl text-zinc-500 hover:bg-zinc-100 pointer-events-auto">Close</button>
                     <button
                         onClick={onMessage}
-                        className="px-6 py-2 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-500 transition shadow-lg shadow-blue-600/20"
+                        className="px-6 py-2 rounded-xl bg-black text-white font-bold hover:bg-zinc-800 transition shadow-lg shadow-black/10"
                     >
                         Message Candidate
                     </button>
