@@ -221,24 +221,24 @@ function ApplicationContent() {
     if (submittedId) {
         return (
             <div className="flex min-h-screen flex-col items-center justify-center p-6 text-center">
-                <div className="glass w-full max-w-md rounded-3xl p-10 animate-fade-in">
-                    <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-green-500/10 shadow-[0_0_30px_rgba(34,197,94,0.3)]">
-                        <CheckCircle className="h-10 w-10 text-green-400" />
+                <div className="glass w-full max-w-md rounded-3xl p-10 animate-fade-in border border-zinc-200 bg-white">
+                    <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-green-50 shadow-xl border border-green-100">
+                        <CheckCircle className="h-10 w-10 text-green-600" />
                     </div>
-                    <h2 className="mb-2 text-3xl font-bold text-white tracking-tight">Application Sent!</h2>
-                    <p className="mb-8 text-slate-400 leading-relaxed">
-                        Thanks, <strong className="text-white">{seekerName}</strong>. Your application for <strong>{job?.title}</strong> has been received. Good luck!
+                    <h2 className="mb-2 text-3xl font-bold text-black tracking-tight">Application Sent!</h2>
+                    <p className="mb-8 text-zinc-500 leading-relaxed">
+                        Thanks, <strong className="text-black">{seekerName}</strong>. Your application for <strong>{job?.title}</strong> has been received. Good luck!
                     </p>
                     <div className="flex flex-col gap-4">
                         <button
                             onClick={() => router.push("/jobs")}
-                            className="w-full rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 py-4 font-bold text-white shadow-lg shadow-blue-500/25 transition hover:scale-[1.02]"
+                            className="w-full rounded-xl bg-black py-4 font-bold text-white shadow-lg shadow-black/10 transition hover:scale-[1.02]"
                         >
                             Browse More Jobs
                         </button>
                         <button
                             onClick={() => router.push("/")}
-                            className="w-full rounded-xl border border-white/10 bg-white/5 py-4 font-semibold text-slate-300 transition hover:bg-white/10"
+                            className="w-full rounded-xl border border-zinc-200 bg-zinc-50 py-4 font-semibold text-zinc-600 transition hover:bg-zinc-100 hover:text-black"
                         >
                             Back Home
                         </button>
@@ -249,7 +249,7 @@ function ApplicationContent() {
     }
 
     if (!job || authLoading) {
-        return <div className="pt-32 text-center text-slate-500 flex justify-center"><Loader2 className="animate-spin" /></div>;
+        return <div className="pt-32 text-center text-zinc-500 flex justify-center"><Loader2 className="animate-spin text-black" /></div>;
     }
 
     return (
@@ -257,22 +257,22 @@ function ApplicationContent() {
 
             <button
                 onClick={() => router.push("/jobs")}
-                className="absolute top-6 left-4 flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-white transition"
+                className="absolute top-6 left-4 flex items-center gap-2 text-sm font-medium text-zinc-500 hover:text-black transition"
             >
                 <ArrowLeft className="h-4 w-4" /> Back to Jobs
             </button>
 
             {/* JOB DESCRIPTION CARD */}
-            <div className="glass rounded-3xl p-8 md:p-12 animate-slide-up">
-                <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-8 border-b border-white/5 pb-8">
+            <div className="glass rounded-3xl p-8 md:p-12 animate-slide-up border border-zinc-200 bg-white shadow-xl">
+                <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-8 border-b border-zinc-100 pb-8">
                     <div className="space-y-4">
-                        <div className="inline-flex items-center gap-2 rounded-lg bg-white/5 border border-white/5 px-3 py-1 text-xs font-bold uppercase tracking-wider text-slate-300">
+                        <div className="inline-flex items-center gap-2 rounded-lg bg-zinc-100 border border-zinc-200 px-3 py-1 text-xs font-bold uppercase tracking-wider text-black">
                             {job.job_type || 'Full-time'}
                         </div>
-                        <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight">{job.title}</h1>
-                        <div className="flex items-center gap-4 text-slate-400">
-                            <span className="font-bold text-white flex items-center gap-2">
-                                <Briefcase className="h-4 w-4 text-blue-400" /> {job.company}
+                        <h1 className="text-3xl md:text-4xl font-extrabold text-black tracking-tight">{job.title}</h1>
+                        <div className="flex items-center gap-4 text-zinc-500">
+                            <span className="font-bold text-black flex items-center gap-2">
+                                <Briefcase className="h-4 w-4 text-black" /> {job.company}
                             </span>
                             <span className="flex items-center gap-1.5">
                                 <MapPin className="h-4 w-4" /> {job.location}
@@ -280,12 +280,12 @@ function ApplicationContent() {
                         </div>
                     </div>
                     <div className="text-right">
-                        <div className="text-2xl font-bold text-green-400">{job.salary_range}</div>
+                        <div className="text-2xl font-bold text-green-600">{job.salary_range}</div>
                     </div>
                 </div>
 
                 <div className="space-y-6">
-                    <p className="text-slate-300 leading-relaxed text-lg whitespace-pre-line">
+                    <p className="text-zinc-600 leading-relaxed text-lg whitespace-pre-line">
                         {job.description}
                     </p>
                 </div>
@@ -293,17 +293,17 @@ function ApplicationContent() {
 
 
             {/* APPLICATION FORM */}
-            <h2 className="text-2xl font-bold text-white pt-8">Submit Your Application</h2>
+            <h2 className="text-2xl font-bold text-black pt-8">Submit Your Application</h2>
 
-            <div className="glass rounded-2xl p-1.5">
+            <div className="glass rounded-2xl p-1.5 border border-zinc-200 bg-white">
                 <div className="relative flex items-center bg-transparent">
-                    <User className="absolute left-4 h-5 w-5 text-slate-400" />
+                    <User className="absolute left-4 h-5 w-5 text-zinc-400" />
                     <input
                         type="text"
                         value={seekerName}
                         onChange={(e) => setSeekerName(e.target.value)}
                         placeholder="Your Full Name"
-                        className="w-full bg-transparent py-4 pl-12 pr-4 text-white placeholder-slate-500 outline-none focus:placeholder-slate-400"
+                        className="w-full bg-transparent py-4 pl-12 pr-4 text-black placeholder-zinc-400 outline-none focus:placeholder-black"
                     />
                 </div>
             </div>
@@ -312,33 +312,33 @@ function ApplicationContent() {
 
                 {/* RESUME SECTION */}
                 <div className="space-y-4">
-                    <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider">Resume / CV</h3>
+                    <h3 className="text-sm font-bold text-zinc-500 uppercase tracking-wider">Resume / CV</h3>
 
                     {/* Resume Tabs */}
-                    <div className="glass flex p-1.5 rounded-2xl mb-2">
+                    <div className="glass flex p-1.5 rounded-2xl mb-2 border border-zinc-200 bg-zinc-50/50">
                         <button
                             onClick={() => setActiveResumeTab("select")}
-                            className={clsx("flex-1 py-2 text-xs font-bold rounded-xl transition", activeResumeTab === "select" ? "bg-blue-600 text-white" : "text-slate-400 hover:text-white")}
+                            className={clsx("flex-1 py-2 text-xs font-bold rounded-xl transition", activeResumeTab === "select" ? "bg-black text-white shadow-md" : "text-zinc-500 hover:text-black")}
                         >
                             From Profile
                         </button>
                         <button
                             onClick={() => setActiveResumeTab("upload")}
-                            className={clsx("flex-1 py-2 text-xs font-bold rounded-xl transition", activeResumeTab === "upload" ? "bg-blue-600 text-white" : "text-slate-400 hover:text-white")}
+                            className={clsx("flex-1 py-2 text-xs font-bold rounded-xl transition", activeResumeTab === "upload" ? "bg-black text-white shadow-md" : "text-zinc-500 hover:text-black")}
                         >
                             Upload New
                         </button>
                     </div>
 
-                    <div className="glass relative overflow-hidden rounded-3xl p-6 min-h-[300px] flex flex-col">
+                    <div className="glass relative overflow-hidden rounded-3xl p-6 min-h-[300px] flex flex-col border border-zinc-200 bg-white">
                         {activeResumeTab === 'select' ? (
                             isFetchingResumes ? (
                                 <div className="flex flex-1 items-center justify-center">
-                                    <Loader2 className="h-6 w-6 text-blue-400 animate-spin" />
+                                    <Loader2 className="h-6 w-6 text-black animate-spin" />
                                 </div>
                             ) : userResumes.length > 0 ? (
                                 <div className="space-y-4">
-                                    <label className="text-xs font-bold text-slate-500 uppercase">Select a Resume</label>
+                                    <label className="text-xs font-bold text-zinc-500 uppercase">Select a Resume</label>
                                     <div className="space-y-2 max-h-[220px] overflow-y-auto pr-2 custom-scrollbar">
                                         {userResumes.map((file) => (
                                             <button
@@ -347,29 +347,29 @@ function ApplicationContent() {
                                                 className={clsx(
                                                     "w-full flex items-center gap-3 p-3 rounded-xl border text-left transition",
                                                     selectedResumeUrl === file.url
-                                                        ? "bg-blue-500/20 border-blue-500 text-white"
-                                                        : "bg-white/5 border-white/5 text-slate-400 hover:bg-white/10 hover:text-slate-200"
+                                                        ? "bg-black/5 border-black text-black"
+                                                        : "bg-zinc-50 border-zinc-100 text-zinc-500 hover:bg-zinc-100 hover:text-black"
                                                 )}
                                             >
-                                                <div className={clsx("p-2 rounded-lg", selectedResumeUrl === file.url ? "bg-blue-500 text-white" : "bg-white/10 text-slate-500")}>
+                                                <div className={clsx("p-2 rounded-lg", selectedResumeUrl === file.url ? "bg-black text-white" : "bg-zinc-100 text-zinc-400")}>
                                                     <FileText className="h-5 w-5" />
                                                 </div>
                                                 <div className="flex-1 truncate">
                                                     <p className="text-sm font-bold truncate">{file.name}</p>
                                                     <p className="text-xs opacity-70">Saved in Profile</p>
                                                 </div>
-                                                {selectedResumeUrl === file.url && <CheckCircle className="h-5 w-5 text-blue-400" />}
+                                                {selectedResumeUrl === file.url && <CheckCircle className="h-5 w-5 text-green-600" />}
                                             </button>
                                         ))}
                                     </div>
                                 </div>
                             ) : (
                                 <div className="flex flex-1 flex-col items-center justify-center text-center p-4">
-                                    <FileText className="h-10 w-10 text-slate-600 mb-2" />
-                                    <p className="text-slate-400 font-medium">No resumes found.</p>
+                                    <FileText className="h-10 w-10 text-zinc-300 mb-2" />
+                                    <p className="text-zinc-400 font-medium">No resumes found.</p>
                                     <button
                                         onClick={() => setActiveResumeTab("upload")}
-                                        className="mt-4 text-sm text-blue-400 hover:underline"
+                                        className="mt-4 text-sm text-black hover:underline"
                                     >
                                         Upload one now
                                     </button>
@@ -391,29 +391,29 @@ function ApplicationContent() {
 
                 {/* VIDEO SECTION */}
                 <div className="space-y-4">
-                    <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider">Video Introduction <span className="text-slate-600 text-xs normal-case ml-2">(Optional)</span></h3>
+                    <h3 className="text-sm font-bold text-zinc-500 uppercase tracking-wider">Video Introduction <span className="text-zinc-400 text-xs normal-case ml-2">(Optional)</span></h3>
 
                     {/* Video Tabs */}
-                    <div className="glass flex p-1.5 rounded-2xl mb-2">
+                    <div className="glass flex p-1.5 rounded-2xl mb-2 border border-zinc-200 bg-zinc-50/50">
                         <button
                             onClick={() => setActiveVideoTab("upload")}
-                            className={clsx("flex-1 py-2 text-xs font-bold rounded-xl transition flex items-center justify-center gap-2", activeVideoTab === "upload" ? "bg-blue-600 text-white" : "text-slate-400 hover:text-white")}
+                            className={clsx("flex-1 py-2 text-xs font-bold rounded-xl transition flex items-center justify-center gap-2", activeVideoTab === "upload" ? "bg-black text-white shadow-md" : "text-zinc-500 hover:text-black")}
                         >
                             <Upload className="h-3 w-3" /> Upload
                         </button>
                         <button
                             onClick={() => setActiveVideoTab("record")}
-                            className={clsx("flex-1 py-2 text-xs font-bold rounded-xl transition flex items-center justify-center gap-2", activeVideoTab === "record" ? "bg-red-500 text-white" : "text-slate-400 hover:text-white")}
+                            className={clsx("flex-1 py-2 text-xs font-bold rounded-xl transition flex items-center justify-center gap-2", activeVideoTab === "record" ? "bg-red-600 text-white shadow-md" : "text-zinc-500 hover:text-black")}
                         >
                             <Mic className="h-3 w-3" /> Record
                         </button>
                     </div>
 
-                    <div className="glass relative overflow-hidden rounded-3xl p-4 min-h-[300px] flex flex-col items-center justify-center">
+                    <div className="glass relative overflow-hidden rounded-3xl p-4 min-h-[300px] flex flex-col items-center justify-center border border-zinc-200 bg-white">
                         {isUploadingVideo ? (
                             <div className="flex flex-col items-center gap-2">
-                                <Loader2 className="h-8 w-8 text-blue-400 animate-spin" />
-                                <p className="text-sm text-slate-400">Processing video...</p>
+                                <Loader2 className="h-8 w-8 text-black animate-spin" />
+                                <p className="text-sm text-zinc-400">Processing video...</p>
                             </div>
                         ) : (
                             <div className="w-full">
@@ -431,9 +431,9 @@ function ApplicationContent() {
                             </div>
                         )}
 
-                        {/* Show success indicator if video is set but we are in recording tab and it's not showing preview there explicitly yet, or just generic confirmation */}
+                        {/* Show success indicator */}
                         {videoUrl && activeVideoTab === 'record' && (
-                            <div className="mt-4 flex items-center gap-2 text-green-400 bg-green-400/10 px-3 py-1.5 rounded-lg border border-green-400/20">
+                            <div className="mt-4 flex items-center gap-2 text-green-600 bg-green-50 px-3 py-1.5 rounded-lg border border-green-200">
                                 <CheckCircle className="h-4 w-4" />
                                 <span className="text-xs font-bold">Video Attached</span>
                             </div>
@@ -450,11 +450,11 @@ function ApplicationContent() {
                     className={clsx(
                         "flex-1 flex flex-col items-center gap-2 p-4 rounded-2xl border transition-all",
                         visibility === "public"
-                            ? "bg-blue-500/10 border-blue-500/50 text-blue-400"
-                            : "bg-white/5 border-white/5 text-slate-400 hover:bg-white/10"
+                            ? "bg-black/5 border-black text-black"
+                            : "bg-zinc-50 border-zinc-200 text-zinc-400 hover:bg-zinc-100"
                     )}
                 >
-                    <div className={clsx("p-2 rounded-full", visibility === "public" ? "bg-blue-500 text-white" : "bg-white/10")}>
+                    <div className={clsx("p-2 rounded-full", visibility === "public" ? "bg-black text-white" : "bg-zinc-100")}>
                         <Eye className="h-4 w-4" />
                     </div>
                     <span className="text-xs font-bold">Public Profile</span>
@@ -464,11 +464,11 @@ function ApplicationContent() {
                     className={clsx(
                         "flex-1 flex flex-col items-center gap-2 p-4 rounded-2xl border transition-all",
                         visibility === "anonymous"
-                            ? "bg-purple-500/10 border-purple-500/50 text-purple-400"
-                            : "bg-white/5 border-white/5 text-slate-400 hover:bg-white/10"
+                            ? "bg-purple-500/10 border-purple-500/50 text-purple-600"
+                            : "bg-zinc-50 border-zinc-200 text-zinc-400 hover:bg-zinc-100"
                     )}
                 >
-                    <div className={clsx("p-2 rounded-full", visibility === "anonymous" ? "bg-purple-500 text-white" : "bg-white/10")}>
+                    <div className={clsx("p-2 rounded-full", visibility === "anonymous" ? "bg-purple-600 text-white" : "bg-zinc-100")}>
                         <EyeOff className="h-4 w-4" />
                     </div>
                     <span className="text-xs font-bold">Anonymous</span>
@@ -477,15 +477,15 @@ function ApplicationContent() {
 
 
             {/* Submit Button */}
-            <div className="fixed bottom-0 left-0 w-full bg-gradient-to-t from-slate-900 to-slate-900/0 p-6 backdrop-blur-[2px] z-50">
+            <div className="fixed bottom-0 left-0 w-full bg-gradient-to-t from-white via-white to-white/0 p-6 backdrop-blur-[2px] z-50">
                 <button
                     onClick={handleSubmit}
                     disabled={!seekerName || (!videoUrl && !selectedResumeUrl && !uploadedResumeUrl) || isSubmitting || isUploadingVideo}
                     className={clsx(
                         "mx-auto w-full max-w-md block rounded-2xl py-4 text-lg font-bold text-white shadow-2xl transition-all active:scale-95",
                         !seekerName || (!videoUrl && !selectedResumeUrl && !uploadedResumeUrl) || isSubmitting || isUploadingVideo
-                            ? "bg-slate-800 text-slate-500 cursor-not-allowed border border-white/5"
-                            : "bg-gradient-to-r from-blue-600 to-cyan-500 shadow-blue-500/25 hover:shadow-cyan-500/40"
+                            ? "bg-zinc-200 text-zinc-400 cursor-not-allowed border border-zinc-200"
+                            : "bg-black shadow-black/20 hover:scale-[1.02]"
                     )}
                 >
                     {isSubmitting ? "Sending..." : "Submit Application"}
@@ -499,34 +499,30 @@ export default function ApplyPage() {
     const router = useRouter();
 
     return (
-        <div className="min-h-screen pb-24 font-sans selection:bg-cyan-500/30">
-            {/* Decorative Blobs */}
-            <div className="fixed -top-32 -left-32 h-96 w-96 rounded-full bg-blue-600/20 blur-[100px] animate-blob" />
-            <div className="fixed top-1/2 -right-32 h-96 w-96 rounded-full bg-cyan-500/20 blur-[100px] animate-blob delay-2000" />
+        <div className="min-h-screen pb-24 font-sans selection:bg-zinc-200 bg-zinc-50">
+            {/* Background */}
+            <div className="fixed inset-0 bg-white pointer-events-none" />
 
             {/* Header */}
-            <div className="fixed top-0 z-50 w-full border-b border-white/5 bg-slate-950/80 backdrop-blur-md">
+            <div className="fixed top-0 z-50 w-full border-b border-zinc-200 bg-white/80 backdrop-blur-md">
                 <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-6">
                     <div
                         onClick={() => router.push("/")}
                         className="flex items-center gap-2 cursor-pointer"
                     >
-                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-cyan-400">
-                            <Sparkles className="h-5 w-5 text-white" />
-                        </div>
-                        <span className="text-xl font-bold tracking-tight text-white">Job Fair</span>
+                        <img src="/logo.png" alt="JobFair" className="h-8 w-auto object-contain" />
                     </div>
 
                     <button
                         onClick={() => router.push("/profile")}
-                        className="rounded-full border border-white/10 bg-white/5 px-2 py-2 text-xs font-medium text-slate-300 transition hover:bg-white/10 hover:text-white"
+                        className="rounded-full border border-zinc-200 bg-zinc-50 px-2 py-2 text-xs font-medium text-zinc-500 transition hover:bg-zinc-100 hover:text-black"
                     >
                         <User className="h-4 w-4" />
                     </button>
                 </div>
             </div>
 
-            <Suspense fallback={<div className="text-white text-center pt-32">Loading Application...</div>}>
+            <Suspense fallback={<div className="text-black text-center pt-32">Loading Application...</div>}>
                 <ApplicationContent />
             </Suspense>
         </div>

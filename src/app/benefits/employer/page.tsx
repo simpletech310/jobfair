@@ -29,7 +29,7 @@ export default function EmployerBenefitsPage() {
     ];
 
     return (
-        <div className="min-h-screen bg-slate-950">
+        <div className="min-h-screen bg-zinc-50">
             <Navbar />
 
             <main className="pt-24 pb-20 px-6">
@@ -38,22 +38,22 @@ export default function EmployerBenefitsPage() {
                     {/* Hero Section */}
                     <div className="grid lg:grid-cols-2 gap-12 items-center">
                         <div className="space-y-6">
-                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-bold uppercase tracking-wider">
+                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-100 border border-zinc-200 text-black text-xs font-bold uppercase tracking-wider">
                                 For Employers
                             </div>
-                            <h1 className="text-5xl md:text-6xl font-bold text-white tracking-tight">
+                            <h1 className="text-5xl md:text-6xl font-black text-black tracking-tight leading-tight">
                                 Stop Hiring <br />
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-indigo-500">Blindly.</span>
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-black to-zinc-500">Blindly.</span>
                             </h1>
-                            <p className="text-xl text-slate-400 max-w-lg leading-relaxed">
+                            <p className="text-xl text-zinc-500 max-w-lg leading-relaxed">
                                 The traditional hiring process is broken. JobFair brings the human element back to recruiting with video-first applications.
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                                <div className="flex items-center gap-2 text-slate-300 font-medium">
-                                    <CheckCircle className="h-5 w-5 text-green-400" /> Save 20+ hours per hire
+                                <div className="flex items-center gap-2 text-black font-medium">
+                                    <CheckCircle className="h-5 w-5 text-black" /> Save 20+ hours per hire
                                 </div>
-                                <div className="flex items-center gap-2 text-slate-300 font-medium">
-                                    <CheckCircle className="h-5 w-5 text-green-400" /> Reduce ghosting
+                                <div className="flex items-center gap-2 text-black font-medium">
+                                    <CheckCircle className="h-5 w-5 text-black" /> Reduce ghosting
                                 </div>
                             </div>
                         </div>
@@ -68,40 +68,40 @@ export default function EmployerBenefitsPage() {
                     </div>
 
                     {/* Stats Section */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pb-10 border-b border-white/5">
-                        <div className="text-center p-6 rounded-2xl bg-white/5 border border-white/5">
-                            <div className="text-3xl font-bold text-purple-400 mb-1">60%</div>
-                            <div className="text-sm text-slate-500 font-medium">Less Time Screening</div>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pb-10 border-b border-zinc-200">
+                        <div className="text-center p-6 rounded-2xl bg-white border border-zinc-200 shadow-sm">
+                            <div className="text-3xl font-bold text-black mb-1">60%</div>
+                            <div className="text-sm text-zinc-500 font-medium">Less Time Screening</div>
                         </div>
-                        <div className="text-center p-6 rounded-2xl bg-white/5 border border-white/5">
-                            <div className="text-3xl font-bold text-blue-400 mb-1">2.5x</div>
-                            <div className="text-sm text-slate-500 font-medium">Higher Response Rate</div>
+                        <div className="text-center p-6 rounded-2xl bg-white border border-zinc-200 shadow-sm">
+                            <div className="text-3xl font-bold text-black mb-1">2.5x</div>
+                            <div className="text-sm text-zinc-500 font-medium">Higher Response Rate</div>
                         </div>
-                        <div className="text-center p-6 rounded-2xl bg-white/5 border border-white/5">
-                            <div className="text-3xl font-bold text-green-400 mb-1">98%</div>
-                            <div className="text-sm text-slate-500 font-medium">Candidate Satisfaction</div>
+                        <div className="text-center p-6 rounded-2xl bg-white border border-zinc-200 shadow-sm">
+                            <div className="text-3xl font-bold text-black mb-1">98%</div>
+                            <div className="text-sm text-zinc-500 font-medium">Candidate Satisfaction</div>
                         </div>
-                        <div className="text-center p-6 rounded-2xl bg-white/5 border border-white/5">
-                            <div className="text-3xl font-bold text-pink-400 mb-1">Zero</div>
-                            <div className="text-sm text-slate-500 font-medium">Listing Fees (Beta)</div>
+                        <div className="text-center p-6 rounded-2xl bg-white border border-zinc-200 shadow-sm">
+                            <div className="text-3xl font-bold text-black mb-1">Zero</div>
+                            <div className="text-sm text-zinc-500 font-medium">Listing Fees (Beta)</div>
                         </div>
                     </div>
 
                     {/* Features Grid */}
                     <div>
                         <div className="text-center mb-12">
-                            <h2 className="text-3xl font-bold text-white mb-4">Why Top Companies Switch</h2>
-                            <p className="text-slate-400">Everything you need to build your dream team, faster.</p>
+                            <h2 className="text-3xl font-bold text-black mb-4">Why Top Companies Switch</h2>
+                            <p className="text-zinc-500">Everything you need to build your dream team, faster.</p>
                         </div>
 
                         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                             {benefits.map((benefit, index) => (
-                                <div key={index} className="glass p-6 rounded-3xl border border-white/5 hover:border-purple-500/30 transition duration-300 group">
-                                    <div className="h-12 w-12 rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-400 mb-4 group-hover:scale-110 transition">
+                                <div key={index} className="glass p-6 rounded-3xl border border-zinc-200 bg-white hover:shadow-xl transition duration-300 group">
+                                    <div className="h-12 w-12 rounded-2xl bg-zinc-100 flex items-center justify-center text-black mb-4 group-hover:scale-110 transition">
                                         <benefit.icon className="h-6 w-6" />
                                     </div>
-                                    <h3 className="text-lg font-bold text-white mb-2">{benefit.title}</h3>
-                                    <p className="text-slate-400 text-sm leading-relaxed">
+                                    <h3 className="text-lg font-bold text-black mb-2">{benefit.title}</h3>
+                                    <p className="text-zinc-500 text-sm leading-relaxed">
                                         {benefit.description}
                                     </p>
                                 </div>
