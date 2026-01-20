@@ -140,32 +140,32 @@ export default function EditProfile() {
 
     if (authLoading || loading) {
         return (
-            <div className="min-h-screen bg-slate-950 flex items-center justify-center">
-                <Loader2 className="h-8 w-8 text-blue-500 animate-spin" />
+            <div className="min-h-screen bg-white flex items-center justify-center">
+                <Loader2 className="h-8 w-8 text-black animate-spin" />
             </div>
         )
     }
 
     return (
-        <div className="min-h-screen bg-slate-950 font-sans selection:bg-blue-500/30 pb-24">
-            <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black pointer-events-none" />
+        <div className="min-h-screen bg-zinc-50 font-sans selection:bg-zinc-200 pb-24">
+            <div className="fixed inset-0 bg-white pointer-events-none" />
 
             {/* Header */}
-            <header className="sticky top-0 z-10 w-full border-b border-white/5 bg-slate-950/80 backdrop-blur-md">
+            <header className="sticky top-0 z-10 w-full border-b border-zinc-200 bg-white/80 backdrop-blur-md">
                 <div className="mx-auto flex h-16 max-w-2xl items-center justify-between px-6">
                     <div className="flex items-center gap-4">
                         <button
                             onClick={() => router.back()}
-                            className="rounded-full p-2 text-slate-400 hover:bg-white/5 hover:text-white transition"
+                            className="rounded-full p-2 text-zinc-500 hover:bg-zinc-100 hover:text-black transition"
                         >
                             <ArrowLeft className="h-5 w-5" />
                         </button>
-                        <h1 className="text-lg font-bold text-white">Edit Profile</h1>
+                        <h1 className="text-lg font-bold text-black">Edit Profile</h1>
                     </div>
                     <button
                         onClick={handleSave}
                         disabled={isSubmitting}
-                        className="rounded-full bg-blue-600 px-6 py-2 text-sm font-bold text-white shadow-lg shadow-blue-600/20 hover:bg-blue-500 disabled:opacity-50"
+                        className="rounded-full bg-black px-6 py-2 text-sm font-bold text-white shadow-lg hover:bg-zinc-800 disabled:opacity-50"
                     >
                         {isSubmitting ? "Saving..." : "Save"}
                     </button>
@@ -175,16 +175,16 @@ export default function EditProfile() {
             <main className="relative mx-auto max-w-2xl p-6">
 
                 {/* Tabs */}
-                <div className="mb-8 flex rounded-xl bg-white/5 p-1">
+                <div className="mb-8 flex rounded-xl bg-white p-1 border border-zinc-200">
                     <button
                         onClick={() => setActiveTab('info')}
-                        className={`flex-1 rounded-lg py-2.5 text-sm font-bold transition ${activeTab === 'info' ? 'bg-slate-700 text-white shadow' : 'text-slate-400 hover:text-slate-200'}`}
+                        className={`flex-1 rounded-lg py-2.5 text-sm font-bold transition ${activeTab === 'info' ? 'bg-zinc-100 text-black shadow' : 'text-zinc-400 hover:text-zinc-600'}`}
                     >
                         Basic Info
                     </button>
                     <button
                         onClick={() => setActiveTab('media')}
-                        className={`flex-1 rounded-lg py-2.5 text-sm font-bold transition ${activeTab === 'media' ? 'bg-slate-700 text-white shadow' : 'text-slate-400 hover:text-slate-200'}`}
+                        className={`flex-1 rounded-lg py-2.5 text-sm font-bold transition ${activeTab === 'media' ? 'bg-zinc-100 text-black shadow' : 'text-zinc-400 hover:text-zinc-600'}`}
                     >
                         Media & Resume
                     </button>
@@ -194,7 +194,7 @@ export default function EditProfile() {
                     <div className="space-y-6 animate-fade-in">
 
                         {/* Basic Fields */}
-                        <div className="glass rounded-2xl p-6 space-y-4">
+                        <div className="glass rounded-2xl p-6 space-y-4 border border-zinc-200 bg-white">
                             <div className="flex justify-center mb-6">
                                 <PhotoUploader
                                     userId={user?.id || ""}
@@ -203,54 +203,54 @@ export default function EditProfile() {
                                 />
                             </div>
 
-                            <h2 className="text-sm font-bold uppercase text-slate-500 mb-4 flex items-center gap-2">
+                            <h2 className="text-sm font-bold uppercase text-zinc-400 mb-4 flex items-center gap-2">
                                 <User className="h-4 w-4" /> Personal Details
                             </h2>
 
                             <div className="space-y-1">
-                                <label className="text-xs text-slate-400">Full Name</label>
+                                <label className="text-xs text-zinc-500">Full Name</label>
                                 <input
                                     value={formData.full_name}
                                     onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
                                     placeholder="Jane Doe"
-                                    className="w-full bg-slate-900 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-blue-500"
+                                    className="w-full bg-zinc-50 border border-zinc-200 rounded-xl p-3 text-black focus:outline-none focus:border-black"
                                 />
                             </div>
                             <div className="space-y-1">
-                                <label className="text-xs text-slate-400">Professional Title</label>
+                                <label className="text-xs text-zinc-500">Professional Title</label>
                                 <input
                                     value={formData.title}
                                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                                     placeholder="e.g. Senior Product Designer"
-                                    className="w-full bg-slate-900 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-blue-500"
+                                    className="w-full bg-zinc-50 border border-zinc-200 rounded-xl p-3 text-black focus:outline-none focus:border-black"
                                 />
                             </div>
                             <div className="space-y-1">
-                                <label className="text-xs text-slate-400">Bio</label>
+                                <label className="text-xs text-zinc-500">Bio</label>
                                 <textarea
                                     value={formData.bio}
                                     onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
                                     placeholder="Tell us about yourself..."
                                     rows={4}
-                                    className="w-full bg-slate-900 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-blue-500"
+                                    className="w-full bg-zinc-50 border border-zinc-200 rounded-xl p-3 text-black focus:outline-none focus:border-black"
                                 />
                             </div>
                             <div className="space-y-1">
-                                <label className="text-xs text-slate-400">Skills (Comma separated)</label>
+                                <label className="text-xs text-zinc-500">Skills (Comma separated)</label>
                                 <input
                                     value={formData.skills}
                                     onChange={(e) => setFormData({ ...formData, skills: e.target.value })}
                                     placeholder="Figma, React, UX Research"
-                                    className="w-full bg-slate-900 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-blue-500"
+                                    className="w-full bg-zinc-50 border border-zinc-200 rounded-xl p-3 text-black focus:outline-none focus:border-black"
                                 />
                             </div>
                             <div className="space-y-1">
-                                <label className="text-xs text-slate-400">Years of Experience</label>
+                                <label className="text-xs text-zinc-500">Years of Experience</label>
                                 <input
                                     type="number"
                                     value={experienceYears}
                                     onChange={(e) => setExperienceYears(parseInt(e.target.value) || 0)}
-                                    className="w-full bg-slate-900 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-blue-500"
+                                    className="w-full bg-zinc-50 border border-zinc-200 rounded-xl p-3 text-black focus:outline-none focus:border-black"
                                 />
                             </div>
                         </div>
@@ -259,11 +259,11 @@ export default function EditProfile() {
                     <div className="space-y-6 animate-fade-in">
 
                         {/* Video Intro */}
-                        <div className="glass rounded-2xl p-6">
-                            <h2 className="text-sm font-bold uppercase text-slate-500 mb-4 flex items-center gap-2">
+                        <div className="glass rounded-2xl p-6 border border-zinc-200 bg-white">
+                            <h2 className="text-sm font-bold uppercase text-zinc-400 mb-4 flex items-center gap-2">
                                 <Video className="h-4 w-4" /> Main Video Intro
                             </h2>
-                            <p className="text-xs text-slate-400 mb-6">
+                            <p className="text-xs text-zinc-500 mb-6">
                                 This video will be shown on your profile to all employers. Keep it generic!
                             </p>
                             <div className="flex justify-center">
@@ -278,8 +278,8 @@ export default function EditProfile() {
                         </div>
 
                         {/* Resume Upload */}
-                        <div className="glass rounded-2xl p-6">
-                            <h2 className="text-sm font-bold uppercase text-slate-500 mb-4 flex items-center gap-2">
+                        <div className="glass rounded-2xl p-6 border border-zinc-200 bg-white">
+                            <h2 className="text-sm font-bold uppercase text-zinc-400 mb-4 flex items-center gap-2">
                                 <FileText className="h-4 w-4" /> Resume / CV
                             </h2>
                             <ResumeUploader

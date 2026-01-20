@@ -75,21 +75,21 @@ export default function ResumeUploader({ onUploadComplete, existingFileUrl, exis
 
     if (fileUrl) {
         return (
-            <div className="w-full rounded-2xl border border-blue-500/30 bg-blue-500/10 p-6 flex items-center justify-between">
+            <div className="w-full rounded-2xl border border-zinc-200 bg-zinc-50 p-6 flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                    <div className="h-12 w-12 rounded-xl bg-blue-500/20 flex items-center justify-center">
-                        <FileText className="h-6 w-6 text-blue-400" />
+                    <div className="h-12 w-12 rounded-xl bg-zinc-200 flex items-center justify-center">
+                        <FileText className="h-6 w-6 text-black" />
                     </div>
                     <div>
-                        <p className="text-sm font-bold text-white truncate max-w-[200px]">{fileName || "Resume"}</p>
-                        <a href={fileUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-300 hover:text-white hover:underline">
+                        <p className="text-sm font-bold text-black truncate max-w-[200px]">{fileName || "Resume"}</p>
+                        <a href={fileUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-zinc-500 hover:text-black hover:underline">
                             View Document
                         </a>
                     </div>
                 </div>
                 <button
                     onClick={clearFile}
-                    className="p-2 text-slate-400 hover:text-white transition"
+                    className="p-2 text-zinc-400 hover:text-red-500 transition"
                 >
                     <Trash2 className="h-5 w-5" />
                 </button>
@@ -105,8 +105,8 @@ export default function ResumeUploader({ onUploadComplete, existingFileUrl, exis
             className={clsx(
                 "relative flex w-full flex-col items-center justify-center rounded-3xl border-2 border-dashed p-10 transition-all",
                 isDragging
-                    ? "border-blue-500 bg-blue-500/10 scale-[1.02]"
-                    : "border-white/10 bg-white/5 hover:border-white/20 hover:bg-white/10",
+                    ? "border-black bg-zinc-50 scale-[1.02]"
+                    : "border-zinc-300 bg-white hover:border-black hover:bg-zinc-50",
                 uploading && "opacity-50 pointer-events-none"
             )}
         >
@@ -119,18 +119,18 @@ export default function ResumeUploader({ onUploadComplete, existingFileUrl, exis
                 onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])}
             />
 
-            <div className="mb-4 rounded-full bg-slate-800 p-4 shadow-xl">
+            <div className="mb-4 rounded-full bg-zinc-100 p-4 shadow-sm">
                 {uploading ? (
-                    <Loader2 className="h-6 w-6 text-blue-400 animate-spin" />
+                    <Loader2 className="h-6 w-6 text-black animate-spin" />
                 ) : (
-                    <Upload className="h-6 w-6 text-blue-400" />
+                    <Upload className="h-6 w-6 text-black" />
                 )}
             </div>
 
-            <p className="mb-2 text-lg font-bold text-white">
+            <p className="mb-2 text-lg font-bold text-black">
                 {uploading ? "Uploading..." : "Upload Resume"}
             </p>
-            <p className="mb-6 text-center text-sm text-slate-400">
+            <p className="mb-6 text-center text-sm text-zinc-500">
                 Drag & drop PDF or Docx <br />
                 <span className="opacity-50">(Max 100MB)</span>
             </p>
@@ -138,7 +138,7 @@ export default function ResumeUploader({ onUploadComplete, existingFileUrl, exis
             <button
                 onClick={() => fileInputRef.current?.click()}
                 disabled={uploading}
-                className="rounded-xl bg-slate-800 px-6 py-2.5 text-sm font-bold text-white shadow-lg transition hover:bg-slate-700"
+                className="rounded-xl bg-black px-6 py-2.5 text-sm font-bold text-white shadow-lg transition hover:bg-zinc-800"
             >
                 Select File
             </button>

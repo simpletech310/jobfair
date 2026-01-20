@@ -414,10 +414,10 @@ export default function EmployerDashboard() {
                     {currentView === 'jobs' && (
                         <div className="animate-fade-in space-y-6">
                             <div className="flex items-center justify-between">
-                                <h1 className="text-2xl font-bold text-white">My Jobs</h1>
+                                <h1 className="text-2xl font-bold text-black">My Jobs</h1>
                                 <button
                                     onClick={() => router.push("/employer/post-job")}
-                                    className="hidden md:flex items-center gap-2 rounded-full bg-blue-600 px-4 py-2 text-sm font-bold text-white hover:bg-blue-500 transition"
+                                    className="hidden md:flex items-center gap-2 rounded-full bg-black px-4 py-2 text-sm font-bold text-white hover:bg-zinc-800 transition"
                                 >
                                     <Plus className="h-4 w-4" /> New Job
                                 </button>
@@ -453,13 +453,13 @@ export default function EmployerDashboard() {
                     {currentView === 'candidates' && (
                         <div className="animate-fade-in space-y-6">
                             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                                <h1 className="text-2xl font-bold text-white">Applications</h1>
+                                <h1 className="text-2xl font-bold text-black">Applications</h1>
 
                                 <div className="flex items-center gap-3">
                                     <select
                                         value={jobFilter}
                                         onChange={(e) => setJobFilter(e.target.value)}
-                                        className="bg-white/5 border border-white/10 rounded-lg py-2 pl-3 pr-8 text-sm text-slate-300 focus:outline-none focus:border-blue-500"
+                                        className="bg-white border border-zinc-200 rounded-lg py-2 pl-3 pr-8 text-sm text-black focus:outline-none focus:border-black"
                                     >
                                         <option value="all">All Jobs</option>
                                         {jobs.map(j => <option key={j.id} value={j.id}>{j.title}</option>)}
@@ -468,7 +468,7 @@ export default function EmployerDashboard() {
                                     <select
                                         value={statusFilter}
                                         onChange={(e) => setStatusFilter(e.target.value)}
-                                        className="bg-white/5 border border-white/10 rounded-lg py-2 pl-3 pr-8 text-sm text-slate-300 focus:outline-none focus:border-blue-500"
+                                        className="bg-white border border-zinc-200 rounded-lg py-2 pl-3 pr-8 text-sm text-black focus:outline-none focus:border-black"
                                     >
                                         <option value="all">All Statuses</option>
                                         <option value="pending">Pending</option>
@@ -499,15 +499,15 @@ export default function EmployerDashboard() {
                     {currentView === 'search' && (
                         <div className="animate-fade-in space-y-6">
                             <div className="flex flex-col gap-4">
-                                <h1 className="text-2xl font-bold text-white">Find Candidates</h1>
+                                <h1 className="text-2xl font-bold text-black">Find Candidates</h1>
                                 <div className="relative">
-                                    <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500" />
+                                    <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-400" />
                                     <input
                                         type="text"
                                         placeholder="Search by name, title, or skills..."
                                         value={seekerSearchQuery}
                                         onChange={(e) => setSeekerSearchQuery(e.target.value)}
-                                        className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder:text-slate-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 transition"
+                                        className="w-full bg-white border border-zinc-200 rounded-xl py-3 pl-12 pr-4 text-black placeholder:text-zinc-400 focus:border-black focus:outline-none focus:ring-1 focus:ring-black transition"
                                     />
                                 </div>
                             </div>
@@ -531,32 +531,32 @@ export default function EmployerDashboard() {
 
                     {/* --- MESSAGES VIEW --- */}
                     {currentView === 'messages' && (
-                        <div className="animate-fade-in h-[calc(100vh-8rem)] flex bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
+                        <div className="animate-fade-in h-[calc(100vh-8rem)] flex bg-white border border-zinc-200 rounded-2xl overflow-hidden shadow-sm">
                             {/* Conversations List */}
-                            <div className="w-1/3 border-r border-white/5 flex flex-col">
-                                <div className="p-4 border-b border-white/5">
-                                    <h2 className="text-sm font-bold text-slate-400 uppercase tracking-wider">Inbox</h2>
+                            <div className="w-1/3 border-r border-zinc-200 flex flex-col">
+                                <div className="p-4 border-b border-zinc-100">
+                                    <h2 className="text-sm font-bold text-zinc-400 uppercase tracking-wider">Inbox</h2>
                                 </div>
-                                <div className="flex-1 overflow-y-auto">
-                                    {conversations.length === 0 && <div className="p-4 text-center text-slate-500 text-xs">No active conversations. Start one from Applications.</div>}
+                                <div className="flex-1 overflow-y-auto bg-zinc-50">
+                                    {conversations.length === 0 && <div className="p-4 text-center text-zinc-400 text-xs">No active conversations. Start one from Applications.</div>}
                                     {conversations.map(conv => (
                                         <div
                                             key={conv.id}
                                             onClick={() => setSelectedConversation(conv)}
                                             className={clsx(
-                                                "p-4 border-b border-white/5 cursor-pointer hover:bg-white/5 transition",
-                                                selectedConversation?.id === conv.id ? "bg-blue-900/10 border-l-2 border-l-blue-500" : "border-l-2 border-l-transparent"
+                                                "p-4 border-b border-zinc-200 cursor-pointer hover:bg-white transition",
+                                                selectedConversation?.id === conv.id ? "bg-white border-l-2 border-l-black shadow-sm" : "bg-zinc-50 border-l-2 border-l-transparent"
                                             )}
                                         >
                                             <div className="flex items-center gap-3">
-                                                <div className="h-10 w-10 rounded-full bg-slate-700 flex items-center justify-center overflow-hidden">
+                                                <div className="h-10 w-10 rounded-full bg-zinc-200 flex items-center justify-center overflow-hidden">
                                                     {conv.seekers?.avatar_url ? (
                                                         <img src={conv.seekers.avatar_url} className="h-full w-full object-cover" />
-                                                    ) : <User className="h-5 w-5 text-slate-300" />}
+                                                    ) : <User className="h-5 w-5 text-zinc-400" />}
                                                 </div>
                                                 <div className="flex-1 min-w-0">
-                                                    <h4 className="font-bold text-white truncate">{conv.seekers?.full_name || "Unknown Candidate"}</h4>
-                                                    <p className="text-xs text-slate-400 truncate">Click to view messages</p>
+                                                    <h4 className="font-bold text-black truncate">{conv.seekers?.full_name || "Unknown Candidate"}</h4>
+                                                    <p className="text-xs text-zinc-500 truncate">Click to view messages</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -565,44 +565,44 @@ export default function EmployerDashboard() {
                             </div>
 
                             {/* Conversation View */}
-                            <div className="flex-1 flex flex-col bg-slate-950/30">
+                            <div className="flex-1 flex flex-col bg-white">
                                 {selectedConversation ? (
                                     <>
-                                        <div className="p-4 border-b border-white/5 flex items-center gap-3">
-                                            <div className="h-8 w-8 rounded-full bg-slate-700 flex items-center justify-center">
+                                        <div className="p-4 border-b border-zinc-100 flex items-center gap-3">
+                                            <div className="h-8 w-8 rounded-full bg-zinc-100 flex items-center justify-center">
                                                 {selectedConversation.seekers?.avatar_url ? (
                                                     <img src={selectedConversation.seekers.avatar_url} className="h-8 w-8 rounded-full object-cover" />
-                                                ) : <User className="h-4 w-4 text-slate-300" />}
+                                                ) : <User className="h-4 w-4 text-zinc-400" />}
                                             </div>
-                                            <h3 className="font-bold text-white">{selectedConversation.seekers?.full_name || "Candidate"}</h3>
+                                            <h3 className="font-bold text-black">{selectedConversation.seekers?.full_name || "Candidate"}</h3>
                                         </div>
-                                        <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                                            {messages.length === 0 && <div className="text-center text-slate-500 mt-10">Start the conversation...</div>}
+                                        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-zinc-50/50">
+                                            {messages.length === 0 && <div className="text-center text-zinc-400 mt-10">Start the conversation...</div>}
                                             {messages.map((msg: any) => (
                                                 <div key={msg.id} className={clsx("flex flex-col max-w-[80%]", msg.sender_id === user?.id ? "ml-auto items-end" : "items-start")}>
-                                                    <div className={clsx("rounded-2xl px-4 py-2 text-sm", msg.sender_id === user?.id ? "bg-blue-600 text-white" : "bg-white/10 text-slate-200")}>
+                                                    <div className={clsx("rounded-2xl px-4 py-2 text-sm", msg.sender_id === user?.id ? "bg-black text-white" : "bg-white border border-zinc-200 text-black shadow-sm")}>
                                                         {msg.content}
                                                     </div>
-                                                    <span className="text-[10px] text-slate-600 mt-1">{new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                                    <span className="text-[10px] text-zinc-400 mt-1">{new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                                                 </div>
                                             ))}
                                             <div ref={messagesEndRef} />
                                         </div>
-                                        <form onSubmit={handleSendMessage} className="p-4 border-t border-white/5 flex gap-2">
+                                        <form onSubmit={handleSendMessage} className="p-4 border-t border-zinc-100 flex gap-2 bg-white">
                                             <input
                                                 value={newMessage}
                                                 onChange={(e) => setNewMessage(e.target.value)}
                                                 placeholder="Type a message..."
-                                                className="flex-1 bg-white/5 border border-white/10 rounded-full px-4 py-2 text-sm text-white focus:border-blue-500 focus:outline-none"
+                                                className="flex-1 bg-zinc-50 border border-zinc-200 rounded-full px-4 py-2 text-sm text-black focus:border-black focus:outline-none"
                                             />
-                                            <button type="submit" disabled={!newMessage.trim()} className="p-2 rounded-full bg-blue-600 text-white hover:bg-blue-500 disabled:opacity-50 transition">
+                                            <button type="submit" disabled={!newMessage.trim()} className="p-2 rounded-full bg-black text-white hover:bg-zinc-800 disabled:opacity-50 transition">
                                                 <Send className="h-4 w-4" />
                                             </button>
                                         </form>
                                     </>
                                 ) : (
-                                    <div className="flex-1 flex flex-col items-center justify-center text-slate-500">
-                                        <MessageSquare className="h-12 w-12 mb-4 opacity-20" />
+                                    <div className="flex-1 flex flex-col items-center justify-center text-zinc-400">
+                                        <MessageSquare className="h-12 w-12 mb-4 opacity-10" />
                                         <p>Select a conversation to start messaging</p>
                                     </div>
                                 )}
@@ -653,32 +653,33 @@ export default function EmployerDashboard() {
 
 function StatsCard({ icon: Icon, label, value, color }: any) {
     const colors: any = {
-        blue: "text-blue-400 bg-blue-500/10",
-        green: "text-green-400 bg-green-500/10",
-        purple: "text-purple-400 bg-purple-500/10",
-        orange: "text-orange-400 bg-orange-500/10",
+        blue: "text-blue-500 bg-blue-50",
+        green: "text-green-600 bg-green-50",
+        purple: "text-purple-600 bg-purple-50",
+        orange: "text-orange-500 bg-orange-50",
+        black: "text-black bg-zinc-100",
     };
     return (
-        <div className="glass rounded-2xl p-5 border border-white/5">
+        <div className="glass rounded-2xl p-5 border border-zinc-200 bg-white shadow-sm">
             <div className="flex items-center gap-3 mb-2">
-                <div className={clsx("p-2 rounded-lg", colors[color])}><Icon className="h-5 w-5" /></div>
-                <p className="text-xs font-bold uppercase text-slate-500">{label}</p>
+                <div className={clsx("p-2 rounded-lg", colors[color] || colors.black)}><Icon className="h-5 w-5" /></div>
+                <p className="text-xs font-bold uppercase text-zinc-500">{label}</p>
             </div>
-            <p className="text-3xl font-extrabold text-white">{value}</p>
+            <p className="text-3xl font-extrabold text-black">{value}</p>
         </div>
     );
 }
 
 function EmptyState({ icon: Icon, title, message, action }: any) {
     return (
-        <div className="text-center py-20 bg-white/5 rounded-3xl border border-white/10 border-dashed flex flex-col items-center">
-            {Icon && <Icon className="h-12 w-12 text-slate-600 mb-4" />}
-            {title && <h3 className="text-lg font-bold text-white mb-2">{title}</h3>}
-            <p className="text-slate-400 mb-6">{message}</p>
+        <div className="text-center py-20 bg-zinc-50 rounded-3xl border border-zinc-200 border-dashed flex flex-col items-center">
+            {Icon && <Icon className="h-12 w-12 text-zinc-300 mb-4" />}
+            {title && <h3 className="text-lg font-bold text-black mb-2">{title}</h3>}
+            <p className="text-zinc-500 mb-6">{message}</p>
             {action && (
                 <button
                     onClick={action.onClick}
-                    className="px-6 py-3 bg-blue-600 rounded-full text-white font-bold hover:bg-blue-500 transition"
+                    className="px-6 py-3 bg-black rounded-full text-white font-bold hover:bg-zinc-800 transition shadow-lg"
                 >
                     {action.label}
                 </button>
@@ -691,15 +692,15 @@ function EmptyState({ icon: Icon, title, message, action }: any) {
 // Updated Subcomponent Props
 function ApplicationCard({ app, onClick, onMessage }: { app: any, onClick: () => void, onMessage: () => void }) {
     return (
-        <div onClick={onClick} className="group glass-card relative cursor-pointer overflow-hidden rounded-2xl border border-white/5 bg-white/5 transition hover:-translate-y-1 hover:border-white/10">
+        <div onClick={onClick} className="group glass-card relative cursor-pointer overflow-hidden rounded-2xl border border-zinc-200 bg-white transition hover:-translate-y-1 hover:shadow-lg">
             {/* Thumbnail */}
-            <div className="relative aspect-[4/3] w-full bg-slate-900 overflow-hidden">
+            <div className="relative aspect-[4/3] w-full bg-zinc-100 overflow-hidden">
                 {!app.seekers?.intro_video_url && !app.video_url ? (
-                    <div className="absolute inset-0 flex items-center justify-center bg-slate-800">
+                    <div className="absolute inset-0 flex items-center justify-center bg-zinc-200">
                         {app.seekers?.avatar_url ? (
                             <img src={app.seekers.avatar_url} alt={app.seekers.full_name} className="h-full w-full object-cover" />
                         ) : (
-                            <User className="h-12 w-12 text-slate-600" />
+                            <User className="h-12 w-12 text-zinc-400" />
                         )}
                     </div>
                 ) : (
@@ -709,24 +710,25 @@ function ApplicationCard({ app, onClick, onMessage }: { app: any, onClick: () =>
                         muted playsInline
                     />
                 )}
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-80" />
+                {/* Removed dark gradient overlay for cleaner look, or make it subtle */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-60" />
 
                 {/* Status Badge */}
                 <div className="absolute top-2 right-2 flex gap-1">
-                    {app.status === 'interviewing' && <span className="bg-green-500 text-black text-[10px] font-bold px-2 py-0.5 rounded-full">SHORTLISTED</span>}
+                    {app.status === 'interviewing' && <span className="bg-green-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm">SHORTLISTED</span>}
                 </div>
             </div>
 
             <div className="p-4">
-                <h3 className="font-bold text-white truncate">{app.seekers?.full_name || "Applicant"}</h3>
-                <p className="text-xs text-blue-400 truncate mb-2">{app.jobs?.title || "Role"}</p>
+                <h3 className="font-bold text-black truncate">{app.seekers?.full_name || "Applicant"}</h3>
+                <p className="text-xs text-zinc-500 truncate mb-2">{app.jobs?.title || "Role"}</p>
                 <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-[10px] text-slate-500">
+                    <div className="flex items-center gap-2 text-[10px] text-zinc-400">
                         <Clock className="w-3 h-3" /> {new Date(app.created_at).toLocaleDateString()}
                     </div>
                     <button
                         onClick={(e) => { e.stopPropagation(); onMessage(); }}
-                        className="p-1.5 rounded-full bg-white/10 text-slate-300 hover:bg-blue-600 hover:text-white transition"
+                        className="p-1.5 rounded-full bg-zinc-100 text-zinc-500 hover:bg-black hover:text-white transition"
                         title="Send Message"
                     >
                         <MessageSquare className="h-3 w-3" />
@@ -739,29 +741,29 @@ function ApplicationCard({ app, onClick, onMessage }: { app: any, onClick: () =>
 
 function SeekerCard({ seeker, onClick, onMessage }: { seeker: any, onClick: () => void, onMessage?: () => void }) {
     return (
-        <div onClick={onClick} className="group glass-card relative cursor-pointer overflow-hidden rounded-2xl border border-white/5 bg-white/5 transition hover:-translate-y-1 hover:border-white/10">
-            <div className="relative aspect-square w-full bg-slate-800 overflow-hidden">
+        <div onClick={onClick} className="group glass-card relative cursor-pointer overflow-hidden rounded-2xl border border-zinc-200 bg-white transition hover:-translate-y-1 hover:shadow-lg">
+            <div className="relative aspect-square w-full bg-zinc-100 overflow-hidden">
                 {seeker.intro_video_url ? (
                     <video src={seeker.intro_video_url} className="h-full w-full object-cover" muted playsInline />
                 ) : (
-                    <div className="absolute inset-0 flex items-center justify-center bg-slate-800">
+                    <div className="absolute inset-0 flex items-center justify-center bg-zinc-200">
                         {seeker.avatar_url ? (
                             <img src={seeker.avatar_url} alt={seeker.full_name} className="h-full w-full object-cover" />
                         ) : (
-                            <User className="h-16 w-16 text-slate-600" />
+                            <User className="h-16 w-16 text-zinc-400" />
                         )}
                     </div>
                 )}
                 {seeker.intro_video_url && <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/40 transition"><Play className="h-8 w-8 text-white opacity-0 group-hover:opacity-100 transition" /></div>}
             </div>
             <div className="p-4">
-                <h3 className="font-bold text-white truncate">{seeker.full_name || "Job Seeker"}</h3>
+                <h3 className="font-bold text-black truncate">{seeker.full_name || "Job Seeker"}</h3>
                 <div className="flex items-center justify-between">
-                    <p className="text-xs text-slate-400 truncate">{seeker.title || "No Title"}</p>
+                    <p className="text-xs text-zinc-500 truncate">{seeker.title || "No Title"}</p>
                     {onMessage && (
                         <button
                             onClick={(e) => { e.stopPropagation(); onMessage(); }}
-                            className="p-1 rounded-full bg-white/10 text-slate-400 hover:text-white hover:bg-blue-600 transition"
+                            className="p-1 rounded-full bg-zinc-100 text-zinc-500 hover:text-white hover:bg-black transition"
                         >
                             <MessageSquare className="h-3 w-3" />
                         </button>
@@ -769,9 +771,9 @@ function SeekerCard({ seeker, onClick, onMessage }: { seeker: any, onClick: () =
                 </div>
                 <div className="mt-2 flex flex-wrap gap-1">
                     {seeker.skills?.slice(0, 2).map((s: string) => (
-                        <span key={s} className="px-1.5 py-0.5 rounded bg-white/5 text-[10px] text-slate-400 border border-white/5">{s}</span>
+                        <span key={s} className="px-1.5 py-0.5 rounded bg-zinc-50 text-[10px] text-zinc-600 border border-zinc-200">{s}</span>
                     ))}
-                    {seeker.skills?.length > 2 && <span className="text-[10px] text-slate-500">+{seeker.skills.length - 2}</span>}
+                    {seeker.skills?.length > 2 && <span className="text-[10px] text-zinc-400">+{seeker.skills.length - 2}</span>}
                 </div>
             </div>
         </div>
@@ -780,24 +782,24 @@ function SeekerCard({ seeker, onClick, onMessage }: { seeker: any, onClick: () =
 
 function JobRow({ job, stats, onToggleStatus, onViewApplicants }: any) {
     return (
-        <div className="glass rounded-xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 border border-white/5 hover:bg-white/5 transition">
+        <div className="glass rounded-xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 border border-zinc-200 bg-white hover:shadow-md transition">
             <div className="flex-1">
                 <div className="flex items-center gap-3 mb-1">
-                    <h3 className="text-lg font-bold text-white">{job.title}</h3>
-                    <span className={clsx("px-2 py-0.5 rounded-full text-[10px] font-bold border", job.is_active ? "bg-green-500/10 text-green-400 border-green-500/20" : "bg-slate-500/10 text-slate-400 border-slate-500/20")}>
+                    <h3 className="text-lg font-bold text-black">{job.title}</h3>
+                    <span className={clsx("px-2 py-0.5 rounded-full text-[10px] font-bold border", job.is_active ? "bg-green-50 text-green-600 border-green-200" : "bg-zinc-100 text-zinc-500 border-zinc-200")}>
                         {job.is_active ? "ACTIVE" : "CLOSED"}
                     </span>
                 </div>
-                <div className="flex items-center gap-3 text-sm text-slate-400">
+                <div className="flex items-center gap-3 text-sm text-zinc-500">
                     <span>{job.location}</span>
-                    <span className="w-1 h-1 rounded-full bg-slate-600" />
+                    <span className="w-1 h-1 rounded-full bg-zinc-300" />
                     <span>{job.job_type}</span>
                 </div>
             </div>
             <div className="flex items-center gap-6">
-                <div className="text-center px-4 border-l border-white/10">
-                    <p className="text-xl font-bold text-white">{stats.applicants}</p>
-                    <p className="text-[10px] uppercase font-bold text-slate-500">Applicants</p>
+                <div className="text-center px-4 border-l border-zinc-200">
+                    <p className="text-xl font-bold text-black">{stats.applicants}</p>
+                    <p className="text-[10px] uppercase font-bold text-zinc-400">Applicants</p>
                 </div>
                 <div className="text-center px-4 border-l border-white/10">
                     <p className="text-xl font-bold text-blue-400">{stats.new}</p>

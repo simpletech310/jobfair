@@ -118,8 +118,8 @@ export default function VideoUploader({
                     onDrop={onDrop}
                     onClick={() => !uploading && inputRef.current?.click()}
                     className={`group relative flex flex-col items-center justify-center rounded-2xl border-2 border-dashed p-10 transition-all cursor-pointer ${isDragging
-                        ? "border-blue-500 bg-blue-500/10"
-                        : "border-slate-700 hover:border-blue-500/50 hover:bg-slate-800/50"
+                        ? "border-black bg-zinc-50"
+                        : "border-zinc-300 hover:border-black hover:bg-zinc-50"
                         } ${error ? "border-red-500/50 bg-red-500/10" : ""} ${uploading ? "opacity-50 cursor-not-allowed" : ""}`}
                 >
                     <input
@@ -134,16 +134,16 @@ export default function VideoUploader({
                     />
 
                     {uploading ? (
-                        <div className="mb-4 rounded-full bg-slate-800 p-4">
-                            <Loader2 className="h-6 w-6 text-blue-400 animate-spin" />
+                        <div className="mb-4 rounded-full bg-zinc-100 p-4">
+                            <Loader2 className="h-6 w-6 text-black animate-spin" />
                         </div>
                     ) : (
-                        <div className="mb-4 rounded-full bg-slate-800 p-4 transition-transform group-hover:scale-110">
-                            <Upload className="h-6 w-6 text-slate-400 group-hover:text-blue-400" />
+                        <div className="mb-4 rounded-full bg-zinc-100 p-4 transition-transform group-hover:scale-110">
+                            <Upload className="h-6 w-6 text-zinc-400 group-hover:text-black" />
                         </div>
                     )}
 
-                    <p className="mb-1 text-sm font-bold text-slate-200">
+                    <p className="mb-1 text-sm font-bold text-black">
                         {uploading ? "Uploading..." : "Click to upload"}
                     </p>
                     <p className="text-xs text-slate-500">
@@ -158,10 +158,10 @@ export default function VideoUploader({
                     )}
                 </div>
             ) : (
-                <div className="relative overflow-hidden rounded-2xl bg-slate-900 border border-white/10 shadow-xl">
+                <div className="relative overflow-hidden rounded-2xl bg-zinc-900 border border-zinc-200 shadow-xl">
                     <button
                         onClick={clearFile}
-                        className="absolute right-3 top-3 z-10 rounded-full bg-black/60 p-1.5 text-white backdrop-blur-md transition hover:bg-red-500/80"
+                        className="absolute right-3 top-3 z-10 rounded-full bg-white/60 p-1.5 text-black backdrop-blur-md transition hover:bg-red-500 hover:text-white"
                     >
                         <X className="h-4 w-4" />
                     </button>
@@ -172,14 +172,14 @@ export default function VideoUploader({
                         className="aspect-[9/16] w-full object-cover"
                     />
 
-                    <div className="absolute bottom-0 left-0 w-full bg-slate-900/90 backdrop-blur-sm p-4 border-t border-white/5 pointer-events-none">
+                    <div className="absolute bottom-0 left-0 w-full bg-white/90 backdrop-blur-sm p-4 border-t border-zinc-100 pointer-events-none">
                         <div className="flex items-center gap-3">
-                            <div className="rounded-lg bg-blue-500/20 p-2">
-                                <FileVideo className="h-5 w-5 text-blue-400" />
+                            <div className="rounded-lg bg-zinc-100 p-2">
+                                <FileVideo className="h-5 w-5 text-black" />
                             </div>
                             <div className="flex-1 overflow-hidden">
-                                <p className="truncate text-sm font-medium text-white">{label}</p>
-                                <p className="text-xs text-green-400">Ready to submit</p>
+                                <p className="truncate text-sm font-medium text-black">{label}</p>
+                                <p className="text-xs text-green-600">Ready to submit</p>
                             </div>
                             <CheckCircle className="h-5 w-5 text-green-500" />
                         </div>

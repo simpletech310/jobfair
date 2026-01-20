@@ -147,13 +147,13 @@ export default function Navbar() {
                                 key={link.href}
                                 href={link.href}
                                 onClick={() => setMobileMenuOpen(false)}
-                                className="text-lg font-medium text-slate-300"
+                                className="text-lg font-medium text-zinc-500"
                             >
                                 {link.name}
                             </Link>
                         ))}
 
-                        <div className="h-px bg-white/10 my-2" />
+                        <div className="h-px bg-zinc-100 my-2" />
 
                         {user ? (
                             <>

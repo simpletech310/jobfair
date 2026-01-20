@@ -64,24 +64,22 @@ export default function JobsPage() {
     }, []);
 
     return (
-        <div className="min-h-screen bg-slate-950 font-sans selection:bg-cyan-500/30">
+        <div className="min-h-screen bg-zinc-50 font-sans selection:bg-zinc-200">
             {/* Background Ambience */}
-            <div className="fixed inset-0 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black pointer-events-none" />
-            <div className="fixed -top-32 -right-32 h-96 w-96 rounded-full bg-blue-600/10 blur-[100px] animate-blob" />
-
-
+            <div className="fixed inset-0 bg-white pointer-events-none" />
+            <div className="fixed -top-32 -right-32 h-96 w-96 rounded-full bg-zinc-100 blur-[100px] animate-blob" />
 
             <main className="relative z-10 mx-auto max-w-5xl px-6 py-12">
                 <div className="mb-12 text-center">
-                    <h1 className="text-4xl font-extrabold text-white tracking-tight md:text-5xl">
-                        Find Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">Next Big Thing</span>
+                    <h1 className="text-4xl font-extrabold text-black tracking-tight md:text-5xl">
+                        Find Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-black to-zinc-600">Next Big Thing</span>
                     </h1>
-                    <p className="mt-4 text-lg text-slate-400">Discover the world's most innovative companies.</p>
+                    <p className="mt-4 text-lg text-zinc-500">Discover the world's most innovative companies.</p>
                 </div>
 
                 {loading ? (
                     <div className="flex justify-center p-20">
-                        <Loader2 className="h-10 w-10 animate-spin text-cyan-500" />
+                        <Loader2 className="h-10 w-10 animate-spin text-black" />
                     </div>
                 ) : (
                     <div className="grid gap-6 md:grid-cols-2">
@@ -90,7 +88,7 @@ export default function JobsPage() {
                                 <JobCard key={job.id} job={job} />
                             ))
                         ) : (
-                            <div className="col-span-2 text-center text-slate-500 py-10">
+                            <div className="col-span-2 text-center text-zinc-500 py-10">
                                 No jobs found. Check back later!
                             </div>
                         )}

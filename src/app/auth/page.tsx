@@ -89,7 +89,7 @@ export default function AuthPage() {
                     </div>
 
                     {error && (
-                        <div className="p-3 mb-6 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm text-center font-medium">
+                        <div className="p-3 mb-6 bg-red-500/10 border border-red-500/20 rounded-xl text-red-600 text-sm text-center font-medium">
                             {error}
                         </div>
                     )}

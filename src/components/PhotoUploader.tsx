@@ -78,7 +78,7 @@ export default function PhotoUploader({ onUploadComplete, existingPhotoUrl, user
                     <img
                         src={photoUrl}
                         alt="Profile"
-                        className="h-32 w-32 rounded-full object-cover border-4 border-slate-800 shadow-xl"
+                        className="h-32 w-32 rounded-full object-cover border-4 border-zinc-200 shadow-xl"
                     />
                     <button
                         onClick={clearFile}
@@ -87,7 +87,7 @@ export default function PhotoUploader({ onUploadComplete, existingPhotoUrl, user
                         <Trash2 className="h-4 w-4" />
                     </button>
                 </div>
-                <p className="text-xs text-slate-400 font-medium">Click delete to change</p>
+                <p className="text-xs text-zinc-500 font-medium">Click delete to change</p>
             </div>
         )
     }
@@ -100,8 +100,8 @@ export default function PhotoUploader({ onUploadComplete, existingPhotoUrl, user
             className={clsx(
                 "relative flex flex-col items-center justify-center w-32 h-32 rounded-full border-2 border-dashed transition-all cursor-pointer overflow-hidden",
                 isDragging
-                    ? "border-blue-500 bg-blue-500/10 scale-105"
-                    : "border-slate-700 bg-slate-800/50 hover:border-white/30 hover:bg-slate-800",
+                    ? "border-black bg-zinc-50 scale-105"
+                    : "border-zinc-300 bg-zinc-50/50 hover:border-zinc-400 hover:bg-zinc-100",
                 uploading && "opacity-50 pointer-events-none"
             )}
             onClick={() => fileInputRef.current?.click()}
@@ -116,9 +116,9 @@ export default function PhotoUploader({ onUploadComplete, existingPhotoUrl, user
             />
 
             {uploading ? (
-                <Loader2 className="h-8 w-8 text-blue-400 animate-spin" />
+                <Loader2 className="h-8 w-8 text-black animate-spin" />
             ) : (
-                <div className="flex flex-col items-center gap-1 text-slate-400">
+                <div className="flex flex-col items-center gap-1 text-zinc-400">
                     <User className="h-8 w-8" />
                     <span className="text-[10px] font-bold uppercase">Upload</span>
                 </div>
