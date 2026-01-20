@@ -350,12 +350,10 @@ export default function EmployerDashboard() {
 
                 {/* Mobile Header */}
                 <header className="md:hidden h-16 flex items-center justify-between px-4 border-b border-zinc-200 bg-white/80 backdrop-blur-md sticky top-0 z-30">
-                    <button onClick={() => setIsSidebarOpen(true)} className="p-2 text-zinc-500">
+                    <button onClick={() => setIsSidebarOpen(true)} className="p-2 text-zinc-500 hover:text-black transition">
                         <Menu className="h-6 w-6" />
                     </button>
-                    <span className="text-lg font-bold text-black">
-                        {navItems.find(i => i.id === currentView)?.label}
-                    </span>
+                    <img src="/logo.png" alt="JobFair" className="h-8 w-auto object-contain" />
                     <div className="w-10" /> {/* Spacer */}
                 </header>
 
