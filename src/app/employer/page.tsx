@@ -288,7 +288,7 @@ export default function EmployerDashboard() {
                 <div className="flex flex-col h-full">
                     {/* Logo */}
                     <div className="h-16 flex items-center px-6 border-b border-zinc-100">
-                        <img src="/jobfairlogo.png" alt="JobFair" className="h-10 w-auto object-contain" />
+                        <img src="/logo.png" alt="JobFair" className="h-8 w-auto object-contain" />
                     </div>
 
                     {/* Nav */}

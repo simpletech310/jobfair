@@ -74,6 +74,11 @@ export default function Navbar() {
         { name: "Post a Job", href: "/employer/post-job", role: "employer" },
     ];
 
+    // Hide Navbar on Employer Dashboard routes (they have their own Sidebar)
+    if (pathname?.startsWith('/employer')) {
+        return null;
+    }
+
     return (
         <header
             className={clsx(
