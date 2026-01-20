@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft, Briefcase, MapPin, DollarSign, Building, Layout, List, CheckCircle2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/context/AuthContext";
+import { clsx } from "clsx";
 
 export default function PostJob() {
     const router = useRouter();
@@ -75,21 +76,21 @@ export default function PostJob() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-950 font-sans text-slate-200 pb-24 selection:bg-blue-500/30">
-            <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black pointer-events-none" />
+        <div className="min-h-screen bg-zinc-50 font-sans text-black pb-24 selection:bg-zinc-200">
+            <div className="fixed inset-0 bg-white pointer-events-none" />
 
             {/* Professional Header */}
-            <header className="sticky top-0 z-30 w-full border-b border-white/5 bg-slate-950/80 backdrop-blur-md">
+            <header className="sticky top-0 z-30 w-full border-b border-zinc-200 bg-white/80 backdrop-blur-md">
                 <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
                     <div className="flex items-center gap-4">
                         <button
                             onClick={() => router.back()}
-                            className="rounded-lg p-2 text-slate-400 hover:bg-white/10 hover:text-white transition"
+                            className="rounded-lg p-2 text-zinc-500 hover:bg-zinc-100 hover:text-black transition"
                         >
                             <ArrowLeft className="h-5 w-5" />
                         </button>
-                        <div className="h-6 w-px bg-white/10" />
-                        <h1 className="text-lg font-bold text-white tracking-tight">New Job Posting</h1>
+                        <div className="h-6 w-px bg-zinc-200" />
+                        <h1 className="text-lg font-bold text-black tracking-tight">New Job Posting</h1>
                     </div>
                 </div>
             </header>
@@ -101,53 +102,53 @@ export default function PostJob() {
                         {/* Left Column: Core Info */}
                         <div className="lg:col-span-2 space-y-8">
 
-                            <div className="glass rounded-2xl p-8">
-                                <h2 className="flex items-center gap-2 text-xl font-bold text-white mb-6 pb-4 border-b border-white/5">
-                                    <Layout className="h-5 w-5 text-blue-400" />
+                            <div className="glass rounded-2xl p-8 bg-white border border-zinc-200 shadow-sm">
+                                <h2 className="flex items-center gap-2 text-xl font-bold text-black mb-6 pb-4 border-b border-zinc-100">
+                                    <Layout className="h-5 w-5 text-black" />
                                     Job Details
                                 </h2>
 
                                 <div className="grid gap-6">
                                     {/* Title */}
                                     <div className="space-y-2">
-                                        <label className="text-sm font-bold text-slate-400">Job Title <span className="text-red-400">*</span></label>
+                                        <label className="text-sm font-bold text-zinc-500">Job Title <span className="text-red-500">*</span></label>
                                         <input
                                             required
                                             name="title"
                                             value={formData.title}
                                             onChange={handleChange}
                                             placeholder="e.g. Senior Frontend Engineer"
-                                            className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-slate-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition"
+                                            className="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-black placeholder:text-zinc-400 focus:border-black focus:ring-1 focus:ring-black focus:outline-none transition"
                                         />
                                     </div>
 
                                     {/* Company & Location Row */}
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="space-y-2">
-                                            <label className="text-sm font-bold text-slate-400">Company Name <span className="text-red-400">*</span></label>
+                                            <label className="text-sm font-bold text-zinc-500">Company Name <span className="text-red-500">*</span></label>
                                             <div className="relative">
-                                                <Building className="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500" />
+                                                <Building className="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-400" />
                                                 <input
                                                     required
                                                     name="company"
                                                     value={formData.company}
                                                     onChange={handleChange}
                                                     placeholder="Acme Corp"
-                                                    className="w-full rounded-xl border border-white/10 bg-white/5 pl-11 pr-4 py-3 text-white placeholder:text-slate-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition"
+                                                    className="w-full rounded-xl border border-zinc-200 bg-zinc-50 pl-11 pr-4 py-3 text-black placeholder:text-zinc-400 focus:border-black focus:ring-1 focus:ring-black focus:outline-none transition"
                                                 />
                                             </div>
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-sm font-bold text-slate-400">Location <span className="text-red-400">*</span></label>
+                                            <label className="text-sm font-bold text-zinc-500">Location <span className="text-red-500">*</span></label>
                                             <div className="relative">
-                                                <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500" />
+                                                <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-400" />
                                                 <input
                                                     required
                                                     name="location"
                                                     value={formData.location}
                                                     onChange={handleChange}
                                                     placeholder="Remote"
-                                                    className="w-full rounded-xl border border-white/10 bg-white/5 pl-11 pr-4 py-3 text-white placeholder:text-slate-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition"
+                                                    className="w-full rounded-xl border border-zinc-200 bg-zinc-50 pl-11 pr-4 py-3 text-black placeholder:text-zinc-400 focus:border-black focus:ring-1 focus:ring-black focus:outline-none transition"
                                                 />
                                             </div>
                                         </div>
@@ -156,64 +157,63 @@ export default function PostJob() {
                                     {/* Salary & Type Row */}
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="space-y-2">
-                                            <label className="text-sm font-bold text-slate-400">Salary Range <span className="text-red-400">*</span></label>
+                                            <label className="text-sm font-bold text-zinc-500">Salary Range <span className="text-red-500">*</span></label>
                                             <div className="relative">
-                                                <DollarSign className="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500" />
+                                                <DollarSign className="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-400" />
                                                 <input
                                                     required
                                                     name="salary"
                                                     value={formData.salary}
                                                     onChange={handleChange}
                                                     placeholder="$120k - $150k"
-                                                    className="w-full rounded-xl border border-white/10 bg-white/5 pl-11 pr-4 py-3 text-white placeholder:text-slate-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition"
+                                                    className="w-full rounded-xl border border-zinc-200 bg-zinc-50 pl-11 pr-4 py-3 text-black placeholder:text-zinc-400 focus:border-black focus:ring-1 focus:ring-black focus:outline-none transition"
                                                 />
                                             </div>
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-sm font-bold text-slate-400">Employment Type <span className="text-red-400">*</span></label>
+                                            <label className="text-sm font-bold text-zinc-500">Employment Type <span className="text-red-500">*</span></label>
                                             <div className="relative">
-                                                <Briefcase className="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500" />
+                                                <Briefcase className="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-400" />
                                                 <select
                                                     name="type"
                                                     value={formData.type}
                                                     onChange={handleChange}
-                                                    className="w-full rounded-xl border border-white/10 bg-white/5 pl-11 pr-4 py-3.5 text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition appearance-none"
+                                                    className="w-full rounded-xl border border-zinc-200 bg-zinc-50 pl-11 pr-4 py-3.5 text-black focus:border-black focus:ring-1 focus:ring-black focus:outline-none transition appearance-none"
                                                 >
-                                                    <option value="Full-time" className="bg-slate-900">Full-time</option>
-                                                    <option value="Part-time" className="bg-slate-900">Part-time</option>
-                                                    <option value="Contract" className="bg-slate-900">Contract</option>
-                                                    <option value="Freelance" className="bg-slate-900">Freelance</option>
+                                                    <option value="Full-time">Full-time</option>
+                                                    <option value="Part-time">Part-time</option>
+                                                    <option value="Contract">Contract</option>
+                                                    <option value="Freelance">Freelance</option>
                                                 </select>
                                             </div>
                                         </div>
                                     </div>
 
-                                    {/* Tags (Saved in memory/metadata or ignored if schema doesn't support) */}
-                                    {/* Schema doesn't have tags column. We will ignore for MVP or append to description */}
+                                    {/* Tags */}
                                     <div className="space-y-2">
-                                        <label className="text-sm font-bold text-slate-400">Skills / Tags (Optional)</label>
+                                        <label className="text-sm font-bold text-zinc-500">Skills / Tags (Optional)</label>
                                         <input
                                             name="tags"
                                             value={formData.tags}
                                             onChange={handleChange}
                                             placeholder="React, Node.js, Design (Comma separated)"
-                                            className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-slate-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition"
+                                            className="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-black placeholder:text-zinc-400 focus:border-black focus:ring-1 focus:ring-black focus:outline-none transition"
                                         />
                                     </div>
 
                                 </div>
                             </div>
 
-                            <div className="glass rounded-2xl p-8">
-                                <h2 className="flex items-center gap-2 text-xl font-bold text-white mb-6 pb-4 border-b border-white/5">
-                                    <List className="h-5 w-5 text-blue-400" />
+                            <div className="glass rounded-2xl p-8 bg-white border border-zinc-200 shadow-sm">
+                                <h2 className="flex items-center gap-2 text-xl font-bold text-black mb-6 pb-4 border-b border-zinc-100">
+                                    <List className="h-5 w-5 text-black" />
                                     Job Description
                                 </h2>
 
                                 <div className="space-y-6">
                                     {/* Description */}
                                     <div className="space-y-2">
-                                        <label className="text-sm font-bold text-slate-400">Role Overview <span className="text-red-400">*</span></label>
+                                        <label className="text-sm font-bold text-zinc-500">Role Overview <span className="text-red-500">*</span></label>
                                         <textarea
                                             required
                                             name="description"
@@ -221,13 +221,13 @@ export default function PostJob() {
                                             onChange={handleChange}
                                             rows={6}
                                             placeholder="Provide a comprehensive description of the role..."
-                                            className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-slate-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition resize-y"
+                                            className="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-black placeholder:text-zinc-400 focus:border-black focus:ring-1 focus:ring-black focus:outline-none transition resize-y"
                                         />
                                     </div>
 
                                     {/* Requirements */}
                                     <div className="space-y-2">
-                                        <label className="text-sm font-bold text-slate-400">Key Requirements <span className="text-red-400">*</span></label>
+                                        <label className="text-sm font-bold text-zinc-500">Key Requirements <span className="text-red-500">*</span></label>
                                         <textarea
                                             required
                                             name="requirements"
@@ -235,20 +235,20 @@ export default function PostJob() {
                                             onChange={handleChange}
                                             rows={5}
                                             placeholder="• 5+ years experience...&#10;• Strong communication skills...&#10;(One per line)"
-                                            className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-slate-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition resize-y font-mono text-sm"
+                                            className="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-black placeholder:text-zinc-400 focus:border-black focus:ring-1 focus:ring-black focus:outline-none transition resize-y font-mono text-sm"
                                         />
                                     </div>
 
-                                    {/* Responsibilities (Appended to description on submit effectively? No, schema has description. We can leave it here for UI completeness but inform user) */}
+                                    {/* Responsibilities */}
                                     <div className="space-y-2">
-                                        <label className="text-sm font-bold text-slate-400">Responsibilities (Will be added to description)</label>
+                                        <label className="text-sm font-bold text-zinc-500">Responsibilities (Will be added to description)</label>
                                         <textarea
                                             name="responsibilities"
                                             value={formData.responsibilities}
                                             onChange={handleChange}
                                             rows={5}
                                             placeholder="• Lead the engineering team...&#10;• Architect scalable solutions...&#10;(One per line)"
-                                            className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-slate-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition resize-y font-mono text-sm"
+                                            className="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-black placeholder:text-zinc-400 focus:border-black focus:ring-1 focus:ring-black focus:outline-none transition resize-y font-mono text-sm"
                                         />
                                     </div>
                                 </div>
@@ -259,19 +259,19 @@ export default function PostJob() {
                         {/* Right Column: Sidebar / Submit */}
                         <div className="lg:col-span-1 space-y-6">
                             <div className="sticky top-24 space-y-6">
-                                <div className="glass rounded-2xl p-6 border border-white/5">
-                                    <h3 className="font-bold text-white mb-4">Publishing Checklist</h3>
+                                <div className="glass rounded-2xl p-6 border border-zinc-200 bg-white shadow-sm">
+                                    <h3 className="font-bold text-black mb-4">Publishing Checklist</h3>
                                     <ul className="space-y-3">
-                                        <li className="flex items-center gap-2 text-sm text-slate-400">
-                                            <CheckCircle2 className={`h-4 w-4 ${formData.title ? 'text-green-400' : 'text-slate-600'}`} />
+                                        <li className="flex items-center gap-2 text-sm text-zinc-500">
+                                            <CheckCircle2 className={`h-4 w-4 ${formData.title ? 'text-green-600' : 'text-zinc-300'}`} />
                                             <span>Job Title defined</span>
                                         </li>
-                                        <li className="flex items-center gap-2 text-sm text-slate-400">
-                                            <CheckCircle2 className={`h-4 w-4 ${formData.salary ? 'text-green-400' : 'text-slate-600'}`} />
+                                        <li className="flex items-center gap-2 text-sm text-zinc-500">
+                                            <CheckCircle2 className={`h-4 w-4 ${formData.salary ? 'text-green-600' : 'text-zinc-300'}`} />
                                             <span>Salary range set</span>
                                         </li>
-                                        <li className="flex items-center gap-2 text-sm text-slate-400">
-                                            <CheckCircle2 className={`h-4 w-4 ${formData.description.length > 50 ? 'text-green-400' : 'text-slate-600'}`} />
+                                        <li className="flex items-center gap-2 text-sm text-zinc-500">
+                                            <CheckCircle2 className={`h-4 w-4 ${formData.description.length > 50 ? 'text-green-600' : 'text-zinc-300'}`} />
                                             <span>Detailed description</span>
                                         </li>
                                     </ul>
@@ -280,7 +280,7 @@ export default function PostJob() {
                                 <button
                                     type="submit"
                                     disabled={isSubmitting}
-                                    className="w-full rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 py-4 font-bold text-white shadow-lg shadow-blue-500/20 transition hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="w-full rounded-xl bg-black py-4 font-bold text-white shadow-lg shadow-black/10 transition hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     {isSubmitting ? "Publishing..." : "Publish Job Post"}
                                 </button>
