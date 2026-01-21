@@ -181,7 +181,7 @@ export default function JobDetailsPage() {
                 <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
                     <div className="flex items-center gap-4">
                         <button
-                            onClick={() => router.back()}
+                            onClick={() => router.push('/employer')}
                             className="rounded-lg p-2 text-zinc-500 hover:bg-zinc-100 hover:text-black transition"
                         >
                             <ArrowLeft className="h-5 w-5" />
