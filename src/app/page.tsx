@@ -50,8 +50,8 @@ export default function Home() {
           <div className="relative mx-auto lg:mx-0 w-full max-w-lg lg:max-w-none">
             <div className="absolute inset-0 bg-gradient-to-tr from-zinc-200 to-zinc-100 blur-3xl rounded-full opacity-50" />
             <Image
-              src="/hero-split.png"
-              alt="JobFair Mobile and Desktop Experience"
+              src="/hero-yellow-shirt.jpg"
+              alt="Job Seeker recording a video pitch with ring light"
               width={800}
               height={600}
               className="relative rounded-3xl border border-zinc-200 shadow-2xl z-10 hover:scale-[1.02] transition duration-500"
