@@ -544,7 +544,7 @@ export default function EmployerDashboard() {
             )}
 
         </div>
-    </main>
+    </main >
 
     {/* --- APP DETAIL MODAL --- */ }
     {
@@ -578,7 +578,7 @@ export default function EmployerDashboard() {
         )
     }
 
-        </div >
+</div >
     );
 }
 
