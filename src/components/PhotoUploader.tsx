@@ -9,9 +9,10 @@ interface PhotoUploaderProps {
     onUploadComplete: (url: string) => void;
     existingPhotoUrl?: string | null;
     userId: string;
+    variant?: 'avatar' | 'company_logo';
 }
 
-export default function PhotoUploader({ onUploadComplete, existingPhotoUrl, userId }: PhotoUploaderProps) {
+export default function PhotoUploader({ onUploadComplete, existingPhotoUrl, userId, variant = 'avatar' }: PhotoUploaderProps) {
     const [photoUrl, setPhotoUrl] = useState<string | null>(existingPhotoUrl || null);
     const [uploading, setUploading] = useState(false);
     const [isDragging, setIsDragging] = useState(false);
@@ -78,7 +79,10 @@ export default function PhotoUploader({ onUploadComplete, existingPhotoUrl, user
                     <img
                         src={photoUrl}
                         alt="Profile"
-                        className="h-32 w-32 rounded-full object-cover border-4 border-zinc-200 shadow-xl"
+                        className={clsx(
+                            "border-4 border-zinc-200 shadow-xl bg-white",
+                            variant === 'avatar' ? "h-32 w-32 rounded-full object-cover" : "h-32 w-32 rounded-xl object-contain p-2"
+                        )}
                     />
                     <button
                         onClick={clearFile}
@@ -98,7 +102,8 @@ export default function PhotoUploader({ onUploadComplete, existingPhotoUrl, user
             onDragLeave={() => setIsDragging(false)}
             onDrop={handleDrop}
             className={clsx(
-                "relative flex flex-col items-center justify-center w-32 h-32 rounded-full border-2 border-dashed transition-all cursor-pointer overflow-hidden",
+                "relative flex flex-col items-center justify-center w-32 h-32 border-2 border-dashed transition-all cursor-pointer overflow-hidden",
+                variant === 'avatar' ? "rounded-full" : "rounded-xl",
                 isDragging
                     ? "border-black bg-zinc-50 scale-105"
                     : "border-zinc-300 bg-zinc-50/50 hover:border-zinc-400 hover:bg-zinc-100",

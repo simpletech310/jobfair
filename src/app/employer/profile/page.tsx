@@ -235,6 +235,7 @@ export default function EmployerProfile() {
                                             userId={user!.id}
                                             existingPhotoUrl={logoUrl}
                                             onUploadComplete={setLogoUrl}
+                                            variant="company_logo"
                                         />
                                     </div>
                                 </div>
