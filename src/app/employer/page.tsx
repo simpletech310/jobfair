@@ -33,6 +33,7 @@ import { useRouter } from "next/navigation";
 
 import { useMessages } from "@/hooks/useMessages";
 import ApplicationDetailModal from "@/components/ApplicationDetailModal";
+import EmployerSidebar from "@/components/employer/EmployerSidebar";
 
 export default function EmployerDashboard() {
     const router = useRouter();
@@ -147,6 +148,18 @@ export default function EmployerDashboard() {
         }
     };
 
+    const markConversationAsRead = async (conversationId: string) => {
+        if (!user) return;
+
+        // Optimistic / Fire-and-forget
+        await supabase
+            .from('messages')
+            .update({ read_at: new Date().toISOString() })
+            .eq('conversation_id', conversationId)
+            .eq('receiver_id', user.id)
+            .is('read_at', null);
+    };
+
     const handleMessageCandidate = async (seekerId: string, jobId: string | null = null) => {
         if (!user) return;
 
@@ -187,6 +200,7 @@ export default function EmployerDashboard() {
 
             setCurrentView('messages');
             setSelectedConversation(conv);
+            markConversationAsRead(conv.id);
             setSelectedApp(null);
             setSelectedSeeker(null);
         }
@@ -255,381 +269,314 @@ export default function EmployerDashboard() {
 
     if (authLoading || loading) return <div className="min-h-screen bg-slate-950 flex items-center justify-center"><Loader2 className="animate-spin text-blue-500" /></div>;
 
-    const navItems = [
-        { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-        { id: 'jobs', label: 'My Jobs', icon: Briefcase },
-        { id: 'candidates', label: 'Applications', icon: Users },
-        { id: 'search', label: 'Find Candidates', icon: SearchIcon },
-        { id: 'messages', label: 'Messages', icon: MessageSquare },
-    ];
+    {/* --- SIDEBAR --- */ }
+    <EmployerSidebar
+        currentView={currentView}
+        setCurrentView={setCurrentView}
+        isSidebarOpen={isSidebarOpen}
+        setIsSidebarOpen={setIsSidebarOpen}
+    />
 
-    return (
-        <div className="min-h-screen bg-zinc-50 font-sans selection:bg-zinc-200 flex text-black">
-            <div className="fixed inset-0 bg-white pointer-events-none z-0" />
+    {/* --- MAIN CONTENT --- */ }
+    <main className="flex-1 md:ml-64 relative z-10 flex flex-col min-h-screen">
 
-            {/* --- SIDEBAR --- */}
-            <aside className={clsx(
-                "fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-zinc-200 transform transition-transform duration-300 md:translate-x-0",
-                isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-            )}>
-                <div className="flex flex-col h-full">
-                    {/* Logo */}
-                    <div className="h-16 flex items-center px-6 border-b border-zinc-100">
-                        <img src="/logo.png" alt="JobFair" className="h-8 w-auto object-contain" />
-                    </div>
+        {/* Mobile Header */}
+        <header className="md:hidden h-16 flex items-center justify-between px-4 border-b border-zinc-200 bg-white/80 backdrop-blur-md sticky top-0 z-30">
+            <button onClick={() => setIsSidebarOpen(true)} className="p-2 text-zinc-500 hover:text-black transition">
+                <Menu className="h-6 w-6" />
+            </button>
+            <img src="/logo.png" alt="JobFair" className="h-8 w-auto object-contain" />
+            <div className="w-10" /> {/* Spacer */}
+        </header>
 
-                    {/* Nav */}
-                    <nav className="flex-1 p-4 mt-8 space-y-1">
-                        {navItems.map(item => (
-                            <button
-                                key={item.id}
-                                onClick={() => { setCurrentView(item.id as any); setIsSidebarOpen(false); }}
-                                className={clsx(
-                                    "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200",
-                                    currentView === item.id
-                                        ? "bg-black text-white shadow-lg shadow-black/10"
-                                        : "text-zinc-500 hover:text-black hover:bg-zinc-100"
-                                )}
-                            >
-                                <item.icon className="h-5 w-5" />
-                                {item.label}
-                            </button>
-                        ))}
-                        <button
-                            onClick={() => router.push('/employer/profile')}
-                            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-zinc-500 hover:text-black hover:bg-zinc-100 transition-all duration-200"
-                        >
-                            <Building className="h-5 w-5" />
-                            Company Profile
-                        </button>
-                    </nav>
+        <div className="p-6 lg:p-10 max-w-7xl mx-auto w-full flex-1">
 
-                    {/* User */}
-                    <div className="p-4 border-t border-zinc-100">
-                        <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-zinc-50 mb-2">
-                            <div className="h-8 w-8 rounded-full bg-zinc-200 flex items-center justify-center">
-                                <User className="h-4 w-4 text-zinc-500" />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                                <p className="text-sm font-medium text-black truncate">{user?.email}</p>
-                                <p className="text-xs text-zinc-500">Employer</p>
-                            </div>
+            {/* --- DASHBOARD VIEW --- */}
+            {currentView === 'dashboard' && (
+                <div className="animate-fade-in space-y-8">
+                    <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                        <div>
+                            <h1 className="text-3xl font-bold text-black mb-2">Welcome back</h1>
+                            <p className="text-zinc-500">Here's what's happening with your jobs today.</p>
                         </div>
                         <button
-                            onClick={() => logout()}
-                            className="w-full flex items-center gap-3 px-4 py-2 text-xs font-bold text-zinc-500 hover:text-red-500 transition"
+                            onClick={() => router.push("/employer/post-job")}
+                            className="flex items-center gap-2 rounded-full bg-black px-6 py-3 text-sm font-bold text-white hover:bg-zinc-800 transition shadow-lg shadow-black/10"
                         >
-                            <LogOut className="h-4 w-4" /> Sign Out
+                            <Plus className="h-4 w-4" /> Post New Job
                         </button>
+                    </header>
+
+                    {/* Stats */}
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                        <StatsCard icon={Users} label="Total Applicants" value={totalApplicants} color="black" />
+                        <StatsCard icon={CheckCircle} label="Shortlisted" value={shortlistedCount} color="black" />
+                        <StatsCard icon={Briefcase} label="Active Jobs" value={activeJobsCount} color="black" />
+                        <StatsCard icon={Clock} label="Pending Review" value={applications.filter(a => a.status === 'pending').length} color="black" />
                     </div>
-                </div>
-            </aside >
 
-            {/* Mobile Overlay */}
-            {
-                isSidebarOpen && (
-                    <div onClick={() => setIsSidebarOpen(false)} className="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-sm" />
-                )
-            }
-
-            {/* --- MAIN CONTENT --- */}
-            <main className="flex-1 md:ml-64 relative z-10 flex flex-col min-h-screen">
-
-                {/* Mobile Header */}
-                <header className="md:hidden h-16 flex items-center justify-between px-4 border-b border-zinc-200 bg-white/80 backdrop-blur-md sticky top-0 z-30">
-                    <button onClick={() => setIsSidebarOpen(true)} className="p-2 text-zinc-500 hover:text-black transition">
-                        <Menu className="h-6 w-6" />
-                    </button>
-                    <img src="/logo.png" alt="JobFair" className="h-8 w-auto object-contain" />
-                    <div className="w-10" /> {/* Spacer */}
-                </header>
-
-                <div className="p-6 lg:p-10 max-w-7xl mx-auto w-full flex-1">
-
-                    {/* --- DASHBOARD VIEW --- */}
-                    {currentView === 'dashboard' && (
-                        <div className="animate-fade-in space-y-8">
-                            <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-                                <div>
-                                    <h1 className="text-3xl font-bold text-black mb-2">Welcome back</h1>
-                                    <p className="text-zinc-500">Here's what's happening with your jobs today.</p>
-                                </div>
-                                <button
-                                    onClick={() => router.push("/employer/post-job")}
-                                    className="flex items-center gap-2 rounded-full bg-black px-6 py-3 text-sm font-bold text-white hover:bg-zinc-800 transition shadow-lg shadow-black/10"
-                                >
-                                    <Plus className="h-4 w-4" /> Post New Job
-                                </button>
-                            </header>
-
-                            {/* Stats */}
-                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                                <StatsCard icon={Users} label="Total Applicants" value={totalApplicants} color="black" />
-                                <StatsCard icon={CheckCircle} label="Shortlisted" value={shortlistedCount} color="black" />
-                                <StatsCard icon={Briefcase} label="Active Jobs" value={activeJobsCount} color="black" />
-                                <StatsCard icon={Clock} label="Pending Review" value={applications.filter(a => a.status === 'pending').length} color="black" />
-                            </div>
-
-                            {/* Recent Activity */}
-                            <div>
-                                <div className="flex items-center justify-between mb-6">
-                                    <h2 className="text-xl font-bold text-black">Recent Applications</h2>
-                                    <button onClick={() => setCurrentView('candidates')} className="text-sm text-zinc-500 font-bold hover:text-black">View All</button>
-                                </div>
-
-                                {applications.length === 0 ? (
-                                    <EmptyState message="No applications yet." />
-                                ) : (
-                                    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                                        {applications.slice(0, 4).map(app => (
-                                            <ApplicationCard
-                                                key={app.id}
-                                                app={app}
-                                                onClick={() => setSelectedApp(app)}
-                                                onMessage={() => handleMessageCandidate(app.seeker_id, app.job_id)}
-                                            />
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
+                    {/* Recent Activity */}
+                    <div>
+                        <div className="flex items-center justify-between mb-6">
+                            <h2 className="text-xl font-bold text-black">Recent Applications</h2>
+                            <button onClick={() => setCurrentView('candidates')} className="text-sm text-zinc-500 font-bold hover:text-black">View All</button>
                         </div>
-                    )}
 
-                    {/* --- JOBS VIEW --- */}
-                    {currentView === 'jobs' && (
-                        <div className="animate-fade-in space-y-6">
-                            <div className="flex items-center justify-between">
-                                <h1 className="text-2xl font-bold text-black">My Jobs</h1>
-                                <button
-                                    onClick={() => router.push("/employer/post-job")}
-                                    className="hidden md:flex items-center gap-2 rounded-full bg-black px-4 py-2 text-sm font-bold text-white hover:bg-zinc-800 transition"
-                                >
-                                    <Plus className="h-4 w-4" /> New Job
-                                </button>
-                            </div>
-
-                            {jobs.length === 0 ? (
-                                <EmptyState
-                                    icon={Briefcase}
-                                    title="No Jobs Posted"
-                                    message="Post your first job to start finding talent."
-                                    action={{ label: "Create Job Post", onClick: () => router.push("/employer/post-job") }}
-                                />
-                            ) : (
-                                <div className="grid gap-4">
-                                    {jobs.map(job => (
-                                        <JobRow
-                                            key={job.id}
-                                            job={job}
-                                            stats={{
-                                                applicants: applications.filter(a => a.job_id === job.id).length,
-                                                new: applications.filter(a => a.job_id === job.id && a.status === 'pending').length
-                                            }}
-                                            onManage={() => router.push(`/employer/jobs/${job.id}`)}
-                                            onViewApplicants={() => { setJobFilter(job.id); setCurrentView('candidates'); }}
-                                        />
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                    )}
-
-                    {/* --- CANDIDATES (APPLICATIONS) VIEW --- */}
-                    {currentView === 'candidates' && (
-                        <div className="animate-fade-in space-y-6">
-                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                                <h1 className="text-2xl font-bold text-black">Applications</h1>
-
-                                <div className="flex items-center gap-3">
-                                    <select
-                                        value={jobFilter}
-                                        onChange={(e) => setJobFilter(e.target.value)}
-                                        className="bg-white border border-zinc-200 rounded-lg py-2 pl-3 pr-8 text-sm text-black focus:outline-none focus:border-black"
-                                    >
-                                        <option value="all">All Jobs</option>
-                                        {jobs.map(j => <option key={j.id} value={j.id}>{j.title}</option>)}
-                                    </select>
-
-                                    <select
-                                        value={statusFilter}
-                                        onChange={(e) => setStatusFilter(e.target.value)}
-                                        className="bg-white border border-zinc-200 rounded-lg py-2 pl-3 pr-8 text-sm text-black focus:outline-none focus:border-black"
-                                    >
-                                        <option value="all">All Statuses</option>
-                                        <option value="pending">Pending</option>
-                                        <option value="interviewing">Shortlisted</option>
-                                        <option value="rejected">Rejected</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            {filteredApplications.length === 0 ? (
-                                <EmptyState message="No candidates match your filters." />
-                            ) : (
-                                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                                    {filteredApplications.map(app => (
-                                        <ApplicationCard
-                                            key={app.id}
-                                            app={app}
-                                            onClick={() => setSelectedApp(app)}
-                                            onMessage={() => handleMessageCandidate(app.seeker_id, app.job_id)}
-                                        />
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                    )}
-
-                    {/* --- SEARCH (FIND CANDIDATES) VIEW --- */}
-                    {currentView === 'search' && (
-                        <div className="animate-fade-in space-y-6">
-                            <div className="flex flex-col gap-4">
-                                <h1 className="text-2xl font-bold text-black">Find Candidates</h1>
-                                <div className="relative">
-                                    <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-400" />
-                                    <input
-                                        type="text"
-                                        placeholder="Search by name, title, or skills..."
-                                        value={seekerSearchQuery}
-                                        onChange={(e) => setSeekerSearchQuery(e.target.value)}
-                                        className="w-full bg-white border border-zinc-200 rounded-xl py-3 pl-12 pr-4 text-black placeholder:text-zinc-400 focus:border-black focus:outline-none focus:ring-1 focus:ring-black transition"
+                        {applications.length === 0 ? (
+                            <EmptyState message="No applications yet." />
+                        ) : (
+                            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                                {applications.slice(0, 4).map(app => (
+                                    <ApplicationCard
+                                        key={app.id}
+                                        app={app}
+                                        onClick={() => setSelectedApp(app)}
+                                        onMessage={() => handleMessageCandidate(app.seeker_id, app.job_id)}
                                     />
-                                </div>
+                                ))}
                             </div>
-
-                            {filteredSeekers.length === 0 ? (
-                                <EmptyState message={seekerSearchQuery ? "No candidates found matching your search." : "Start searching to find candidates."} />
-                            ) : (
-                                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                                    {filteredSeekers.map(seeker => (
-                                        <SeekerCard
-                                            key={seeker.id}
-                                            seeker={seeker}
-                                            onClick={() => setSelectedSeeker(seeker)}
-                                            onMessage={() => handleMessageCandidate(seeker.id)}
-                                        />
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                    )}
-
-                    {/* --- MESSAGES VIEW --- */}
-                    {currentView === 'messages' && (
-                        <div className="animate-fade-in h-[calc(100vh-8rem)] flex bg-white border border-zinc-200 rounded-2xl overflow-hidden shadow-sm">
-                            {/* Conversations List */}
-                            <div className="w-1/3 border-r border-zinc-200 flex flex-col">
-                                <div className="p-4 border-b border-zinc-100">
-                                    <h2 className="text-sm font-bold text-zinc-400 uppercase tracking-wider">Inbox</h2>
-                                </div>
-                                <div className="flex-1 overflow-y-auto bg-zinc-50">
-                                    {conversations.length === 0 && <div className="p-4 text-center text-zinc-400 text-xs">No active conversations. Start one from Applications.</div>}
-                                    {conversations.map(conv => (
-                                        <div
-                                            key={conv.id}
-                                            onClick={() => setSelectedConversation(conv)}
-                                            className={clsx(
-                                                "p-4 border-b border-zinc-200 cursor-pointer hover:bg-white transition",
-                                                selectedConversation?.id === conv.id ? "bg-white border-l-2 border-l-black shadow-sm" : "bg-zinc-50 border-l-2 border-l-transparent"
-                                            )}
-                                        >
-                                            <div className="flex items-center gap-3">
-                                                <div className="h-10 w-10 rounded-full bg-zinc-200 flex items-center justify-center overflow-hidden">
-                                                    {conv.seekers?.avatar_url ? (
-                                                        <img src={conv.seekers.avatar_url} className="h-full w-full object-cover" />
-                                                    ) : <User className="h-5 w-5 text-zinc-400" />}
-                                                </div>
-                                                <div className="flex-1 min-w-0">
-                                                    <h4 className="font-bold text-black truncate">{conv.seekers?.full_name || "Unknown Candidate"}</h4>
-                                                    <p className="text-xs text-zinc-500 truncate">Click to view messages</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Conversation View */}
-                            <div className="flex-1 flex flex-col bg-white">
-                                {selectedConversation ? (
-                                    <>
-                                        <div className="p-4 border-b border-zinc-100 flex items-center gap-3">
-                                            <div className="h-8 w-8 rounded-full bg-zinc-100 flex items-center justify-center">
-                                                {selectedConversation.seekers?.avatar_url ? (
-                                                    <img src={selectedConversation.seekers.avatar_url} className="h-8 w-8 rounded-full object-cover" />
-                                                ) : <User className="h-4 w-4 text-zinc-400" />}
-                                            </div>
-                                            <h3 className="font-bold text-black">{selectedConversation.seekers?.full_name || "Candidate"}</h3>
-                                        </div>
-                                        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-zinc-50/50">
-                                            {messages.length === 0 && <div className="text-center text-zinc-400 mt-10">Start the conversation...</div>}
-                                            {messages.map((msg: any) => (
-                                                <div key={msg.id} className={clsx("flex flex-col max-w-[80%]", msg.sender_id === user?.id ? "ml-auto items-end" : "items-start")}>
-                                                    <div className={clsx("rounded-2xl px-4 py-2 text-sm", msg.sender_id === user?.id ? "bg-black text-white" : "bg-white border border-zinc-200 text-black shadow-sm")}>
-                                                        {msg.content}
-                                                    </div>
-                                                    <span className="text-[10px] text-zinc-400 mt-1">{new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                                                </div>
-                                            ))}
-                                            <div ref={messagesEndRef} />
-                                        </div>
-                                        <form onSubmit={handleSendMessage} className="p-4 border-t border-zinc-100 flex gap-2 bg-white">
-                                            <input
-                                                value={newMessage}
-                                                onChange={(e) => setNewMessage(e.target.value)}
-                                                placeholder="Type a message..."
-                                                className="flex-1 bg-zinc-50 border border-zinc-200 rounded-full px-4 py-2 text-sm text-black focus:border-black focus:outline-none"
-                                            />
-                                            <button type="submit" disabled={!newMessage.trim()} className="p-2 rounded-full bg-black text-white hover:bg-zinc-800 disabled:opacity-50 transition">
-                                                <Send className="h-4 w-4" />
-                                            </button>
-                                        </form>
-                                    </>
-                                ) : (
-                                    <div className="flex-1 flex flex-col items-center justify-center text-zinc-400">
-                                        <MessageSquare className="h-12 w-12 mb-4 opacity-10" />
-                                        <p>Select a conversation to start messaging</p>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    )}
-
+                        )}
+                    </div>
                 </div>
-            </main>
+            )}
 
-            {/* --- APP DETAIL MODAL --- */}
-            {
-                selectedApp && (
-                    <ApplicationDetailModal
-                        app={selectedApp}
-                        onClose={() => setSelectedApp(null)}
-                        onStatusUpdate={handleStatusUpdate}
-                        messages={messages}
-                        newMessage={newMessage}
-                        onSendMessage={handleSendMessage}
-                        setNewMessage={setNewMessage}
-                        activeTab={activeTab}
-                        setActiveTab={setActiveTab}
-                        messagesEndRef={messagesEndRef}
-                        user={user}
-                    />
-                )
-            }
+            {/* --- JOBS VIEW --- */}
+            {currentView === 'jobs' && (
+                <div className="animate-fade-in space-y-6">
+                    <div className="flex items-center justify-between">
+                        <h1 className="text-2xl font-bold text-black">My Jobs</h1>
+                        <button
+                            onClick={() => router.push("/employer/post-job")}
+                            className="hidden md:flex items-center gap-2 rounded-full bg-black px-4 py-2 text-sm font-bold text-white hover:bg-zinc-800 transition"
+                        >
+                            <Plus className="h-4 w-4" /> New Job
+                        </button>
+                    </div>
 
-            {/* --- SEEKER PROFILE MODAL (FROM SEARCH) --- */}
-            {
-                selectedSeeker && (
-                    <SeekerDetailModal
-                        seeker={selectedSeeker}
-                        onClose={() => setSelectedSeeker(null)}
-                        onMessage={() => {
-                            handleMessageCandidate(selectedSeeker.id);
-                            // setSelectedSeeker(null); // handled inside handleMessage
-                        }}
-                    />
-                )
-            }
+                    {jobs.length === 0 ? (
+                        <EmptyState
+                            icon={Briefcase}
+                            title="No Jobs Posted"
+                            message="Post your first job to start finding talent."
+                            action={{ label: "Create Job Post", onClick: () => router.push("/employer/post-job") }}
+                        />
+                    ) : (
+                        <div className="grid gap-4">
+                            {jobs.map(job => (
+                                <JobRow
+                                    key={job.id}
+                                    job={job}
+                                    stats={{
+                                        applicants: applications.filter(a => a.job_id === job.id).length,
+                                        new: applications.filter(a => a.job_id === job.id && a.status === 'pending').length
+                                    }}
+                                    onManage={() => router.push(`/employer/jobs/${job.id}`)}
+                                    onViewApplicants={() => { setJobFilter(job.id); setCurrentView('candidates'); }}
+                                />
+                            ))}
+                        </div>
+                    )}
+                </div>
+            )}
+
+            {/* --- CANDIDATES (APPLICATIONS) VIEW --- */}
+            {currentView === 'candidates' && (
+                <div className="animate-fade-in space-y-6">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <h1 className="text-2xl font-bold text-black">Applications</h1>
+
+                        <div className="flex items-center gap-3">
+                            <select
+                                value={jobFilter}
+                                onChange={(e) => setJobFilter(e.target.value)}
+                                className="bg-white border border-zinc-200 rounded-lg py-2 pl-3 pr-8 text-sm text-black focus:outline-none focus:border-black"
+                            >
+                                <option value="all">All Jobs</option>
+                                {jobs.map(j => <option key={j.id} value={j.id}>{j.title}</option>)}
+                            </select>
+
+                            <select
+                                value={statusFilter}
+                                onChange={(e) => setStatusFilter(e.target.value)}
+                                className="bg-white border border-zinc-200 rounded-lg py-2 pl-3 pr-8 text-sm text-black focus:outline-none focus:border-black"
+                            >
+                                <option value="all">All Statuses</option>
+                                <option value="pending">Pending</option>
+                                <option value="interviewing">Shortlisted</option>
+                                <option value="rejected">Rejected</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    {filteredApplications.length === 0 ? (
+                        <EmptyState message="No candidates match your filters." />
+                    ) : (
+                        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                            {filteredApplications.map(app => (
+                                <ApplicationCard
+                                    key={app.id}
+                                    app={app}
+                                    onClick={() => setSelectedApp(app)}
+                                    onMessage={() => handleMessageCandidate(app.seeker_id, app.job_id)}
+                                />
+                            ))}
+                        </div>
+                    )}
+                </div>
+            )}
+
+            {/* --- SEARCH (FIND CANDIDATES) VIEW --- */}
+            {currentView === 'search' && (
+                <div className="animate-fade-in space-y-6">
+                    <div className="flex flex-col gap-4">
+                        <h1 className="text-2xl font-bold text-black">Find Candidates</h1>
+                        <div className="relative">
+                            <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-400" />
+                            <input
+                                type="text"
+                                placeholder="Search by name, title, or skills..."
+                                value={seekerSearchQuery}
+                                onChange={(e) => setSeekerSearchQuery(e.target.value)}
+                                className="w-full bg-white border border-zinc-200 rounded-xl py-3 pl-12 pr-4 text-black placeholder:text-zinc-400 focus:border-black focus:outline-none focus:ring-1 focus:ring-black transition"
+                            />
+                        </div>
+                    </div>
+
+                    {filteredSeekers.length === 0 ? (
+                        <EmptyState message={seekerSearchQuery ? "No candidates found matching your search." : "Start searching to find candidates."} />
+                    ) : (
+                        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                            {filteredSeekers.map(seeker => (
+                                <SeekerCard
+                                    key={seeker.id}
+                                    seeker={seeker}
+                                    onClick={() => setSelectedSeeker(seeker)}
+                                    onMessage={() => handleMessageCandidate(seeker.id)}
+                                />
+                            ))}
+                        </div>
+                    )}
+                </div>
+            )}
+
+            {/* --- MESSAGES VIEW --- */}
+            {currentView === 'messages' && (
+                <div className="animate-fade-in h-[calc(100vh-8rem)] flex bg-white border border-zinc-200 rounded-2xl overflow-hidden shadow-sm">
+                    {/* Conversations List */}
+                    <div className="w-1/3 border-r border-zinc-200 flex flex-col">
+                        <div className="p-4 border-b border-zinc-100">
+                            <h2 className="text-sm font-bold text-zinc-400 uppercase tracking-wider">Inbox</h2>
+                        </div>
+                        <div className="flex-1 overflow-y-auto bg-zinc-50">
+                            {conversations.length === 0 && <div className="p-4 text-center text-zinc-400 text-xs">No active conversations. Start one from Applications.</div>}
+                            {conversations.map(conv => (
+                                <div
+                                    key={conv.id}
+                                    onClick={() => {
+                                        setSelectedConversation(conv);
+                                        markConversationAsRead(conv.id);
+                                    }}
+                                    className={clsx(
+                                        "p-4 border-b border-zinc-200 cursor-pointer hover:bg-white transition",
+                                        selectedConversation?.id === conv.id ? "bg-white border-l-2 border-l-black shadow-sm" : "bg-zinc-50 border-l-2 border-l-transparent"
+                                    )}
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <div className="h-10 w-10 rounded-full bg-zinc-200 flex items-center justify-center overflow-hidden">
+                                            {conv.seekers?.avatar_url ? (
+                                                <img src={conv.seekers.avatar_url} className="h-full w-full object-cover" />
+                                            ) : <User className="h-5 w-5 text-zinc-400" />}
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <h4 className="font-bold text-black truncate">{conv.seekers?.full_name || "Unknown Candidate"}</h4>
+                                            <p className="text-xs text-zinc-500 truncate">Click to view messages</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Conversation View */}
+                    <div className="flex-1 flex flex-col bg-white">
+                        {selectedConversation ? (
+                            <>
+                                <div className="p-4 border-b border-zinc-100 flex items-center gap-3">
+                                    <div className="h-8 w-8 rounded-full bg-zinc-100 flex items-center justify-center">
+                                        {selectedConversation.seekers?.avatar_url ? (
+                                            <img src={selectedConversation.seekers.avatar_url} className="h-8 w-8 rounded-full object-cover" />
+                                        ) : <User className="h-4 w-4 text-zinc-400" />}
+                                    </div>
+                                    <h3 className="font-bold text-black">{selectedConversation.seekers?.full_name || "Candidate"}</h3>
+                                </div>
+                                <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-zinc-50/50">
+                                    {messages.length === 0 && <div className="text-center text-zinc-400 mt-10">Start the conversation...</div>}
+                                    {messages.map((msg: any) => (
+                                        <div key={msg.id} className={clsx("flex flex-col max-w-[80%]", msg.sender_id === user?.id ? "ml-auto items-end" : "items-start")}>
+                                            <div className={clsx("rounded-2xl px-4 py-2 text-sm", msg.sender_id === user?.id ? "bg-black text-white" : "bg-white border border-zinc-200 text-black shadow-sm")}>
+                                                {msg.content}
+                                            </div>
+                                            <span className="text-[10px] text-zinc-400 mt-1">{new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                        </div>
+                                    ))}
+                                    <div ref={messagesEndRef} />
+                                </div>
+                                <form onSubmit={handleSendMessage} className="p-4 border-t border-zinc-100 flex gap-2 bg-white">
+                                    <input
+                                        value={newMessage}
+                                        onChange={(e) => setNewMessage(e.target.value)}
+                                        placeholder="Type a message..."
+                                        className="flex-1 bg-zinc-50 border border-zinc-200 rounded-full px-4 py-2 text-sm text-black focus:border-black focus:outline-none"
+                                    />
+                                    <button type="submit" disabled={!newMessage.trim()} className="p-2 rounded-full bg-black text-white hover:bg-zinc-800 disabled:opacity-50 transition">
+                                        <Send className="h-4 w-4" />
+                                    </button>
+                                </form>
+                            </>
+                        ) : (
+                            <div className="flex-1 flex flex-col items-center justify-center text-zinc-400">
+                                <MessageSquare className="h-12 w-12 mb-4 opacity-10" />
+                                <p>Select a conversation to start messaging</p>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
+
+        </div>
+    </main>
+
+    {/* --- APP DETAIL MODAL --- */ }
+    {
+        selectedApp && (
+            <ApplicationDetailModal
+                app={selectedApp}
+                onClose={() => setSelectedApp(null)}
+                onStatusUpdate={handleStatusUpdate}
+                messages={messages}
+                newMessage={newMessage}
+                onSendMessage={handleSendMessage}
+                setNewMessage={setNewMessage}
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+                messagesEndRef={messagesEndRef}
+                user={user}
+            />
+        )
+    }
+
+    {/* --- SEEKER PROFILE MODAL (FROM SEARCH) --- */ }
+    {
+        selectedSeeker && (
+            <SeekerDetailModal
+                seeker={selectedSeeker}
+                onClose={() => setSelectedSeeker(null)}
+                onMessage={() => {
+                    handleMessageCandidate(selectedSeeker.id);
+                }}
+            />
+        )
+    }
 
         </div >
     );

@@ -71,21 +71,26 @@ export function useMessages(conversationId: string | null) {
         };
     }, [conversationId, user]);
 
-    const sendMessage = async (content: string) => {
-        console.log("Attempting to send message:", { conversationId, userId: user?.id, content });
+    const sendMessage = async (content: string, receiverId?: string) => {
+        console.log("Attempting to send message:", { conversationId, userId: user?.id, content, receiverId });
         if (!conversationId || !user || !content.trim()) {
             console.error("Missing required fields for sending message");
             return;
         }
 
-        // Optimistic update could go here, but let's rely on Realtime for simplicity and truth
+        const payload: any = {
+            conversation_id: conversationId,
+            sender_id: user.id,
+            content: content.trim()
+        };
+
+        if (receiverId) {
+            payload.receiver_id = receiverId;
+        }
+
         const { error } = await supabase
             .from('messages')
-            .insert({
-                conversation_id: conversationId,
-                sender_id: user.id,
-                content: content.trim()
-            });
+            .insert(payload);
 
         if (error) {
             console.error("Error sending message:", error);
