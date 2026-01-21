@@ -255,46 +255,6 @@ export default function JobDetailsPage() {
                             </div>
                         </div>
 
-                        {/* Applicants List */}
-                        <div className="glass rounded-2xl p-8 bg-white border border-zinc-200 shadow-sm">
-                            <h2 className="text-xl font-bold text-black mb-6">Applicants</h2>
-                            {applications.length === 0 ? (
-                                <p className="text-zinc-500">No applicants yet.</p>
-                            ) : (
-                                <div className="space-y-4">
-                                    {applications.map((app) => (
-                                        <div
-                                            key={app.id}
-                                            onClick={() => setSelectedApp(app)}
-                                            className="flex items-center justify-between p-4 rounded-xl border border-zinc-100 bg-zinc-50 hover:border-black/20 hover:shadow-sm cursor-pointer transition"
-                                        >
-                                            <div className="flex items-center gap-4">
-                                                <div className="h-10 w-10 rounded-full bg-zinc-200 flex items-center justify-center overflow-hidden">
-                                                    {app.seekers?.avatar_url ? (
-                                                        <img src={app.seekers.avatar_url} className="h-full w-full object-cover" />
-                                                    ) : (
-                                                        <Users className="h-5 w-5 text-zinc-400" />
-                                                    )}
-                                                </div>
-                                                <div>
-                                                    <h4 className="font-bold text-black">{app.seekers?.full_name || "Applicant"}</h4>
-                                                    <p className="text-xs text-zinc-500">Applied {new Date(app.created_at).toLocaleDateString()}</p>
-                                                </div>
-                                            </div>
-                                            <div className="flex items-center gap-3">
-                                                <span className={clsx("px-2 py-1 rounded text-xs font-bold uppercase",
-                                                    app.status === 'accepted' || app.status === 'interviewing' ? "bg-green-100 text-green-700" :
-                                                        app.status === 'rejected' ? "bg-red-100 text-red-700" : "bg-zinc-200 text-zinc-600"
-                                                )}>
-                                                    {app.status}
-                                                </span>
-                                                <ArrowLeft className="h-4 w-4 rotate-180 text-zinc-400" />
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
                     </div>
 
                     {/* Right: Sidebar / Actions */}
@@ -325,16 +285,45 @@ export default function JobDetailsPage() {
                             </div>
                         </div>
 
-                        {/* Stats */}
+                        {/* Applicants List */}
                         <div className="glass rounded-2xl p-6 bg-white border border-zinc-200 shadow-sm">
-                            <h3 className="font-bold text-black mb-4">Performance</h3>
-                            <div className="flex items-center justify-between p-4 rounded-xl bg-zinc-50 border border-zinc-100">
-                                <div className="flex items-center gap-3">
-                                    <Users className="h-5 w-5 text-zinc-500" />
-                                    <span className="text-sm font-medium text-zinc-600">Applicants</span>
+                            <h2 className="text-xl font-bold text-black mb-6">Applicants</h2>
+                            {applications.length === 0 ? (
+                                <p className="text-zinc-500">No applicants yet.</p>
+                            ) : (
+                                <div className="space-y-4">
+                                    {applications.map((app) => (
+                                        <div
+                                            key={app.id}
+                                            onClick={() => setSelectedApp(app)}
+                                            className="flex flex-col gap-2 p-3 rounded-xl border border-zinc-100 bg-zinc-50 hover:border-black/20 hover:shadow-sm cursor-pointer transition"
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <div className="h-8 w-8 rounded-full bg-zinc-200 flex items-center justify-center overflow-hidden shrink-0">
+                                                    {app.seekers?.avatar_url ? (
+                                                        <img src={app.seekers.avatar_url} className="h-full w-full object-cover" />
+                                                    ) : (
+                                                        <Users className="h-4 w-4 text-zinc-400" />
+                                                    )}
+                                                </div>
+                                                <div className="min-w-0">
+                                                    <h4 className="font-bold text-black text-sm truncate">{app.seekers?.full_name || "Applicant"}</h4>
+                                                    <p className="text-xs text-zinc-500 truncate">Applied {new Date(app.created_at).toLocaleDateString()}</p>
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center justify-between mt-1">
+                                                <span className={clsx("px-2 py-0.5 rounded text-[10px] font-bold uppercase",
+                                                    app.status === 'accepted' || app.status === 'interviewing' ? "bg-green-100 text-green-700" :
+                                                        app.status === 'rejected' ? "bg-red-100 text-red-700" : "bg-zinc-200 text-zinc-600"
+                                                )}>
+                                                    {app.status}
+                                                </span>
+                                                <ArrowLeft className="h-3 w-3 rotate-180 text-zinc-400" />
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
-                                <span className="text-2xl font-bold text-black">{applicantCount}</span>
-                            </div>
+                            )}
                         </div>
                     </div>
                 </div>
