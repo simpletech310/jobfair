@@ -73,8 +73,8 @@ export default function Home() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="glass p-1 rounded-3xl border border-zinc-200 rotate-1 hover:rotate-0 transition duration-500">
               <Image
-                src="/connection.png"
-                alt="Digital Connection"
+                src="/connection-professionals.jpg"
+                alt="Group of professionals collaborating"
                 width={600}
                 height={400}
                 className="rounded-[20px]"
