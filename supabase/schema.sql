@@ -10,6 +10,7 @@ create extension if not exists "uuid-ossp";
 create type user_role as enum ('seeker', 'employer');
 create type job_type as enum ('Full-time', 'Part-time', 'Contract', 'Freelance', 'Internship');
 create type application_status as enum ('pending', 'reviewing', 'interviewing', 'rejected', 'accepted');
+create type job_status as enum ('open', 'filled', 'on_hold', 'closed');
 
 -- SEEKERS TABLE
 create table public.seekers (
@@ -47,7 +48,8 @@ create table public.jobs (
   salary_range text,
   job_type job_type default 'Full-time',
   requirements text[],
-  is_active boolean default true,
+  status job_status default 'open', -- NEW: Replaces is_active for granular control
+  is_active boolean default true, -- DEPRECATED: Keep for backward compat if needed, but logic should move to status
   created_at timestamp with time zone default timezone('utc'::text, now())
 );
 

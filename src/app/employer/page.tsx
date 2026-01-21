@@ -191,21 +191,7 @@ export default function EmployerDashboard() {
         }
     };
 
-    const toggleJobStatus = async (jobId: string, currentStatus: boolean) => {
-        // Optimistic update
-        setJobs(jobs.map(j => j.id === jobId ? { ...j, is_active: !currentStatus } : j));
-
-        const { error } = await supabase
-            .from('jobs')
-            .update({ is_active: !currentStatus })
-            .eq('id', jobId);
-
-        if (error) {
-            // Revert
-            setJobs(jobs.map(j => j.id === jobId ? { ...j, is_active: currentStatus } : j));
-            alert("Failed to update status");
-        }
-    };
+    // Removed simple toggleJobStatus in favor of detailed management page
 
     const handleStatusUpdate = async (status: 'interviewing' | 'rejected') => {
         if (!selectedApp) return;
@@ -438,7 +424,7 @@ export default function EmployerDashboard() {
                                                 applicants: applications.filter(a => a.job_id === job.id).length,
                                                 new: applications.filter(a => a.job_id === job.id && a.status === 'pending').length
                                             }}
-                                            onToggleStatus={() => toggleJobStatus(job.id, job.is_active)}
+                                            onManage={() => router.push(`/employer/jobs/${job.id}`)}
                                             onViewApplicants={() => { setJobFilter(job.id); setCurrentView('candidates'); }}
                                         />
                                     ))}
@@ -779,14 +765,25 @@ function SeekerCard({ seeker, onClick, onMessage }: { seeker: any, onClick: () =
     );
 }
 
-function JobRow({ job, stats, onToggleStatus, onViewApplicants }: any) {
+function JobRow({ job, stats, onManage, onViewApplicants }: any) {
+    const statusColors: any = {
+        open: "bg-green-50 text-green-600 border-green-200",
+        filled: "bg-blue-50 text-blue-600 border-blue-200",
+        on_hold: "bg-orange-50 text-orange-600 border-orange-200",
+        closed: "bg-zinc-100 text-zinc-500 border-zinc-200"
+    };
+
+    // Fallback to boolean logic if status text is missing (backward compat)
+    const statusKey = job.status || (job.is_active ? 'open' : 'closed');
+    const displayStatus = (statusKey as string).replace('_', ' ').toUpperCase();
+
     return (
         <div className="glass rounded-xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 border border-zinc-200 bg-white hover:shadow-md transition">
-            <div className="flex-1">
+            <div className="flex-1 cursor-pointer" onClick={onManage}>
                 <div className="flex items-center gap-3 mb-1">
-                    <h3 className="text-lg font-bold text-black">{job.title}</h3>
-                    <span className={clsx("px-2 py-0.5 rounded-full text-[10px] font-bold border", job.is_active ? "bg-green-50 text-green-600 border-green-200" : "bg-zinc-100 text-zinc-500 border-zinc-200")}>
-                        {job.is_active ? "ACTIVE" : "CLOSED"}
+                    <h3 className="text-lg font-bold text-black hover:underline underline-offset-4 decoration-zinc-300 transition">{job.title}</h3>
+                    <span className={clsx("px-2 py-0.5 rounded-full text-[10px] font-bold border", statusColors[statusKey] || statusColors.closed)}>
+                        {displayStatus}
                     </span>
                 </div>
                 <div className="flex items-center gap-3 text-sm text-zinc-500">
@@ -809,8 +806,8 @@ function JobRow({ job, stats, onToggleStatus, onViewApplicants }: any) {
                 <button onClick={onViewApplicants} className="p-2 rounded-lg bg-zinc-50 text-zinc-500 hover:text-black hover:bg-zinc-100 transition" title="View Applicants">
                     <Users className="h-5 w-5" />
                 </button>
-                <button onClick={onToggleStatus} className={clsx("p-2 rounded-lg transition", job.is_active ? "text-zinc-400 hover:text-red-500 hover:bg-red-50" : "text-green-600 hover:bg-green-50")} title={job.is_active ? "Close Job" : "Activate Job"}>
-                    {job.is_active ? <XCircle className="h-5 w-5" /> : <CheckCircle className="h-5 w-5" />}
+                <button onClick={onManage} className="px-4 py-2 rounded-lg bg-black text-white text-sm font-bold hover:bg-zinc-800 transition shadow-sm">
+                    Manage
                 </button>
             </div>
         </div>
