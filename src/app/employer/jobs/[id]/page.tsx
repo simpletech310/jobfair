@@ -11,11 +11,16 @@ import {
     Clock,
     Users,
     Building,
-    AlertCircle,
     CheckCircle2,
     XCircle,
-    PauseCircle
+    PauseCircle,
+    Edit,
+    Trash2,
+    MessageSquare,
+    FileText
 } from "lucide-react";
+import ApplicationDetailModal from "@/components/ApplicationDetailModal";
+import { useMessages } from "@/hooks/useMessages";
 import { clsx } from "clsx";
 
 export default function JobDetailsPage() {
@@ -28,6 +33,44 @@ export default function JobDetailsPage() {
     const [loading, setLoading] = useState(true);
     const [updating, setUpdating] = useState(false);
     const [applicantCount, setApplicantCount] = useState(0);
+    const [applications, setApplications] = useState<any[]>([]);
+    const [selectedApp, setSelectedApp] = useState<any>(null);
+
+    // Messages Logic
+    const { messages, sendMessage } = useMessages(selectedApp?.id || null);
+    const [newMessage, setNewMessage] = useState("");
+    const [activeTab, setActiveTab] = useState<'profile' | 'resume' | 'messages'>('profile');
+    const [user, setUser] = useState<any>(null); // For messages context
+
+    // Auth Check
+    useEffect(() => {
+        const checkUser = async () => {
+            const { data: { user } } = await supabase.auth.getUser();
+            setUser(user);
+        };
+        checkUser();
+    }, []);
+
+    // Load messages when app is selected
+    // Manual fetch removed.
+
+    const handleSendMessage = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!newMessage.trim() || !selectedApp || !user) return;
+
+        await sendMessage(newMessage); // arguments handled by hook closure
+        setNewMessage("");
+    };
+
+    const handleAppStatusUpdate = async (status: 'interviewing' | 'rejected') => {
+        if (!selectedApp) return;
+        const { error } = await supabase.from('applications').update({ status }).eq('id', selectedApp.id);
+        if (!error) {
+            setSelectedApp({ ...selectedApp, status });
+            setApplications(applications.map(a => a.id === selectedApp.id ? { ...a, status } : a));
+        }
+    };
+
 
     useEffect(() => {
         loadJob();
@@ -50,6 +93,16 @@ export default function JobDetailsPage() {
                 .from('applications')
                 .select('*', { count: 'exact', head: true })
                 .eq('job_id', jobId);
+
+            // Get actual applications with profiles
+            const { data: apps, error: appsError } = await supabase
+                .from('applications')
+                .select('*, seekers(*), jobs(title)')
+                .eq('job_id', jobId)
+                .order('created_at', { ascending: false });
+
+            if (!countError) setApplicantCount(count || 0);
+            if (!appsError) setApplications(apps || []);
 
             if (!countError) setApplicantCount(count || 0);
 
@@ -79,6 +132,29 @@ export default function JobDetailsPage() {
         } catch (error) {
             console.error("Error updating status:", error);
             alert("Failed to update status");
+        } finally {
+            setUpdating(false);
+        }
+    };
+
+    const handleDeleteJob = async () => {
+        if (!confirm("Are you sure you want to delete this job? This action cannot be undone.")) return;
+        setUpdating(true);
+        // Note: Hard delete might fail if foreign keys exist (applications). 
+        // We'll try hard delete, if it fails, we typically soft delete (status=closed/deleted).
+        // Since we have a 'closed' status, maybe just force close? 
+        // But user asked for delete. Let's try direct delete first (works if valid cascade).
+        // If not cascade, we must delete apps first.
+        try {
+            // Option: cascading delete manually since Supabase FK might not cascade by default
+            await supabase.from('applications').delete().eq('job_id', jobId); // Hazardous if we want to keep history?
+
+            const { error } = await supabase.from('jobs').delete().eq('id', jobId);
+            if (error) throw error;
+            router.push('/employer');
+        } catch (error) {
+            console.error(error);
+            alert("Failed to delete job. It may have active dependencies.");
         } finally {
             setUpdating(false);
         }
@@ -139,6 +215,23 @@ export default function JobDetailsPage() {
                                 </div>
                             </div>
 
+                            <div className="flex gap-3 mb-6">
+                                <button
+                                    onClick={() => router.push(`/employer/jobs/${jobId}/edit`)}
+                                    className="flex items-center gap-2 px-4 py-2 rounded-xl border border-zinc-200 text-sm font-bold text-black hover:bg-zinc-50 transition"
+                                >
+                                    <Edit className="h-4 w-4" />
+                                    Edit Job
+                                </button>
+                                <button
+                                    onClick={handleDeleteJob}
+                                    className="flex items-center gap-2 px-4 py-2 rounded-xl border border-red-200 text-sm font-bold text-red-600 hover:bg-red-50 transition"
+                                >
+                                    <Trash2 className="h-4 w-4" />
+                                    Delete
+                                </button>
+                            </div>
+
                             <div className="flex flex-wrap gap-2 mb-8">
                                 <span className="px-3 py-1 rounded-lg bg-zinc-100 text-sm font-medium border border-zinc-200">{job.job_type}</span>
                                 <span className="px-3 py-1 rounded-lg bg-zinc-100 text-sm font-medium border border-zinc-200">{job.salary_range}</span>
@@ -160,6 +253,47 @@ export default function JobDetailsPage() {
                                     </div>
                                 )}
                             </div>
+                        </div>
+
+                        {/* Applicants List */}
+                        <div className="glass rounded-2xl p-8 bg-white border border-zinc-200 shadow-sm">
+                            <h2 className="text-xl font-bold text-black mb-6">Applicants</h2>
+                            {applications.length === 0 ? (
+                                <p className="text-zinc-500">No applicants yet.</p>
+                            ) : (
+                                <div className="space-y-4">
+                                    {applications.map((app) => (
+                                        <div
+                                            key={app.id}
+                                            onClick={() => setSelectedApp(app)}
+                                            className="flex items-center justify-between p-4 rounded-xl border border-zinc-100 bg-zinc-50 hover:border-black/20 hover:shadow-sm cursor-pointer transition"
+                                        >
+                                            <div className="flex items-center gap-4">
+                                                <div className="h-10 w-10 rounded-full bg-zinc-200 flex items-center justify-center overflow-hidden">
+                                                    {app.seekers?.avatar_url ? (
+                                                        <img src={app.seekers.avatar_url} className="h-full w-full object-cover" />
+                                                    ) : (
+                                                        <Users className="h-5 w-5 text-zinc-400" />
+                                                    )}
+                                                </div>
+                                                <div>
+                                                    <h4 className="font-bold text-black">{app.seekers?.full_name || "Applicant"}</h4>
+                                                    <p className="text-xs text-zinc-500">Applied {new Date(app.created_at).toLocaleDateString()}</p>
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center gap-3">
+                                                <span className={clsx("px-2 py-1 rounded text-xs font-bold uppercase",
+                                                    app.status === 'accepted' || app.status === 'interviewing' ? "bg-green-100 text-green-700" :
+                                                        app.status === 'rejected' ? "bg-red-100 text-red-700" : "bg-zinc-200 text-zinc-600"
+                                                )}>
+                                                    {app.status}
+                                                </span>
+                                                <ArrowLeft className="h-4 w-4 rotate-180 text-zinc-400" />
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     </div>
 
@@ -205,6 +339,21 @@ export default function JobDetailsPage() {
                     </div>
                 </div>
             </main>
+
+            {selectedApp && (
+                <ApplicationDetailModal
+                    app={selectedApp}
+                    onClose={() => setSelectedApp(null)}
+                    onStatusUpdate={handleAppStatusUpdate}
+                    messages={messages}
+                    newMessage={newMessage}
+                    onSendMessage={handleSendMessage}
+                    setNewMessage={setNewMessage}
+                    activeTab={activeTab}
+                    setActiveTab={setActiveTab}
+                    user={user}
+                />
+            )}
         </div>
     );
 }
