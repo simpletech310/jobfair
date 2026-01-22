@@ -501,7 +501,7 @@ export default function ApplyPage() {
     return (
         <div className="min-h-screen pb-24 font-sans selection:bg-zinc-200 bg-zinc-50">
             {/* Background */}
-            <div className="fixed inset-0 bg-white pointer-events-none" />
+            <div className="fixed inset-0 bg-zinc-50 pointer-events-none" />
 
             {/* Header */}
             <div className="fixed top-0 z-50 w-full border-b border-zinc-200 bg-white/80 backdrop-blur-md">

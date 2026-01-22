@@ -140,8 +140,7 @@ export default function EmployerProfile() {
             )}>
                 <div className="flex flex-col h-full">
                     <div className="h-16 flex items-center px-6 border-b border-zinc-100">
-                        <div className="h-8 w-8 rounded-lg bg-black flex items-center justify-center font-bold text-white shadow-md mr-3">J</div>
-                        <span className="text-lg font-bold text-black tracking-tight">JobFair</span>
+                        <img src="/logo.png" alt="JobFair" className="h-8 w-auto object-contain mr-3" />
                     </div>
 
                     <nav className="flex-1 p-4 space-y-1">
