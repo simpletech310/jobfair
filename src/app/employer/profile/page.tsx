@@ -119,6 +119,7 @@ export default function EmployerProfile() {
     };
 
     if (authLoading || loading) return <div className="min-h-screen bg-white flex items-center justify-center"><Loader2 className="animate-spin text-black" /></div>;
+    if (!user) return null;
 
     const navItems = [
         { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
