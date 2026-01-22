@@ -60,6 +60,9 @@ export default function EditProfile() {
     const [confirmText, setConfirmText] = useState("");
     const [isDeleting, setIsDeleting] = useState(false);
 
+    // Toggle State
+    const [mode, setMode] = useState<'edit' | 'preview'>('edit');
+
     const handleDeleteAccount = async () => {
         if (confirmText !== "DELETE") return;
 
@@ -175,6 +178,7 @@ export default function EditProfile() {
             {/* Header */}
             <header className="sticky top-0 z-10 w-full border-b border-zinc-200 bg-white/80 backdrop-blur-md">
                 <div className="mx-auto flex h-16 max-w-2xl items-center justify-between px-6">
+
                     <div className="flex items-center gap-4">
                         <button
                             onClick={() => router.back()}
@@ -182,35 +186,55 @@ export default function EditProfile() {
                         >
                             <ArrowLeft className="h-5 w-5" />
                         </button>
-                        <h1 className="text-lg font-bold text-black">Edit Profile</h1>
+
+                        {/* Toggle */}
+                        <div className="flex p-1 rounded-lg bg-zinc-100 border border-zinc-200">
+                            <button
+                                onClick={() => setMode('edit')}
+                                className={`px-3 py-1.5 rounded-md text-xs font-bold transition flex items-center gap-2 ${mode === 'edit' ? 'bg-white text-black shadow-sm' : 'text-zinc-500 hover:text-black'}`}
+                            >
+                                <Briefcase className="h-3 w-3" /> Edit
+                            </button>
+                            <button
+                                onClick={() => setMode('preview')}
+                                className={`px-3 py-1.5 rounded-md text-xs font-bold transition flex items-center gap-2 ${mode === 'preview' ? 'bg-white text-black shadow-sm' : 'text-zinc-500 hover:text-black'}`}
+                            >
+                                <User className="h-3 w-3" /> Preview
+                            </button>
+                        </div>
                     </div>
-                    <button
-                        onClick={handleSave}
-                        disabled={isSubmitting}
-                        className="rounded-full bg-black px-6 py-2 text-sm font-bold text-white shadow-lg hover:bg-zinc-800 disabled:opacity-50"
-                    >
-                        {isSubmitting ? "Saving..." : "Save"}
-                    </button>
+
+                    {mode === 'edit' && (
+                        <button
+                            onClick={handleSave}
+                            disabled={isSubmitting}
+                            className="rounded-full bg-black px-6 py-2 text-sm font-bold text-white shadow-lg hover:bg-zinc-800 disabled:opacity-50"
+                        >
+                            {isSubmitting ? "Saving..." : "Save"}
+                        </button>
+                    )}
                 </div>
             </header>
 
             <main className="relative mx-auto max-w-2xl p-6">
 
-                {/* Tabs */}
-                <div className="mb-8 flex rounded-xl bg-white p-1 border border-zinc-200">
-                    <button
-                        onClick={() => setActiveTab('info')}
-                        className={`flex-1 rounded-lg py-2.5 text-sm font-bold transition ${activeTab === 'info' ? 'bg-zinc-100 text-black shadow' : 'text-zinc-400 hover:text-zinc-600'}`}
-                    >
-                        Basic Info
-                    </button>
-                    <button
-                        onClick={() => setActiveTab('media')}
-                        className={`flex-1 rounded-lg py-2.5 text-sm font-bold transition ${activeTab === 'media' ? 'bg-zinc-100 text-black shadow' : 'text-zinc-400 hover:text-zinc-600'}`}
-                    >
-                        Media & Resume
-                    </button>
-                </div>
+                {/* Tabs - Only show in Edit Mode */}
+                {mode === 'edit' && (
+                    <div className="mb-8 flex rounded-xl bg-white p-1 border border-zinc-200">
+                        <button
+                            onClick={() => setActiveTab('info')}
+                            className={`flex-1 rounded-lg py-2.5 text-sm font-bold transition ${activeTab === 'info' ? 'bg-zinc-100 text-black shadow' : 'text-zinc-400 hover:text-zinc-600'}`}
+                        >
+                            Basic Info
+                        </button>
+                        <button
+                            onClick={() => setActiveTab('media')}
+                            className={`flex-1 rounded-lg py-2.5 text-sm font-bold transition ${activeTab === 'media' ? 'bg-zinc-100 text-black shadow' : 'text-zinc-400 hover:text-zinc-600'}`}
+                        >
+                            Media & Resume
+                        </button>
+                    </div>
+                )}
 
                 {activeTab === 'info' ? (
                     <div className="space-y-6 animate-fade-in">
@@ -329,6 +353,79 @@ export default function EditProfile() {
                                 existingFileName={resumeName}
                                 userId={user?.id || ""}
                             />
+                        </div>
+                    </div>
+                )}
+
+                {/* Preview Mode */}
+                {mode === 'preview' && (
+                    <div className="animate-fade-in space-y-8">
+                        {/* Profile Card */}
+                        <div className="bg-white rounded-3xl p-8 border border-zinc-200 shadow-sm text-center">
+                            <div className="h-32 w-32 rounded-full bg-zinc-100 mx-auto mb-6 flex items-center justify-center overflow-hidden border-4 border-white shadow-xl">
+                                {photoUrl ? (
+                                    <img src={photoUrl} alt="Profile" className="h-full w-full object-cover" />
+                                ) : (
+                                    <User className="h-12 w-12 text-zinc-300" />
+                                )}
+                            </div>
+                            <h1 className="text-3xl font-extrabold text-black tracking-tight mb-2">{formData.full_name || "Your Name"}</h1>
+                            <p className="text-lg text-zinc-500 font-medium mb-4">{formData.title || "Your Title"}</p>
+
+                            <div className="flex justify-center gap-2 mb-6">
+                                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black text-white text-xs font-bold">
+                                    <Briefcase className="h-3 w-3" /> {experienceYears} Years Exp
+                                </span>
+                            </div>
+
+                            {/* Skills */}
+                            {formData.skills && (
+                                <div className="flex flex-wrap justify-center gap-2">
+                                    {formData.skills.split(",").map((skill, i) => (
+                                        <span key={i} className="px-3 py-1.5 bg-zinc-100 text-zinc-600 rounded-lg text-xs font-bold border border-zinc-200">
+                                            {skill.trim()}
+                                        </span>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Video & Bio Grid */}
+                        <div className="grid gap-6">
+                            {/* Video */}
+                            {videoUrl && (
+                                <div className="bg-black rounded-3xl overflow-hidden shadow-xl border border-zinc-800 aspect-video relative group">
+                                    <video src={videoUrl} controls className="w-full h-full object-cover" />
+                                </div>
+                            )}
+
+                            {/* Bio */}
+                            <div className="bg-white rounded-3xl p-8 border border-zinc-200 shadow-sm">
+                                <h3 className="text-sm font-bold uppercase text-zinc-400 mb-4 flex items-center gap-2">
+                                    <User className="h-4 w-4" /> About Me
+                                </h3>
+                                <p className="text-zinc-600 leading-relaxed whitespace-pre-line">
+                                    {formData.bio || "No bio provided yet."}
+                                </p>
+                            </div>
+
+                            {/* Resume */}
+                            <div className="bg-white rounded-3xl p-8 border border-zinc-200 shadow-sm flex items-center justify-between">
+                                <div className="flex items-center gap-4">
+                                    <div className="h-12 w-12 rounded-2xl bg-zinc-100 flex items-center justify-center text-zinc-400">
+                                        <FileText className="h-6 w-6" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-black font-bold text-sm">Resume / CV</h3>
+                                        <p className="text-xs text-zinc-500">{resumeName || "No resume uploaded"}</p>
+                                    </div>
+                                </div>
+                                {resumeUrl && (
+                                    <a href={resumeUrl} target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-black text-white text-xs font-bold rounded-full hover:bg-zinc-800 transition">
+                                        Download
+                                    </a>
+                                )}
+                            </div>
                         </div>
                     </div>
                 )}
