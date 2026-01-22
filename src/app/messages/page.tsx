@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, Suspense } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
@@ -10,7 +10,7 @@ import { useMessages } from "@/hooks/useMessages";
 
 import { useSearchParams } from "next/navigation";
 
-export default function SeekerMessagesPage() {
+function MessagesContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const targetEmployerId = searchParams.get('employerId');
@@ -249,5 +249,13 @@ export default function SeekerMessagesPage() {
 
             </div>
         </div>
+    );
+}
+
+export default function SeekerMessagesPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="animate-spin" /></div>}>
+            <MessagesContent />
+        </Suspense>
     );
 }
