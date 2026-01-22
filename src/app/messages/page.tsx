@@ -47,8 +47,7 @@ function MessagesContent() {
                 employers (
                     id,
                     company_name,
-                    company_logo_url,
-                    industry
+                    company_logo_url
                 )
             `)
             .eq('seeker_id', user.id)
