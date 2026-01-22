@@ -232,7 +232,7 @@ function ApplicationContent() {
 
     if (submittedId) {
         return (
-            <div className="flex min-h-screen flex-col items-center justify-center p-6 text-center">
+            <div className="flex min-h-screen flex-col items-center justify-center p-6 text-center relative z-10">
                 <div className="glass w-full max-w-md rounded-3xl p-10 animate-fade-in border border-zinc-200 bg-white">
                     <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-green-50 shadow-xl border border-green-100">
                         <CheckCircle className="h-10 w-10 text-green-600" />
