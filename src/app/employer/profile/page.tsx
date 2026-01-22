@@ -292,83 +292,83 @@ export default function EmployerProfile() {
                                             placeholder="https://acme.com"
                                         />
                                     </div>
-                                    </div>
-                                </div>
-
-                                <div className="space-y-4 pt-4 border-t border-zinc-100">
-                                    <h4 className="text-sm font-bold text-zinc-900">Social Profiles</h4>
-                                    <div className="grid md:grid-cols-2 gap-4">
-                                        <div className="relative">
-                                            <Linkedin className="absolute left-4 top-3.5 h-5 w-5 text-zinc-400" />
-                                            <input
-                                                value={socialLinks.linkedin}
-                                                onChange={(e) => setSocialLinks({ ...socialLinks, linkedin: e.target.value })}
-                                                className="w-full bg-zinc-50 border border-zinc-200 rounded-xl pl-12 pr-4 py-3 text-black focus:outline-none focus:border-black transition"
-                                                placeholder="LinkedIn URL"
-                                            />
-                                        </div>
-                                        <div className="relative">
-                                            <Globe className="absolute left-4 top-3.5 h-5 w-5 text-zinc-400" />
-                                            <input
-                                                value={socialLinks.twitter}
-                                                onChange={(e) => setSocialLinks({ ...socialLinks, twitter: e.target.value })}
-                                                className="w-full bg-zinc-50 border border-zinc-200 rounded-xl pl-12 pr-4 py-3 text-black focus:outline-none focus:border-black transition"
-                                                placeholder="Twitter / X URL"
-                                            />
-                                        </div>
-                                        <div className="relative">
-                                            <Facebook className="absolute left-4 top-3.5 h-5 w-5 text-zinc-400" />
-                                            <input
-                                                value={socialLinks.facebook}
-                                                onChange={(e) => setSocialLinks({ ...socialLinks, facebook: e.target.value })}
-                                                className="w-full bg-zinc-50 border border-zinc-200 rounded-xl pl-12 pr-4 py-3 text-black focus:outline-none focus:border-black transition"
-                                                placeholder="Facebook URL"
-                                            />
-                                        </div>
-                                        <div className="relative">
-                                            <Instagram className="absolute left-4 top-3.5 h-5 w-5 text-zinc-400" />
-                                            <input
-                                                value={socialLinks.instagram}
-                                                onChange={(e) => setSocialLinks({ ...socialLinks, instagram: e.target.value })}
-                                                className="w-full bg-zinc-50 border border-zinc-200 rounded-xl pl-12 pr-4 py-3 text-black focus:outline-none focus:border-black transition"
-                                                placeholder="Instagram URL"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="space-y-2">
-                                    <label className="text-sm font-bold text-zinc-700">Our Mission</label>
-                                    <textarea
-                                        value={mission}
-                                        onChange={(e) => setMission(e.target.value)}
-                                        className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 text-black focus:outline-none focus:border-black transition min-h-[100px]"
-                                        placeholder="What drives your company?"
-                                    />
-                                </div>
-
-                                <div className="space-y-2">
-                                    <label className="text-sm font-bold text-zinc-700">Culture & Values</label>
-                                    <textarea
-                                        value={culture}
-                                        onChange={(e) => setCulture(e.target.value)}
-                                        className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 text-black focus:outline-none focus:border-black transition min-h-[100px]"
-                                        placeholder="Describe your work environment..."
-                                    />
                                 </div>
                             </div>
 
-                            <div className="flex justify-end pt-4">
-                                <button
-                                    type="submit"
-                                    disabled={saving}
-                                    className="flex items-center gap-2 bg-black hover:bg-zinc-800 text-white font-bold py-4 px-8 rounded-xl shadow-lg transition disabled:opacity-50"
-                                >
-                                    {saving ? <Loader2 className="animate-spin" /> : <Save className="h-5 w-5" />}
-                                    Save Profile
-                                </button>
+                            <div className="space-y-4 pt-4 border-t border-zinc-100">
+                                <h4 className="text-sm font-bold text-zinc-900">Social Profiles</h4>
+                                <div className="grid md:grid-cols-2 gap-4">
+                                    <div className="relative">
+                                        <Linkedin className="absolute left-4 top-3.5 h-5 w-5 text-zinc-400" />
+                                        <input
+                                            value={socialLinks.linkedin}
+                                            onChange={(e) => setSocialLinks({ ...socialLinks, linkedin: e.target.value })}
+                                            className="w-full bg-zinc-50 border border-zinc-200 rounded-xl pl-12 pr-4 py-3 text-black focus:outline-none focus:border-black transition"
+                                            placeholder="LinkedIn URL"
+                                        />
+                                    </div>
+                                    <div className="relative">
+                                        <Globe className="absolute left-4 top-3.5 h-5 w-5 text-zinc-400" />
+                                        <input
+                                            value={socialLinks.twitter}
+                                            onChange={(e) => setSocialLinks({ ...socialLinks, twitter: e.target.value })}
+                                            className="w-full bg-zinc-50 border border-zinc-200 rounded-xl pl-12 pr-4 py-3 text-black focus:outline-none focus:border-black transition"
+                                            placeholder="Twitter / X URL"
+                                        />
+                                    </div>
+                                    <div className="relative">
+                                        <Facebook className="absolute left-4 top-3.5 h-5 w-5 text-zinc-400" />
+                                        <input
+                                            value={socialLinks.facebook}
+                                            onChange={(e) => setSocialLinks({ ...socialLinks, facebook: e.target.value })}
+                                            className="w-full bg-zinc-50 border border-zinc-200 rounded-xl pl-12 pr-4 py-3 text-black focus:outline-none focus:border-black transition"
+                                            placeholder="Facebook URL"
+                                        />
+                                    </div>
+                                    <div className="relative">
+                                        <Instagram className="absolute left-4 top-3.5 h-5 w-5 text-zinc-400" />
+                                        <input
+                                            value={socialLinks.instagram}
+                                            onChange={(e) => setSocialLinks({ ...socialLinks, instagram: e.target.value })}
+                                            className="w-full bg-zinc-50 border border-zinc-200 rounded-xl pl-12 pr-4 py-3 text-black focus:outline-none focus:border-black transition"
+                                            placeholder="Instagram URL"
+                                        />
+                                    </div>
+                                </div>
                             </div>
-                        </form>
+
+                            <div className="space-y-2">
+                                <label className="text-sm font-bold text-zinc-700">Our Mission</label>
+                                <textarea
+                                    value={mission}
+                                    onChange={(e) => setMission(e.target.value)}
+                                    className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 text-black focus:outline-none focus:border-black transition min-h-[100px]"
+                                    placeholder="What drives your company?"
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-sm font-bold text-zinc-700">Culture & Values</label>
+                                <textarea
+                                    value={culture}
+                                    onChange={(e) => setCulture(e.target.value)}
+                                    className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 text-black focus:outline-none focus:border-black transition min-h-[100px]"
+                                    placeholder="Describe your work environment..."
+                                />
+                            </div>
+                        </div>
+
+                <div className="flex justify-end pt-4">
+                    <button
+                        type="submit"
+                        disabled={saving}
+                        className="flex items-center gap-2 bg-black hover:bg-zinc-800 text-white font-bold py-4 px-8 rounded-xl shadow-lg transition disabled:opacity-50"
+                    >
+                        {saving ? <Loader2 className="animate-spin" /> : <Save className="h-5 w-5" />}
+                        Save Profile
+                    </button>
+                </div>
+            </form>
                 ) : (
                 <div className="bg-zinc-50 rounded-3xl p-6 border border-zinc-200 animate-fade-in">
                     {/* Preview matches /companies/[id] layout structure but inlined */}
