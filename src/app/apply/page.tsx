@@ -202,6 +202,18 @@ function ApplicationContent() {
 
             if (error) {
                 if (error.code === '23505') { // Unique violation
+                    // Fetch the existing application to show success screen
+                    const { data: existingApp } = await supabase
+                        .from('applications')
+                        .select('id')
+                        .eq('job_id', jobId)
+                        .eq('seeker_id', user.id)
+                        .single();
+
+                    if (existingApp) {
+                        setSubmittedId(existingApp.id);
+                        return;
+                    }
                     alert("You have already applied for this job.");
                 } else {
                     throw error;
