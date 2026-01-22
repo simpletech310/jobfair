@@ -242,170 +242,174 @@ export default function EditProfile() {
                     </div>
                 )}
 
-                {activeTab === 'info' ? (
-                    <div className="space-y-6 animate-fade-in">
+                {mode === 'edit' && (
+                    <>
+                        {activeTab === 'info' ? (
+                            <div className="space-y-6 animate-fade-in">
 
-                        {/* Basic Fields */}
-                        <div className="glass rounded-2xl p-6 space-y-4 border border-zinc-200 bg-white">
-                            <div className="flex justify-center mb-6">
-                                <PhotoUploader
-                                    userId={user?.id || ""}
-                                    existingPhotoUrl={photoUrl}
-                                    onUploadComplete={setPhotoUrl}
-                                />
-                            </div>
+                                {/* Basic Fields */}
+                                <div className="glass rounded-2xl p-6 space-y-4 border border-zinc-200 bg-white">
+                                    <div className="flex justify-center mb-6">
+                                        <PhotoUploader
+                                            userId={user?.id || ""}
+                                            existingPhotoUrl={photoUrl}
+                                            onUploadComplete={setPhotoUrl}
+                                        />
+                                    </div>
 
-                            <h2 className="text-sm font-bold uppercase text-zinc-400 mb-4 flex items-center gap-2">
-                                <User className="h-4 w-4" /> Personal Details
-                            </h2>
+                                    <h2 className="text-sm font-bold uppercase text-zinc-400 mb-4 flex items-center gap-2">
+                                        <User className="h-4 w-4" /> Personal Details
+                                    </h2>
 
-                            <div className="space-y-1">
-                                <label className="text-xs text-zinc-500">Full Name</label>
-                                <input
-                                    value={formData.full_name}
-                                    onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
-                                    placeholder="Jane Doe"
-                                    className="w-full bg-zinc-50 border border-zinc-200 rounded-xl p-3 text-black focus:outline-none focus:border-black"
-                                />
-                            </div>
-                            <div className="space-y-1">
-                                <label className="text-xs text-zinc-500">Professional Title</label>
-                                <input
-                                    value={formData.title}
-                                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                                    placeholder="e.g. Senior Product Designer"
-                                    className="w-full bg-zinc-50 border border-zinc-200 rounded-xl p-3 text-black focus:outline-none focus:border-black"
-                                />
-                            </div>
-                            <div className="space-y-1">
-                                <label className="text-xs text-zinc-500">Bio</label>
-                                <textarea
-                                    value={formData.bio}
-                                    onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-                                    placeholder="Tell us about yourself..."
-                                    rows={4}
-                                    className="w-full bg-zinc-50 border border-zinc-200 rounded-xl p-3 text-black focus:outline-none focus:border-black"
-                                />
-                            </div>
-                            <div className="space-y-1">
-                                <label className="text-xs text-zinc-500">Skills (Comma separated)</label>
-                                <input
-                                    value={formData.skills}
-                                    onChange={(e) => setFormData({ ...formData, skills: e.target.value })}
-                                    placeholder="Figma, React, UX Research"
-                                    className="w-full bg-zinc-50 border border-zinc-200 rounded-xl p-3 text-black focus:outline-none focus:border-black"
-                                />
-                            </div>
-                            <div className="space-y-1">
-                                <label className="text-xs text-zinc-500">Years of Experience</label>
-                                <input
-                                    type="number"
-                                    value={experienceYears}
-                                    onChange={(e) => setExperienceYears(parseInt(e.target.value) || 0)}
-                                    className="w-full bg-zinc-50 border border-zinc-200 rounded-xl p-3 text-black focus:outline-none focus:border-black"
-                                />
-                            </div>
-                        </div>
-
-                        {/* Social Links */}
-                        <div className="glass rounded-2xl p-6 space-y-4 border border-zinc-200 bg-white">
-                            <h2 className="text-sm font-bold uppercase text-zinc-400 mb-4 flex items-center gap-2">
-                                <Globe className="h-4 w-4" /> Social Profile
-                            </h2>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="space-y-1">
-                                    <label className="text-xs text-zinc-500 flex items-center gap-1"><Linkedin className="h-3 w-3" /> LinkedIn</label>
-                                    <input
-                                        value={formData.socialLinks.linkedin}
-                                        onChange={(e) => setFormData({ ...formData, socialLinks: { ...formData.socialLinks, linkedin: e.target.value } })}
-                                        placeholder="Profile URL"
-                                        className="w-full bg-zinc-50 border border-zinc-200 rounded-xl p-3 text-black focus:outline-none focus:border-black"
-                                    />
+                                    <div className="space-y-1">
+                                        <label className="text-xs text-zinc-500">Full Name</label>
+                                        <input
+                                            value={formData.full_name}
+                                            onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
+                                            placeholder="Jane Doe"
+                                            className="w-full bg-zinc-50 border border-zinc-200 rounded-xl p-3 text-black focus:outline-none focus:border-black"
+                                        />
+                                    </div>
+                                    <div className="space-y-1">
+                                        <label className="text-xs text-zinc-500">Professional Title</label>
+                                        <input
+                                            value={formData.title}
+                                            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                                            placeholder="e.g. Senior Product Designer"
+                                            className="w-full bg-zinc-50 border border-zinc-200 rounded-xl p-3 text-black focus:outline-none focus:border-black"
+                                        />
+                                    </div>
+                                    <div className="space-y-1">
+                                        <label className="text-xs text-zinc-500">Bio</label>
+                                        <textarea
+                                            value={formData.bio}
+                                            onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
+                                            placeholder="Tell us about yourself..."
+                                            rows={4}
+                                            className="w-full bg-zinc-50 border border-zinc-200 rounded-xl p-3 text-black focus:outline-none focus:border-black"
+                                        />
+                                    </div>
+                                    <div className="space-y-1">
+                                        <label className="text-xs text-zinc-500">Skills (Comma separated)</label>
+                                        <input
+                                            value={formData.skills}
+                                            onChange={(e) => setFormData({ ...formData, skills: e.target.value })}
+                                            placeholder="Figma, React, UX Research"
+                                            className="w-full bg-zinc-50 border border-zinc-200 rounded-xl p-3 text-black focus:outline-none focus:border-black"
+                                        />
+                                    </div>
+                                    <div className="space-y-1">
+                                        <label className="text-xs text-zinc-500">Years of Experience</label>
+                                        <input
+                                            type="number"
+                                            value={experienceYears}
+                                            onChange={(e) => setExperienceYears(parseInt(e.target.value) || 0)}
+                                            className="w-full bg-zinc-50 border border-zinc-200 rounded-xl p-3 text-black focus:outline-none focus:border-black"
+                                        />
+                                    </div>
                                 </div>
-                                <div className="space-y-1">
-                                    <label className="text-xs text-zinc-500 flex items-center gap-1"><Github className="h-3 w-3" /> GitHub</label>
-                                    <input
-                                        value={formData.socialLinks.github}
-                                        onChange={(e) => setFormData({ ...formData, socialLinks: { ...formData.socialLinks, github: e.target.value } })}
-                                        placeholder="Profile URL"
-                                        className="w-full bg-zinc-50 border border-zinc-200 rounded-xl p-3 text-black focus:outline-none focus:border-black"
-                                    />
+
+                                {/* Social Links */}
+                                <div className="glass rounded-2xl p-6 space-y-4 border border-zinc-200 bg-white">
+                                    <h2 className="text-sm font-bold uppercase text-zinc-400 mb-4 flex items-center gap-2">
+                                        <Globe className="h-4 w-4" /> Social Profile
+                                    </h2>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="space-y-1">
+                                            <label className="text-xs text-zinc-500 flex items-center gap-1"><Linkedin className="h-3 w-3" /> LinkedIn</label>
+                                            <input
+                                                value={formData.socialLinks.linkedin}
+                                                onChange={(e) => setFormData({ ...formData, socialLinks: { ...formData.socialLinks, linkedin: e.target.value } })}
+                                                placeholder="Profile URL"
+                                                className="w-full bg-zinc-50 border border-zinc-200 rounded-xl p-3 text-black focus:outline-none focus:border-black"
+                                            />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-xs text-zinc-500 flex items-center gap-1"><Github className="h-3 w-3" /> GitHub</label>
+                                            <input
+                                                value={formData.socialLinks.github}
+                                                onChange={(e) => setFormData({ ...formData, socialLinks: { ...formData.socialLinks, github: e.target.value } })}
+                                                placeholder="Profile URL"
+                                                className="w-full bg-zinc-50 border border-zinc-200 rounded-xl p-3 text-black focus:outline-none focus:border-black"
+                                            />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-xs text-zinc-500 flex items-center gap-1"><Globe className="h-3 w-3" /> Portfolio / Website</label>
+                                            <input
+                                                value={formData.socialLinks.website}
+                                                onChange={(e) => setFormData({ ...formData, socialLinks: { ...formData.socialLinks, website: e.target.value } })}
+                                                placeholder="https://..."
+                                                className="w-full bg-zinc-50 border border-zinc-200 rounded-xl p-3 text-black focus:outline-none focus:border-black"
+                                            />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-xs text-zinc-500 flex items-center gap-1"><Instagram className="h-3 w-3" /> Instagram</label>
+                                            <input
+                                                value={formData.socialLinks.instagram}
+                                                onChange={(e) => setFormData({ ...formData, socialLinks: { ...formData.socialLinks, instagram: e.target.value } })}
+                                                placeholder="Profile URL"
+                                                className="w-full bg-zinc-50 border border-zinc-200 rounded-xl p-3 text-black focus:outline-none focus:border-black"
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="space-y-1">
-                                    <label className="text-xs text-zinc-500 flex items-center gap-1"><Globe className="h-3 w-3" /> Portfolio / Website</label>
-                                    <input
-                                        value={formData.socialLinks.website}
-                                        onChange={(e) => setFormData({ ...formData, socialLinks: { ...formData.socialLinks, website: e.target.value } })}
-                                        placeholder="https://..."
-                                        className="w-full bg-zinc-50 border border-zinc-200 rounded-xl p-3 text-black focus:outline-none focus:border-black"
-                                    />
-                                </div>
-                                <div className="space-y-1">
-                                    <label className="text-xs text-zinc-500 flex items-center gap-1"><Instagram className="h-3 w-3" /> Instagram</label>
-                                    <input
-                                        value={formData.socialLinks.instagram}
-                                        onChange={(e) => setFormData({ ...formData, socialLinks: { ...formData.socialLinks, instagram: e.target.value } })}
-                                        placeholder="Profile URL"
-                                        className="w-full bg-zinc-50 border border-zinc-200 rounded-xl p-3 text-black focus:outline-none focus:border-black"
-                                    />
+
+                                {/* Delete Account Section */}
+                                <div className="glass rounded-2xl p-6 border border-zinc-200 bg-white space-y-4">
+                                    <h2 className="text-sm font-bold uppercase text-red-500 mb-4 flex items-center gap-2">
+                                        <Trash2 className="h-4 w-4" /> Danger Zone
+                                    </h2>
+                                    <p className="text-xs text-zinc-500">
+                                        Once you delete your account, there is no going back. Please be certain.
+                                    </p>
+                                    <button
+                                        onClick={() => setShowDeleteModal(true)}
+                                        className="w-full py-3 rounded-xl border border-red-200 text-red-600 font-bold hover:bg-red-50 transition flex items-center justify-center gap-2"
+                                    >
+                                        <Trash2 className="h-4 w-4" /> Delete Account
+                                    </button>
                                 </div>
                             </div>
-                        </div>
+                        ) : (
+                            <div className="space-y-6 animate-fade-in">
 
-                        {/* Delete Account Section */}
-                        <div className="glass rounded-2xl p-6 border border-zinc-200 bg-white space-y-4">
-                            <h2 className="text-sm font-bold uppercase text-red-500 mb-4 flex items-center gap-2">
-                                <Trash2 className="h-4 w-4" /> Danger Zone
-                            </h2>
-                            <p className="text-xs text-zinc-500">
-                                Once you delete your account, there is no going back. Please be certain.
-                            </p>
-                            <button
-                                onClick={() => setShowDeleteModal(true)}
-                                className="w-full py-3 rounded-xl border border-red-200 text-red-600 font-bold hover:bg-red-50 transition flex items-center justify-center gap-2"
-                            >
-                                <Trash2 className="h-4 w-4" /> Delete Account
-                            </button>
-                        </div>
-                    </div>
-                ) : (
-                    <div className="space-y-6 animate-fade-in">
+                                {/* Video Intro */}
+                                <div className="glass rounded-2xl p-6 border border-zinc-200 bg-white">
+                                    <h2 className="text-sm font-bold uppercase text-zinc-400 mb-4 flex items-center gap-2">
+                                        <Video className="h-4 w-4" /> Main Video Intro
+                                    </h2>
+                                    <p className="text-xs text-zinc-500 mb-6">
+                                        This video will be shown on your profile to all employers. Keep it generic!
+                                    </p>
+                                    <div className="flex justify-center">
+                                        <div className="w-full max-w-sm">
+                                            <VideoUploader
+                                                onUploadComplete={setVideoUrl}
+                                                currentVideoUrl={videoUrl}
+                                                userId={user?.id || ""}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
 
-                        {/* Video Intro */}
-                        <div className="glass rounded-2xl p-6 border border-zinc-200 bg-white">
-                            <h2 className="text-sm font-bold uppercase text-zinc-400 mb-4 flex items-center gap-2">
-                                <Video className="h-4 w-4" /> Main Video Intro
-                            </h2>
-                            <p className="text-xs text-zinc-500 mb-6">
-                                This video will be shown on your profile to all employers. Keep it generic!
-                            </p>
-                            <div className="flex justify-center">
-                                <div className="w-full max-w-sm">
-                                    <VideoUploader
-                                        onUploadComplete={setVideoUrl}
-                                        currentVideoUrl={videoUrl}
+                                {/* Resume Upload */}
+                                <div className="glass rounded-2xl p-6 border border-zinc-200 bg-white">
+                                    <h2 className="text-sm font-bold uppercase text-zinc-400 mb-4 flex items-center gap-2">
+                                        <FileText className="h-4 w-4" /> Resume / CV
+                                    </h2>
+                                    <ResumeUploader
+                                        onUploadComplete={(url, name) => {
+                                            setResumeUrl(url);
+                                            setResumeName(name);
+                                        }}
+                                        existingFileUrl={resumeUrl}
+                                        existingFileName={resumeName}
                                         userId={user?.id || ""}
                                     />
                                 </div>
                             </div>
-                        </div>
-
-                        {/* Resume Upload */}
-                        <div className="glass rounded-2xl p-6 border border-zinc-200 bg-white">
-                            <h2 className="text-sm font-bold uppercase text-zinc-400 mb-4 flex items-center gap-2">
-                                <FileText className="h-4 w-4" /> Resume / CV
-                            </h2>
-                            <ResumeUploader
-                                onUploadComplete={(url, name) => {
-                                    setResumeUrl(url);
-                                    setResumeName(name);
-                                }}
-                                existingFileUrl={resumeUrl}
-                                existingFileName={resumeName}
-                                userId={user?.id || ""}
-                            />
-                        </div>
-                    </div>
+                        )}
+                    </>
                 )}
 
                 {/* Preview Mode */}
