@@ -1,13 +1,11 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/context/AuthContext";
-import { ArrowLeft, Clock, CheckCircle, XCircle, Briefcase, User, Edit2, Play, FileText, MessageSquare, Send, X, Loader2 } from "lucide-react";
+import { ArrowLeft, Clock, CheckCircle, XCircle, Briefcase, User, Edit2, Play, FileText, MessageSquare, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { clsx } from "clsx";
-
-import { useMessages } from "@/hooks/useMessages";
 
 export default function SeekerProfile() {
     const router = useRouter();
@@ -17,14 +15,6 @@ export default function SeekerProfile() {
     const [profile, setProfile] = useState<any>(null);
     const [applications, setApplications] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
-
-    // Chat State
-    const [selectedChatApp, setSelectedChatApp] = useState<any | null>(null);
-    const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
-    const { messages, sendMessage, loading: msgLoading } = useMessages(activeConversationId);
-
-    const [newMessage, setNewMessage] = useState("");
-    const messagesEndRef = useRef<HTMLDivElement>(null);
 
     const [conversations, setConversations] = useState<any[]>([]);
 
@@ -37,39 +27,6 @@ export default function SeekerProfile() {
             }
         }
     }, [user, authLoading]);
-
-    // Check for conversation when app is selected
-    useEffect(() => {
-        if (selectedChatApp && user) {
-            checkConversation();
-        } else {
-            setActiveConversationId(null);
-        }
-    }, [selectedChatApp, user]);
-
-    useEffect(() => {
-        scrollToBottom();
-    }, [messages]);
-
-    const checkConversation = async () => {
-        if (!selectedChatApp || !user) return;
-
-        // Find if conversation exists for this job/employer
-        // Note: Assuming one conv per job/application context
-        const { data, error } = await supabase
-            .from('conversations')
-            .select('id')
-            .eq('seeker_id', user.id)
-            .eq('employer_id', selectedChatApp.employerId)
-            // .eq('job_id', selectedChatApp.job_id) // Optional: restrict to specific job context if needed
-            .single();
-
-        if (data) {
-            setActiveConversationId(data.id);
-        } else {
-            setActiveConversationId(null);
-        }
-    };
 
     const fetchData = async () => {
         if (!user) return;
@@ -125,18 +82,6 @@ export default function SeekerProfile() {
         } finally {
             setLoading(false);
         }
-    };
-
-    const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    };
-
-    const handleSendMessage = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!newMessage.trim() || !activeConversationId) return;
-
-        await sendMessage(newMessage);
-        setNewMessage("");
     };
 
     const getStatusBadge = (status: string) => {
@@ -265,12 +210,15 @@ export default function SeekerProfile() {
                                             </div>
                                             <div className="flex items-center gap-3">
                                                 <button
-                                                    onClick={(e) => { e.stopPropagation(); setSelectedChatApp(app); }}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        router.push(`/messages?employerId=${app.employerId}`);
+                                                    }}
                                                     className="relative p-2 rounded-full hover:bg-zinc-100 text-zinc-400 hover:text-black transition group"
                                                 >
                                                     <MessageSquare className="h-5 w-5" />
                                                     {hasConversation && (
-                                                        <span className="absolute top-1.5 right-1.5 h-2.5 w-2.5 rounded-full bg-orange-500 border-2 border-white shadow-sm animate-pulse" />
+                                                        <span className="absolute top-1.5 right-1.5 h-2.5 w-2.5 rounded-full bg-orange-500 border-2 border-white shadow-sm" />
                                                     )}
                                                 </button>
                                                 {getStatusBadge(app.status)}
@@ -286,65 +234,6 @@ export default function SeekerProfile() {
 
             </main>
 
-            {/* Chat Modal (Mocked Behavior for UI Demo) */}
-            {/* Chat Modal */}
-            {selectedChatApp && (
-                <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm p-0 sm:p-4 animate-fade-in">
-                    <div className="w-full sm:max-w-md h-[80vh] bg-white sm:rounded-3xl border border-zinc-200 shadow-2xl flex flex-col overflow-hidden">
-                        <div className="p-4 border-b border-zinc-100 flex items-center justify-between bg-zinc-50">
-                            <div className="flex items-center gap-3">
-                                <div className="h-10 w-10 rounded-full flex items-center justify-center text-white bg-black font-bold">
-                                    {selectedChatApp.companyName?.[0] || "C"}
-                                </div>
-                                <div>
-                                    <h3
-                                        className="font-bold text-black cursor-pointer hover:text-zinc-600 transition"
-                                        onClick={() => selectedChatApp.employerId && router.push(`/companies/${selectedChatApp.employerId}`)}
-                                    >
-                                        {selectedChatApp.companyName || "Employer"}
-                                    </h3>
-                                    <p className="text-xs text-zinc-500">{selectedChatApp.jobTitle}</p>
-                                </div>
-                            </div>
-                            <button onClick={() => setSelectedChatApp(null)} className="p-2 text-zinc-400 hover:text-black"><X className="h-5 w-5" /></button>
-                        </div>
-
-                        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-white">
-                            {messages.length === 0 && (
-                                <p className="text-center text-zinc-400 text-sm mt-10">Start a conversation...</p>
-                            )}
-                            {messages.map((msg) => (
-                                <div key={msg.id} className={clsx("flex flex-col max-w-[80%]", msg.sender_id === user?.id ? "ml-auto items-end" : "items-start")}>
-                                    <div className={clsx("rounded-2xl px-4 py-2 text-sm", msg.sender_id === user?.id ? "bg-black text-white" : "bg-zinc-100 text-black")}>
-                                        {msg.content}
-                                    </div>
-                                    <span className="text-[10px] text-zinc-400 mt-1">{new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                                </div>
-                            ))}
-                            <div ref={messagesEndRef} />
-
-                        </div>
-
-                        <form onSubmit={handleSendMessage} className="p-4 bg-zinc-50 border-t border-zinc-100">
-                            <div className="relative">
-                                <input
-                                    value={newMessage}
-                                    onChange={(e) => setNewMessage(e.target.value)}
-                                    placeholder="Type a reply..."
-                                    className="w-full bg-white border border-zinc-200 rounded-full py-3 pl-4 pr-12 text-sm text-black focus:border-black focus:outline-none"
-                                />
-                                <button
-                                    type="submit"
-                                    disabled={!newMessage.trim()}
-                                    className="absolute right-1 top-1 p-2 rounded-full bg-black text-white hover:bg-zinc-800 disabled:opacity-0 transition"
-                                >
-                                    <Send className="h-4 w-4" />
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
         </div>
     );
 }

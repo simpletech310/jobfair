@@ -8,11 +8,14 @@ import { createClient } from "@/lib/supabase/client";
 import { Menu, X, User, LogOut, ChevronRight, LayoutDashboard } from "lucide-react";
 import { clsx } from "clsx";
 
+import { useUnreadMessages } from "@/hooks/useUnreadMessages";
+
 export default function Navbar() {
     const { user, logout } = useAuth();
     const pathname = usePathname();
     const [isScrolled, setIsScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const unreadCount = useUnreadMessages();
 
     // Fetch profile for avatar
     const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
@@ -55,6 +58,7 @@ export default function Navbar() {
             { name: "Home", href: "/" },
             { name: "Interested", href: "/benefits/seeker" },
             { name: "Jobs", href: "/jobs" },
+            { name: "Messages", href: "/messages", badge: unreadCount > 0 ? unreadCount : null },
         ];
     };
 
@@ -95,13 +99,18 @@ export default function Navbar() {
 
                 {/* Desktop Nav */}
                 <nav className="hidden md:flex items-center gap-8">
-                    {links.map(link => (
+                    {links.map((link: any) => (
                         <Link
                             key={link.href}
                             href={link.href}
-                            className="text-sm font-medium text-zinc-600 hover:text-black transition"
+                            className="text-sm font-medium text-zinc-600 hover:text-black transition relative"
                         >
                             {link.name}
+                            {link.badge && (
+                                <span className="absolute -top-2 -right-3 px-1.5 py-0.5 rounded-full bg-red-500 text-white text-[10px] font-bold shadow-sm">
+                                    {link.badge}
+                                </span>
+                            )}
                         </Link>
                     ))}
 
@@ -147,14 +156,19 @@ export default function Navbar() {
             {mobileMenuOpen && (
                 <div className="absolute top-full left-0 right-0 bg-white border-b border-black/10 p-6 md:hidden animate-in slide-in-from-top-4 shadow-xl">
                     <nav className="flex flex-col gap-4">
-                        {links.map(link => (
+                        {links.map((link: any) => (
                             <Link
                                 key={link.href}
                                 href={link.href}
                                 onClick={() => setMobileMenuOpen(false)}
-                                className="text-lg font-medium text-zinc-500"
+                                className="text-lg font-medium text-zinc-500 flex items-center justify-between"
                             >
                                 {link.name}
+                                {link.badge && (
+                                    <span className="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                                        {link.badge}
+                                    </span>
+                                )}
                             </Link>
                         ))}
 

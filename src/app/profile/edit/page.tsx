@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, User, Briefcase, Plus, X, Video, FileText, Loader2 } from "lucide-react";
+import { ArrowLeft, User, Briefcase, Plus, X, Video, FileText, Loader2, Trash2, AlertTriangle } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 // We removed VideoRecorder component usage in favor of new VideoUploader
@@ -16,7 +16,7 @@ import PhotoUploader from "@/components/PhotoUploader";
 
 export default function EditProfile() {
     const router = useRouter();
-    const { user, loading: authLoading } = useAuth();
+    const { user, loading: authLoading, logout } = useAuth();
     const [loading, setLoading] = useState(true);
     const supabase = createClient();
 
@@ -54,6 +54,28 @@ export default function EditProfile() {
 
     const [activeTab, setActiveTab] = useState<'info' | 'media'>('info');
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    // Delete Modal State
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [confirmText, setConfirmText] = useState("");
+    const [isDeleting, setIsDeleting] = useState(false);
+
+    const handleDeleteAccount = async () => {
+        if (confirmText !== "DELETE") return;
+
+        setIsDeleting(true);
+        try {
+            const { error } = await supabase.rpc('delete_account');
+            if (error) throw error;
+
+            await logout();
+            router.push('/');
+        } catch (error) {
+            console.error("Error deleting account:", error);
+            alert("Failed to delete account. Please try again.");
+            setIsDeleting(false);
+        }
+    };
 
     useEffect(() => {
         if (!authLoading) {
@@ -254,6 +276,22 @@ export default function EditProfile() {
                                 />
                             </div>
                         </div>
+
+                        {/* Delete Account Section */}
+                        <div className="glass rounded-2xl p-6 border border-zinc-200 bg-white space-y-4">
+                            <h2 className="text-sm font-bold uppercase text-red-500 mb-4 flex items-center gap-2">
+                                <Trash2 className="h-4 w-4" /> Danger Zone
+                            </h2>
+                            <p className="text-xs text-zinc-500">
+                                Once you delete your account, there is no going back. Please be certain.
+                            </p>
+                            <button
+                                onClick={() => setShowDeleteModal(true)}
+                                className="w-full py-3 rounded-xl border border-red-200 text-red-600 font-bold hover:bg-red-50 transition flex items-center justify-center gap-2"
+                            >
+                                <Trash2 className="h-4 w-4" /> Delete Account
+                            </button>
+                        </div>
                     </div>
                 ) : (
                     <div className="space-y-6 animate-fade-in">
@@ -296,6 +334,52 @@ export default function EditProfile() {
                 )}
 
             </main>
+
+            {/* Delete Confirmation Modal */}
+            {showDeleteModal && (
+                <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in">
+                    <div className="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-6">
+                        <div className="text-center space-y-2">
+                            <div className="h-12 w-12 rounded-full bg-red-100 flex items-center justify-center mx-auto text-red-600">
+                                <AlertTriangle className="h-6 w-6" />
+                            </div>
+                            <h3 className="text-xl font-bold text-black">Delete Account?</h3>
+                            <p className="text-sm text-zinc-500">
+                                This action is permanent and cannot be undone. All your applications and data will be permanently removed.
+                            </p>
+                        </div>
+
+                        <div className="space-y-4">
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold uppercase text-zinc-500">Type "DELETE" to confirm</label>
+                                <input
+                                    value={confirmText}
+                                    onChange={(e) => setConfirmText(e.target.value)}
+                                    className="w-full px-4 py-3 rounded-xl border border-zinc-200 focus:border-red-500 focus:outline-none text-black font-mono placeholder:text-zinc-300 uppercase"
+                                    placeholder="DELETE"
+                                />
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-3">
+                                <button
+                                    onClick={() => { setShowDeleteModal(false); setConfirmText(""); }}
+                                    className="w-full py-3 rounded-xl bg-zinc-100 text-black font-bold hover:bg-zinc-200 transition"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={handleDeleteAccount}
+                                    disabled={confirmText !== "DELETE" || isDeleting}
+                                    className="w-full py-3 rounded-xl bg-red-600 text-white font-bold hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center justify-center gap-2"
+                                >
+                                    {isDeleting && <Loader2 className="h-4 w-4 animate-spin" />}
+                                    {isDeleting ? "Deleting..." : "Delete Forever"}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
