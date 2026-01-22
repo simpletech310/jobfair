@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, User, Briefcase, Plus, X, Video, FileText, Loader2, Trash2, AlertTriangle } from "lucide-react";
+import { ArrowLeft, User, Briefcase, Plus, X, Video, FileText, Loader2, Trash2, AlertTriangle, Linkedin, Github, Facebook, Instagram, Globe, Eye } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 // We removed VideoRecorder component usage in favor of new VideoUploader
@@ -26,7 +26,12 @@ export default function EditProfile() {
         title: "",
         bio: "",
         skills: "",
-        socialLinks: "",
+        socialLinks: {
+            linkedin: "",
+            github: "",
+            website: "",
+            instagram: ""
+        },
     });
     // For MVP, socialLinks isn't in schema, but we can store it or ignore it.
     // Schema: full_name, title, bio, skills (array), experience_years, resume_stats(jsonb), intro_video_url
@@ -105,7 +110,7 @@ export default function EditProfile() {
                     title: data.title || "",
                     bio: data.bio || "",
                     skills: data.skills ? data.skills.join(", ") : "",
-                    socialLinks: "" // Not in DB yet
+                    socialLinks: data.social_links || { linkedin: "", github: "", website: "", instagram: "" }
                 });
                 setExperienceYears(data.experience_years || 0);
                 setVideoUrl(data.intro_video_url);
@@ -143,6 +148,7 @@ export default function EditProfile() {
                 experience_years: experienceYears,
                 intro_video_url: videoUrl,
                 avatar_url: photoUrl,
+                social_links: formData.socialLinks,
                 resume_stats: resumeUrl ? { url: resumeUrl, name: resumeName } : null
             };
 
@@ -301,6 +307,51 @@ export default function EditProfile() {
                             </div>
                         </div>
 
+                        {/* Social Links */}
+                        <div className="glass rounded-2xl p-6 space-y-4 border border-zinc-200 bg-white">
+                            <h2 className="text-sm font-bold uppercase text-zinc-400 mb-4 flex items-center gap-2">
+                                <Globe className="h-4 w-4" /> Social Profile
+                            </h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-1">
+                                    <label className="text-xs text-zinc-500 flex items-center gap-1"><Linkedin className="h-3 w-3" /> LinkedIn</label>
+                                    <input
+                                        value={formData.socialLinks.linkedin}
+                                        onChange={(e) => setFormData({ ...formData, socialLinks: { ...formData.socialLinks, linkedin: e.target.value } })}
+                                        placeholder="Profile URL"
+                                        className="w-full bg-zinc-50 border border-zinc-200 rounded-xl p-3 text-black focus:outline-none focus:border-black"
+                                    />
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-xs text-zinc-500 flex items-center gap-1"><Github className="h-3 w-3" /> GitHub</label>
+                                    <input
+                                        value={formData.socialLinks.github}
+                                        onChange={(e) => setFormData({ ...formData, socialLinks: { ...formData.socialLinks, github: e.target.value } })}
+                                        placeholder="Profile URL"
+                                        className="w-full bg-zinc-50 border border-zinc-200 rounded-xl p-3 text-black focus:outline-none focus:border-black"
+                                    />
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-xs text-zinc-500 flex items-center gap-1"><Globe className="h-3 w-3" /> Portfolio / Website</label>
+                                    <input
+                                        value={formData.socialLinks.website}
+                                        onChange={(e) => setFormData({ ...formData, socialLinks: { ...formData.socialLinks, website: e.target.value } })}
+                                        placeholder="https://..."
+                                        className="w-full bg-zinc-50 border border-zinc-200 rounded-xl p-3 text-black focus:outline-none focus:border-black"
+                                    />
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-xs text-zinc-500 flex items-center gap-1"><Instagram className="h-3 w-3" /> Instagram</label>
+                                    <input
+                                        value={formData.socialLinks.instagram}
+                                        onChange={(e) => setFormData({ ...formData, socialLinks: { ...formData.socialLinks, instagram: e.target.value } })}
+                                        placeholder="Profile URL"
+                                        className="w-full bg-zinc-50 border border-zinc-200 rounded-xl p-3 text-black focus:outline-none focus:border-black"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
                         {/* Delete Account Section */}
                         <div className="glass rounded-2xl p-6 border border-zinc-200 bg-white space-y-4">
                             <h2 className="text-sm font-bold uppercase text-red-500 mb-4 flex items-center gap-2">
@@ -372,6 +423,29 @@ export default function EditProfile() {
                             <h1 className="text-3xl font-extrabold text-black tracking-tight mb-2">{formData.full_name || "Your Name"}</h1>
                             <p className="text-lg text-zinc-500 font-medium mb-4">{formData.title || "Your Title"}</p>
 
+                            <div className="flex justify-center gap-3 mb-6">
+                                {formData.socialLinks.linkedin && (
+                                    <a href={formData.socialLinks.linkedin} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-zinc-100 text-zinc-600 hover:bg-[#0077b5] hover:text-white transition">
+                                        <Linkedin className="h-4 w-4" />
+                                    </a>
+                                )}
+                                {formData.socialLinks.github && (
+                                    <a href={formData.socialLinks.github} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-zinc-100 text-zinc-600 hover:bg-black hover:text-white transition">
+                                        <Github className="h-4 w-4" />
+                                    </a>
+                                )}
+                                {formData.socialLinks.website && (
+                                    <a href={formData.socialLinks.website} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-zinc-100 text-zinc-600 hover:bg-zinc-800 hover:text-white transition">
+                                        <Globe className="h-4 w-4" />
+                                    </a>
+                                )}
+                                {formData.socialLinks.instagram && (
+                                    <a href={formData.socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-zinc-100 text-zinc-600 hover:bg-[#E1306C] hover:text-white transition">
+                                        <Instagram className="h-4 w-4" />
+                                    </a>
+                                )}
+                            </div>
+
                             <div className="flex justify-center gap-2 mb-6">
                                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black text-white text-xs font-bold">
                                     <Briefcase className="h-3 w-3" /> {experienceYears} Years Exp
@@ -421,8 +495,8 @@ export default function EditProfile() {
                                     </div>
                                 </div>
                                 {resumeUrl && (
-                                    <a href={resumeUrl} target="_blank" rel="noopener noreferrer" className="px-4 py-2 bg-black text-white text-xs font-bold rounded-full hover:bg-zinc-800 transition">
-                                        Download
+                                    <a href={resumeUrl} target="_blank" rel="noopener noreferrer" className="px-5 py-2.5 bg-black text-white text-xs font-bold rounded-full hover:bg-zinc-800 transition shadow-lg flex items-center gap-2">
+                                        <Eye className="h-3 w-3" /> View Resume
                                     </a>
                                 )}
                             </div>

@@ -19,7 +19,11 @@ import {
     Edit,
     Eye,
     Globe,
-    MapPin
+    MapPin,
+    Linkedin,
+    Github,
+    Facebook,
+    Instagram
 } from "lucide-react";
 import { clsx } from "clsx";
 import PhotoUploader from "@/components/PhotoUploader";
@@ -41,6 +45,12 @@ export default function EmployerProfile() {
     const [mission, setMission] = useState("");
     const [culture, setCulture] = useState("");
     const [website, setWebsite] = useState("");
+    const [socialLinks, setSocialLinks] = useState({
+        linkedin: "",
+        twitter: "",
+        facebook: "",
+        instagram: ""
+    });
 
     const [mode, setMode] = useState<'edit' | 'preview'>('edit');
     const [previewJobs, setPreviewJobs] = useState<any[]>([]);
@@ -70,6 +80,7 @@ export default function EmployerProfile() {
             setMission(data.mission || "");
             setCulture(data.culture_description || "");
             setWebsite(data.website || "");
+            setSocialLinks(data.social_links || { linkedin: "", twitter: "", facebook: "", instagram: "" });
         }
 
         // Fetch jobs for preview
@@ -107,6 +118,7 @@ export default function EmployerProfile() {
                 mission,
                 culture_description: culture,
                 website,
+                social_links: socialLinks,
             });
 
         if (error) {
@@ -280,6 +292,49 @@ export default function EmployerProfile() {
                                             placeholder="https://acme.com"
                                         />
                                     </div>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-4 pt-4 border-t border-zinc-100">
+                                    <h4 className="text-sm font-bold text-zinc-900">Social Profiles</h4>
+                                    <div className="grid md:grid-cols-2 gap-4">
+                                        <div className="relative">
+                                            <Linkedin className="absolute left-4 top-3.5 h-5 w-5 text-zinc-400" />
+                                            <input
+                                                value={socialLinks.linkedin}
+                                                onChange={(e) => setSocialLinks({ ...socialLinks, linkedin: e.target.value })}
+                                                className="w-full bg-zinc-50 border border-zinc-200 rounded-xl pl-12 pr-4 py-3 text-black focus:outline-none focus:border-black transition"
+                                                placeholder="LinkedIn URL"
+                                            />
+                                        </div>
+                                        <div className="relative">
+                                            <Globe className="absolute left-4 top-3.5 h-5 w-5 text-zinc-400" />
+                                            <input
+                                                value={socialLinks.twitter}
+                                                onChange={(e) => setSocialLinks({ ...socialLinks, twitter: e.target.value })}
+                                                className="w-full bg-zinc-50 border border-zinc-200 rounded-xl pl-12 pr-4 py-3 text-black focus:outline-none focus:border-black transition"
+                                                placeholder="Twitter / X URL"
+                                            />
+                                        </div>
+                                        <div className="relative">
+                                            <Facebook className="absolute left-4 top-3.5 h-5 w-5 text-zinc-400" />
+                                            <input
+                                                value={socialLinks.facebook}
+                                                onChange={(e) => setSocialLinks({ ...socialLinks, facebook: e.target.value })}
+                                                className="w-full bg-zinc-50 border border-zinc-200 rounded-xl pl-12 pr-4 py-3 text-black focus:outline-none focus:border-black transition"
+                                                placeholder="Facebook URL"
+                                            />
+                                        </div>
+                                        <div className="relative">
+                                            <Instagram className="absolute left-4 top-3.5 h-5 w-5 text-zinc-400" />
+                                            <input
+                                                value={socialLinks.instagram}
+                                                onChange={(e) => setSocialLinks({ ...socialLinks, instagram: e.target.value })}
+                                                className="w-full bg-zinc-50 border border-zinc-200 rounded-xl pl-12 pr-4 py-3 text-black focus:outline-none focus:border-black transition"
+                                                placeholder="Instagram URL"
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div className="space-y-2">
@@ -314,89 +369,111 @@ export default function EmployerProfile() {
                                 </button>
                             </div>
                         </form>
-                    ) : (
-                        <div className="bg-zinc-50 rounded-3xl p-6 border border-zinc-200 animate-fade-in">
-                            {/* Preview matches /companies/[id] layout structure but inlined */}
-                            <div className="bg-white rounded-3xl shadow-sm border border-zinc-200 overflow-hidden">
-                                <div className="p-8 md:p-12">
-                                    <div className="flex flex-col md:flex-row items-center gap-8 mb-12">
-                                        <div className="h-32 w-32 rounded-3xl bg-white p-2 border border-zinc-200 shadow-xl overflow-hidden shrink-0">
-                                            {logoUrl ? (
-                                                <img src={logoUrl} alt={companyName} className="h-full w-full object-contain" />
-                                            ) : (
-                                                <div className="h-full w-full bg-black flex items-center justify-center text-4xl font-bold text-white">
-                                                    {companyName[0] || "C"}
-                                                </div>
-                                            )}
+                ) : (
+                <div className="bg-zinc-50 rounded-3xl p-6 border border-zinc-200 animate-fade-in">
+                    {/* Preview matches /companies/[id] layout structure but inlined */}
+                    <div className="bg-white rounded-3xl shadow-sm border border-zinc-200 overflow-hidden">
+                        <div className="p-8 md:p-12">
+                            <div className="flex flex-col md:flex-row items-center gap-8 mb-12">
+                                <div className="h-32 w-32 rounded-3xl bg-white p-2 border border-zinc-200 shadow-xl overflow-hidden shrink-0">
+                                    {logoUrl ? (
+                                        <img src={logoUrl} alt={companyName} className="h-full w-full object-contain" />
+                                    ) : (
+                                        <div className="h-full w-full bg-black flex items-center justify-center text-4xl font-bold text-white">
+                                            {companyName[0] || "C"}
                                         </div>
-                                        <div className="text-center md:text-left">
-                                            <h1 className="text-4xl font-extrabold text-black tracking-tight mb-2">{companyName || "Your Company"}</h1>
-                                            {website && (
-                                                <a href={website} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-zinc-600 hover:text-black font-medium bg-zinc-100 px-4 py-1.5 rounded-full transition pointer-events-none">
-                                                    <Globe className="h-4 w-4" /> {website.replace(/^https?:\/\//, '')}
-                                                </a>
-                                            )}
-                                        </div>
+                                    )}
+                                </div>
+                                <div className="text-center md:text-left">
+                                    <h1 className="text-4xl font-extrabold text-black tracking-tight mb-2">{companyName || "Your Company"}</h1>
+                                    <div className="flex flex-wrap items-center gap-3 justify-center md:justify-start">
+                                        {website && (
+                                            <a href={website} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-zinc-600 hover:text-black font-medium bg-zinc-100 px-4 py-1.5 rounded-full transition">
+                                                <Globe className="h-4 w-4" /> Website
+                                            </a>
+                                        )}
+                                        {socialLinks.linkedin && (
+                                            <a href={socialLinks.linkedin} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-zinc-100 text-zinc-600 hover:bg-[#0077b5] hover:text-white transition">
+                                                <Linkedin className="h-4 w-4" />
+                                            </a>
+                                        )}
+                                        {socialLinks.twitter && (
+                                            <a href={socialLinks.twitter} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-zinc-100 text-zinc-600 hover:bg-black hover:text-white transition">
+                                                <Globe className="h-4 w-4" />
+                                            </a>
+                                        )}
+                                        {socialLinks.facebook && (
+                                            <a href={socialLinks.facebook} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-zinc-100 text-zinc-600 hover:bg-[#1877F2] hover:text-white transition">
+                                                <Facebook className="h-4 w-4" />
+                                            </a>
+                                        )}
+                                        {socialLinks.instagram && (
+                                            <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-zinc-100 text-zinc-600 hover:bg-[#E1306C] hover:text-white transition">
+                                                <Instagram className="h-4 w-4" />
+                                            </a>
+                                        )}
                                     </div>
+                                </div>
+                            </div>
 
-                                    <div className="grid gap-8 md:grid-cols-3">
-                                        <div className="md:col-span-2 space-y-8">
-                                            {videoUrl && (
-                                                <div className="rounded-3xl overflow-hidden border border-zinc-200 shadow-xl aspect-video bg-black">
-                                                    <video src={videoUrl} controls className="w-full h-full" />
-                                                </div>
-                                            )}
-
-                                            <div className="space-y-6">
-                                                {mission && (
-                                                    <div>
-                                                        <h3 className="text-sm font-bold uppercase text-zinc-400 mb-3">Our Mission</h3>
-                                                        <p className="text-lg text-black leading-relaxed font-light">"{mission}"</p>
-                                                    </div>
-                                                )}
-
-                                                {culture && (
-                                                    <div className="pt-6 border-t border-zinc-100">
-                                                        <h3 className="text-sm font-bold uppercase text-zinc-400 mb-3">Culture & Values</h3>
-                                                        <p className="text-zinc-600 leading-relaxed whitespace-pre-line">{culture}</p>
-                                                    </div>
-                                                )}
-                                                {!mission && !culture && (
-                                                    <p className="text-zinc-400 italic">No additional information provided.</p>
-                                                )}
-                                            </div>
+                            <div className="grid gap-8 md:grid-cols-3">
+                                <div className="md:col-span-2 space-y-8">
+                                    {videoUrl && (
+                                        <div className="rounded-3xl overflow-hidden border border-zinc-200 shadow-xl aspect-video bg-black">
+                                            <video src={videoUrl} controls className="w-full h-full" />
                                         </div>
+                                    )}
 
-                                        <div className="space-y-6">
-                                            <div className="bg-zinc-50 rounded-3xl p-6 border border-zinc-100">
-                                                <h3 className="text-black font-bold mb-6 flex items-center gap-2">
-                                                    <Briefcase className="h-5 w-5 text-black" />
-                                                    Active Openings
-                                                </h3>
-
-                                                {previewJobs.length === 0 ? (
-                                                    <p className="text-zinc-400 text-sm">No active jobs.</p>
-                                                ) : (
-                                                    <div className="space-y-4">
-                                                        {previewJobs.map(job => (
-                                                            <div key={job.id} className="block bg-white p-4 rounded-xl border border-zinc-200 opacity-75">
-                                                                <h4 className="font-bold text-black text-sm">{job.title}</h4>
-                                                                <div className="flex items-center gap-2 mt-2 text-xs text-zinc-500">
-                                                                    <MapPin className="h-3 w-3" /> {job.location}
-                                                                </div>
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                )}
+                                    <div className="space-y-6">
+                                        {mission && (
+                                            <div>
+                                                <h3 className="text-sm font-bold uppercase text-zinc-400 mb-3">Our Mission</h3>
+                                                <p className="text-lg text-black leading-relaxed font-light">"{mission}"</p>
                                             </div>
-                                        </div>
+                                        )}
+
+                                        {culture && (
+                                            <div className="pt-6 border-t border-zinc-100">
+                                                <h3 className="text-sm font-bold uppercase text-zinc-400 mb-3">Culture & Values</h3>
+                                                <p className="text-zinc-600 leading-relaxed whitespace-pre-line">{culture}</p>
+                                            </div>
+                                        )}
+                                        {!mission && !culture && (
+                                            <p className="text-zinc-400 italic">No additional information provided.</p>
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div className="space-y-6">
+                                    <div className="bg-zinc-50 rounded-3xl p-6 border border-zinc-100">
+                                        <h3 className="text-black font-bold mb-6 flex items-center gap-2">
+                                            <Briefcase className="h-5 w-5 text-black" />
+                                            Active Openings
+                                        </h3>
+
+                                        {previewJobs.length === 0 ? (
+                                            <p className="text-zinc-400 text-sm">No active jobs.</p>
+                                        ) : (
+                                            <div className="space-y-4">
+                                                {previewJobs.map(job => (
+                                                    <div key={job.id} className="block bg-white p-4 rounded-xl border border-zinc-200 opacity-75">
+                                                        <h4 className="font-bold text-black text-sm">{job.title}</h4>
+                                                        <div className="flex items-center gap-2 mt-2 text-xs text-zinc-500">
+                                                            <MapPin className="h-3 w-3" /> {job.location}
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    )}
+                    </div>
                 </div>
-            </main>
+            )}
         </div>
+            </main >
+        </div >
     );
 }

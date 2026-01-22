@@ -313,10 +313,46 @@ export default function EmployerDashboard() {
 
                             {/* Stats */}
                             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                                <StatsCard icon={Users} label="Total Applicants" value={totalApplicants} color="black" />
-                                <StatsCard icon={CheckCircle} label="Shortlisted" value={shortlistedCount} color="black" />
-                                <StatsCard icon={Briefcase} label="Active Jobs" value={activeJobsCount} color="black" />
-                                <StatsCard icon={Clock} label="Pending Review" value={applications.filter(a => a.status === 'pending').length} color="black" />
+                                <StatsCard
+                                    icon={Users}
+                                    label="Total Applicants"
+                                    value={totalApplicants}
+                                    color="black"
+                                    onClick={() => {
+                                        setJobFilter('all');
+                                        setStatusFilter('all');
+                                        setCurrentView('candidates');
+                                    }}
+                                />
+                                <StatsCard
+                                    icon={CheckCircle}
+                                    label="Shortlisted"
+                                    value={shortlistedCount}
+                                    color="black"
+                                    onClick={() => {
+                                        setJobFilter('all');
+                                        setStatusFilter('interviewing');
+                                        setCurrentView('candidates');
+                                    }}
+                                />
+                                <StatsCard
+                                    icon={Briefcase}
+                                    label="Active Jobs"
+                                    value={activeJobsCount}
+                                    color="black"
+                                    onClick={() => setCurrentView('jobs')}
+                                />
+                                <StatsCard
+                                    icon={Clock}
+                                    label="Pending Review"
+                                    value={applications.filter(a => a.status === 'pending').length}
+                                    color="black"
+                                    onClick={() => {
+                                        setJobFilter('all');
+                                        setStatusFilter('pending');
+                                        setCurrentView('candidates');
+                                    }}
+                                />
                             </div>
 
                             {/* Recent Activity */}
@@ -588,7 +624,7 @@ export default function EmployerDashboard() {
 
 // --- Subcomponents ---
 
-function StatsCard({ icon: Icon, label, value, color }: any) {
+function StatsCard({ icon: Icon, label, value, color, onClick }: any) {
     const colors: any = {
         blue: "text-blue-500 bg-blue-50",
         green: "text-green-600 bg-green-50",
@@ -597,7 +633,13 @@ function StatsCard({ icon: Icon, label, value, color }: any) {
         black: "text-black bg-zinc-100",
     };
     return (
-        <div className="glass rounded-2xl p-5 border border-zinc-200 bg-white shadow-sm">
+        <div
+            onClick={onClick}
+            className={clsx(
+                "glass rounded-2xl p-5 border border-zinc-200 bg-white shadow-sm transition hover:shadow-md",
+                onClick ? "cursor-pointer hover:border-black/20" : ""
+            )}
+        >
             <div className="flex items-center gap-3 mb-2">
                 <div className={clsx("p-2 rounded-lg", colors[color] || colors.black)}><Icon className="h-5 w-5" /></div>
                 <p className="text-xs font-bold uppercase text-zinc-500">{label}</p>

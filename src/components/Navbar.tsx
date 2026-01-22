@@ -55,10 +55,12 @@ export default function Navbar() {
         }
         // Seeker
         return [
+            { name: "My Profile", href: "/profile/edit" },
+            { name: "Search", href: "/jobs" },
+            { name: "My Jobs", href: "/profile" },
+            { name: "Messages", href: "/messages", badge: unreadCount > 0 ? unreadCount : null },
             { name: "Home", href: "/" },
             { name: "Interested", href: "/benefits/seeker" },
-            { name: "Jobs", href: "/jobs" },
-            { name: "Messages", href: "/messages", badge: unreadCount > 0 ? unreadCount : null },
         ];
     };
 

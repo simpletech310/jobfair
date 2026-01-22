@@ -1,4 +1,4 @@
-import { X, User, XCircle, CheckCircle, FileText, Send } from "lucide-react";
+import { X, User, XCircle, CheckCircle, FileText, Send, Linkedin, Github, Globe, Instagram } from "lucide-react";
 import { clsx } from "clsx";
 
 export default function ApplicationDetailModal({ app, onClose, onStatusUpdate, messages, newMessage, onSendMessage, setNewMessage, activeTab, setActiveTab, messagesEndRef, user }: any) {
@@ -45,6 +45,26 @@ export default function ApplicationDetailModal({ app, onClose, onStatusUpdate, m
                                 <div><h4 className="text-xs font-bold uppercase text-zinc-400 mb-2">Bio</h4><p className="text-zinc-600 text-sm leading-relaxed">{seekerProfile?.bio || "No bio available."}</p></div>
                                 <div><h4 className="text-xs font-bold uppercase text-zinc-400 mb-2">Skills</h4><div className="flex flex-wrap gap-2">{seekerProfile?.skills?.map((s: string) => <span key={s} className="px-2 py-1 bg-white rounded text-xs text-zinc-600 border border-zinc-200">{s}</span>)}</div></div>
                                 <div><h4 className="text-xs font-bold uppercase text-zinc-400 mb-2">Experience</h4><p className="text-black font-bold">{seekerProfile?.experience_years || 0} Years</p></div>
+
+                                {seekerProfile?.social_links && (
+                                    <div>
+                                        <h4 className="text-xs font-bold uppercase text-zinc-400 mb-3">On the Web</h4>
+                                        <div className="flex gap-2">
+                                            {seekerProfile.social_links.linkedin && (
+                                                <a href={seekerProfile.social_links.linkedin} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-zinc-100 text-zinc-600 hover:bg-[#0077b5] hover:text-white transition" title="LinkedIn"><Linkedin className="h-4 w-4" /></a>
+                                            )}
+                                            {seekerProfile.social_links.github && (
+                                                <a href={seekerProfile.social_links.github} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-zinc-100 text-zinc-600 hover:bg-black hover:text-white transition" title="GitHub"><Github className="h-4 w-4" /></a>
+                                            )}
+                                            {seekerProfile.social_links.website && (
+                                                <a href={seekerProfile.social_links.website} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-zinc-100 text-zinc-600 hover:bg-zinc-800 hover:text-white transition" title="Portfolio"><Globe className="h-4 w-4" /></a>
+                                            )}
+                                            {seekerProfile.social_links.instagram && (
+                                                <a href={seekerProfile.social_links.instagram} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-zinc-100 text-zinc-600 hover:bg-[#E1306C] hover:text-white transition" title="Instagram"><Instagram className="h-4 w-4" /></a>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         )}
                         {activeTab === 'resume' && (
