@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/context/AuthContext";
-import { ArrowLeft, Clock, CheckCircle, XCircle, Briefcase, User, Edit2, Play, FileText, MessageSquare, Loader2 } from "lucide-react";
+import { ArrowLeft, Clock, CheckCircle, XCircle, Briefcase, User, Edit2, Play, FileText, MessageSquare, Loader2, Linkedin, Github, Instagram, Globe } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { clsx } from "clsx";
 
@@ -147,6 +147,32 @@ export default function SeekerProfile() {
                                 </span>
                             ))}
                         </div>
+
+                        {/* Social Links */}
+                        {profile?.social_links && (
+                            <div className="mt-6 flex justify-center gap-3">
+                                {profile.social_links.linkedin && (
+                                    <a href={profile.social_links.linkedin} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-zinc-100 text-zinc-600 hover:bg-[#0077b5] hover:text-white transition">
+                                        <Linkedin className="h-4 w-4" />
+                                    </a>
+                                )}
+                                {profile.social_links.github && (
+                                    <a href={profile.social_links.github} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-zinc-100 text-zinc-600 hover:bg-black hover:text-white transition">
+                                        <Github className="h-4 w-4" />
+                                    </a>
+                                )}
+                                {profile.social_links.website && (
+                                    <a href={profile.social_links.website} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-zinc-100 text-zinc-600 hover:bg-zinc-800 hover:text-white transition">
+                                        <Globe className="h-4 w-4" />
+                                    </a>
+                                )}
+                                {profile.social_links.instagram && (
+                                    <a href={profile.social_links.instagram} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-zinc-100 text-zinc-600 hover:bg-[#E1306C] hover:text-white transition">
+                                        <Instagram className="h-4 w-4" />
+                                    </a>
+                                )}
+                            </div>
+                        )}
                     </div>
 
                     {profile?.resume_stats?.name && (

@@ -23,6 +23,8 @@ create table public.seekers (
   experience_years int default 0,
   resume_stats jsonb, -- Metadata about uploaded resumes
   intro_video_url text,
+  social_links jsonb default '{}'::jsonb,
+  avatar_url text,
   created_at timestamp with time zone default timezone('utc'::text, now())
 );
 
@@ -35,6 +37,7 @@ create table public.employers (
   mission text,
   culture_description text,
   website text,
+  social_links jsonb default '{}'::jsonb,
   created_at timestamp with time zone default timezone('utc'::text, now())
 );
 

@@ -33,19 +33,8 @@ export default function EditProfile() {
             instagram: ""
         },
     });
-    // For MVP, socialLinks isn't in schema, but we can store it or ignore it.
-    // Schema: full_name, title, bio, skills (array), experience_years, resume_stats(jsonb), intro_video_url
-
-    // We need experience stored. In schema we didn't add JSONB for experience?
-    // Let's check schema... "skills text[]". No experience column except "experience_years int".
-    // For MVP, lets just store experience in "bio" or append to it? 
-    // OR Update schema to add `experience jsonb`. 
-    // UPDATE: Schema has `resume_stats jsonb`. 
-    // Let's just create a quick migration or assume we add `experience jsonb` to schema if we want to save it structred.
-    // For now, I'll store it in local state and if schema fails I'll warn.
-    // Actually, I can allow the client to insert into a JSONB column if I define it.
-    // Let's assume `experience` is part of profile JSON or we add it quickly. 
-    // I'll stick to the "Basic Info" fields that match Schema for now to avoid errors.
+    // Schema: full_name, title, bio, skills (array), experience_years, resume_stats(jsonb), intro_video_url, social_links(jsonb), avatar_url(text)
+    // We store experience in experience_years for now.
 
     // Schema:
     // id, email, full_name, title, bio, skills, experience_years, resume_stats, intro_video_url
